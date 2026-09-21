@@ -20,12 +20,24 @@ require __DIR__.'/includes/header.php';
   <div class="vision-hero-vignette"></div>
   <div class="container vision-hero-stage">
     <div class="vision-hero-eyebrow">INDIA’S CELEBRATION DISCOVERY PLATFORM / 2026</div>
+    <div class="hero-occasion-line" aria-hidden="true"><span>Weddings</span><i></i><span>Milestones</span><i></i><span>Brand moments</span><i></i><span>Private celebrations</span></div>
     <h1 aria-label="Whatever the occasion. Make it unforgettable."><span class="hero-line">Whatever the occasion.</span><span class="hero-line hero-line-italic">Make it <em>unforgettable.</em></span></h1>
-    <p class="vision-hero-copy">Weddings, engagements, birthdays, anniversaries, baby showers, corporate events and private parties — discover exceptional venues, creators and event teams across India.</p>
-    <div class="vision-hero-actions"><button type="button" class="vision-primary" data-discovery-open>Plan your event <span>↗</span></button><a href="real-weddings.php" class="vision-secondary">Explore real celebrations</a></div>
+    <p class="vision-hero-copy">From a 40-person dinner to a 4,000-guest celebration — discover remarkable venues, creators and event teams across India without drowning in options.</p>
+    <div class="vision-hero-actions"><button type="button" class="vision-primary hero-mobile-plan" data-discovery-open>Plan your event <span>↗</span></button><a href="real-weddings.php" class="vision-secondary">Explore real celebrations</a></div>
     <div class="celebration-types" aria-label="Celebration types">
       <?php foreach(array_slice($events,0,6) as $event):?><a href="vendors.php?event=<?=urlencode($event['name'])?>"><?=h($event['name'])?></a><?php endforeach;?>
     </div>
+
+    <form class="hero-plan-dock" id="heroPlanDock" action="vendors.php" method="get">
+      <div class="hero-plan-preview">
+        <img id="heroPlanPreview" src="<?=h($events[0]['image'] ?? '')?>" alt="" aria-hidden="true">
+        <span><small>QUICK START</small><strong id="heroPlanLabel">Build your event team</strong></span>
+      </div>
+      <label><span>Occasion</span><select name="event" id="heroEvent"><option value="">Any celebration</option><?php foreach($events as $event):?><option value="<?=h($event['name'])?>" data-image="<?=h($event['image'])?>"><?=h($event['name'])?></option><?php endforeach;?></select></label>
+      <label><span>City</span><select name="city" id="heroCity"><option value="">Anywhere in India</option><?php foreach(wz_data('cities') as $city):?><option value="<?=h($city)?>"><?=h($city)?></option><?php endforeach;?></select></label>
+      <label><span>Need</span><select name="category" id="heroCategory"><option value="">Any vendor</option><?php foreach($categories as $category):?><option value="<?=h($category['name'])?>"><?=h($category['name'])?></option><?php endforeach;?></select></label>
+      <button type="submit">Explore <span>↗</span></button>
+    </form>
   </div>
   <figure class="vhero-float vhero-float-a"><img src="https://images.unsplash.com/photo-1776078171101-0776fd3a953f?auto=format&fit=crop&w=1200&q=94" alt="Indian couple celebrating an engagement"><figcaption>01 / ENGAGEMENT</figcaption></figure>
   <figure class="vhero-float vhero-float-b"><img src="https://images.unsplash.com/photo-1695277789188-ec9ef58d3bc3?auto=format&fit=crop&w=1200&q=94" alt="Corporate event stage in India"><figcaption>02 / CORPORATE</figcaption></figure>
