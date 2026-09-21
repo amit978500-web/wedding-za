@@ -1,5 +1,63 @@
-<?php require __DIR__.'/includes/bootstrap.php';require __DIR__.'/includes/components.php';$pageTitle='Celebration Journal';$pageDescription='Practical event planning guides on venues, decor, guest experience, production and budgets.';$pageKey='blog';require __DIR__.'/includes/header.php';?>
-<main><?php wz_page_intro('THE JOURNAL','Good taste needs<br><em>good information.</em>','Planning guides designed to help you make stronger decisions before you spend money.'); ?>
-<section class="section"><div class="container"><div class="journal-grid"><?php foreach(wz_data('articles') as $a)wz_article_card($a);?></div></div></section>
-<section class="section paper-2"><div class="container editorial-intro"><div class="editorial-intro-copy"><span class="eyebrow">MOST USEFUL FIRST</span><h2>Planning advice without the <em>fluff.</em></h2><p>Every Wedding Za guide is structured around the decision underneath the inspiration: what to compare, what to ask and where hosts typically underestimate complexity.</p><a class="pill-btn wine" href="planner.php">Open planning tools ↗</a></div><div class="editorial-intro-grid"><figure class="a"><img src="https://images.unsplash.com/photo-1754277198657-c288797a30a7?auto=format&fit=crop&w=1200&q=92" alt="Planning notes"></figure><figure class="b"><img src="https://images.unsplash.com/photo-1587271636175-90d58cdad458?auto=format&fit=crop&w=1200&q=92" alt="Wedding table"></figure><figure class="c"><img src="https://images.unsplash.com/photo-1781077127473-343904bb5856?auto=format&fit=crop&w=1200&q=92" alt="Wedding couple"></figure><div class="editorial-stamp">READ<small>BETTER</small></div></div></div></section>
-</main><?php require __DIR__.'/includes/footer.php';?>
+<?php
+    require __DIR__.'/includes/bootstrap.php';
+    require __DIR__.'/includes/components.php';
+    $pageTitle='Celebration Journal';
+    $pageDescription='Practical event planning guides on venues, decor, guest experience, production and budgets.';
+    $pageKey='blog';
+    require __DIR__.'/includes/header.php';
+?>
+<main>
+    <?php
+        wz_page_intro('THE JOURNAL','Good taste needs<br><em>good information.</em>','Planning guides designed to help you make stronger decisions before you spend money.');
+    ?>
+    <section class="section">
+        <div class="container">
+            <div class="journal-grid">
+                <?php
+                    foreach(wz_data('articles') as $a)wz_article_card($a);
+                ?>
+            </div>
+        </div>
+    </section>
+    <section class="section paper-2">
+        <div class="container editorial-intro">
+            <div class="editorial-intro-copy">
+                <span class="eyebrow">
+                MOST USEFUL FIRST
+                </span>
+                <h2>
+                Planning advice without the
+                <em>
+                fluff.
+                </em>
+                </h2>
+                <p>
+                Every Wedding Za guide is structured around the decision underneath the inspiration: what to compare, what to ask and where hosts typically underestimate complexity.
+                </p>
+                <a class="pill-btn wine" href="planner.php">
+                Open planning tools ↗
+                </a>
+            </div>
+            <div class="editorial-intro-grid">
+                <figure class="a">
+                    <img src="https://images.unsplash.com/photo-1754277198657-c288797a30a7?auto=format&fit=crop&w=1200&q=92" alt="Planning notes">
+                </figure>
+                <figure class="b">
+                    <img src="https://images.unsplash.com/photo-1587271636175-90d58cdad458?auto=format&fit=crop&w=1200&q=92" alt="Wedding table">
+                </figure>
+                <figure class="c">
+                    <img src="https://images.unsplash.com/photo-1781077127473-343904bb5856?auto=format&fit=crop&w=1200&q=92" alt="Wedding couple">
+                </figure>
+                <div class="editorial-stamp">
+                    READ
+                    <small>
+                    BETTER
+                    </small>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<?php
+    require __DIR__.'/includes/footer.php';
+?>
