@@ -1,0 +1,4 @@
+<?php require __DIR__.'/includes/bootstrap.php';require __DIR__.'/includes/components.php';$pageTitle='My Shortlist';$pageDescription='Compare the event vendors you saved across Wedding Za.';$pageKey='shortlist';require __DIR__.'/includes/header.php';?>
+<main><?php wz_page_intro('YOUR SHORTLIST','The maybes worth<br><em>coming back to.</em>','Every vendor you heart appears here automatically on this device.'); ?>
+<section class="section"><div class="container"><div class="vendor-grid" id="shortlistGrid"><?php foreach(wz_data('vendors') as $v)wz_vendor_card($v);?></div><div class="empty-state" id="shortlistEmpty"><h3>Nothing saved yet.</h3><p class="muted">Browse vendors and tap the heart when somebody feels worth a second look.</p><a class="pill-btn wine" href="vendors.php">Discover vendors ↗</a></div></div></section>
+</main><?php require __DIR__.'/includes/footer.php';?>

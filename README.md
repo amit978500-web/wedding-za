@@ -78,6 +78,6 @@ This is a strong PHP front-end/product foundation. Before public launch, connect
 
 ## Professional Git workflow
 
-This project uses a stable `main` branch and a daily-work `develop` branch.
+This project is prepared for GitHub with a stable `main` branch and a daily-work `develop` branch.
 
-Read `GIT-START-HERE.txt` and `docs/DEVELOPMENT-WORKFLOW.md` before contributing. Runtime lead data and secret/environment files are excluded by `.gitignore`.
+Read `GIT-START-HERE.txt` and `docs/DEVELOPMENT-WORKFLOW.md` before connecting the remote repository. Runtime lead data and secret/environment files are excluded by `.gitignore`.

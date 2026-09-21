@@ -1,0 +1,32 @@
+WEDDING ZA — ALL CELEBRATIONS UPDATE
+
+PRODUCT POSITIONING
+- Wedding Za is no longer presented as wedding-only.
+- Weddings are one major event type within a wider Indian celebration marketplace.
+
+HOME HERO
+- New broad event hero artwork.
+- New headline: “Whatever the occasion. Make it unforgettable.”
+- Event-type shortcuts: Wedding, Engagement, Birthday, Anniversary, Baby Shower, Corporate, Festive, Private Party.
+- Engagement + corporate imagery added alongside premium celebration decor.
+
+DISCOVERY
+- Discovery drawer now asks occasion, vendor category and city.
+- Vendor listing now filters by event type as well as city/category/search/sort.
+- Vendor data includes supported event types.
+
+CONTENT
+- Real Celebrations includes wedding, engagement, corporate and birthday stories.
+- Journal topics now include private-event flow, corporate run-of-show and general event budgeting.
+- Inspiration content now covers corporate, birthday, baby shower and festive directions alongside weddings.
+- Planner checklist and budget vocabulary are event-generic.
+
+BUSINESS UX
+- Vendor onboarding is now for event businesses.
+- Business examples and enquiry language are no longer couple/wedding-only.
+
+VISUAL DIRECTION
+- Indian-first imagery retained.
+- Hero is occasion-neutral rather than bridal-only.
+- Existing cinematic motion language retained.
+- Destination horizontal motion remains non-pinned for smoother scrolling.

@@ -1,0 +1,33 @@
+# Runtime / private data
+storage/leads.csv
+storage/*.csv
+!storage/.gitkeep
+!storage/.htaccess
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs / temp
+*.log
+*.tmp
+*.cache
+.cache/
+tmp/
+
+# Dependencies if added later
+/vendor/
+/node_modules/
+
+# Build / archive outputs
+*.zip
+*.tar.gz

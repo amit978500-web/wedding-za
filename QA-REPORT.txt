@@ -1,0 +1,16 @@
+Wedding Za — All Celebrations Edition 3.2 QA
+Date: 2026-09-21
+
+PASS — PHP syntax checked across all PHP files.
+PASS — JavaScript syntax checked for app.js and vision.js.
+PASS — site.json parses successfully.
+PASS — CSS brace structure balanced.
+PASS — Homepage, event-filtered vendor routes, Real Celebrations, story detail, planner, inspiration, invites, onboarding, contact, about and city guide return HTTP 200.
+PASS — Internal local link/asset crawl: 70 checked, 0 broken.
+PASS — PHP contact submission tested successfully.
+PASS — QA form record removed from storage/leads.csv after testing.
+PASS — Corporate and Birthday vendor-filter URLs render correctly.
+PASS — Non-wedding celebration stories render through the existing dynamic story template.
+PASS — Destination rail remains non-pinned; Lenis uses a single animation clock.
+
+Note: Demo photography, Google Fonts and advanced motion libraries are externally hosted, so internet access is required for the full visual experience.

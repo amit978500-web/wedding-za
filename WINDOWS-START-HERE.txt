@@ -1,0 +1,37 @@
+WEDDING ZA — WINDOWS START HERE
+================================
+
+1) Extract the ZIP completely. Do not run the launcher from inside the ZIP preview.
+
+2) Double-click:
+   START-WEDDING-ZA.bat
+
+3) If PHP is installed, the launcher will detect PHP automatically from:
+   - Windows PATH
+   - XAMPP (C:\xampp or D:\xampp)
+   - Laragon
+   - WAMP
+   - Scoop
+
+4) The browser opens automatically. Keep the black launcher window open while testing.
+
+IF IT SAYS "PHP WAS NOT FOUND"
+-------------------------------
+Install XAMPP for Windows, then run START-WEDDING-ZA.bat again.
+You do not need MySQL and you do not need to move the project into htdocs just for this built-in PHP preview.
+
+MANUAL START
+------------
+Open Command Prompt in this folder and run:
+
+php -S 127.0.0.1:8088
+
+Then open:
+http://127.0.0.1:8088/
+
+If you use XAMPP and PHP is not in PATH:
+
+C:\xampp\php\php.exe -S 127.0.0.1:8088
+
+Then open:
+http://127.0.0.1:8088/

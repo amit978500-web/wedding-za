@@ -1,0 +1,34 @@
+WEDDING ZA - PROFESSIONAL GIT WORKFLOW
+=====================================
+
+This package is already initialized as a Git repository with:
+- main    = stable releases
+- develop = daily work
+
+FIRST-TIME GITHUB SETUP
+-----------------------
+1. Create/sign in to your GitHub account.
+2. Create an EMPTY repository named: wedding-za
+   Do not add a README, .gitignore or license from GitHub.
+3. Copy its HTTPS URL, e.g.:
+   https://github.com/YOUR-USERNAME/wedding-za.git
+4. Open PowerShell in this folder and run:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\connect-github.ps1 -RepositoryUrl "YOUR-REPO-URL"
+
+DAILY WORK
+----------
+After changes are tested, run:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\daily-push.ps1
+
+It pushes the develop branch.
+
+RELEASES
+--------
+Merge develop into main only after QA.
+
+IMPORTANT
+---------
+Never commit credentials, .env files, payment keys or real lead/customer data.
+storage/leads.csv is intentionally ignored.

@@ -1,0 +1,951 @@
+{
+  "brand": {
+    "name": "Wedding Za",
+    "tagline": "Every celebration, beautifully planned."
+  },
+  "cities": [
+    "Jaipur",
+    "Udaipur",
+    "Delhi NCR",
+    "Mumbai",
+    "Goa",
+    "Bengaluru",
+    "Hyderabad",
+    "Chandigarh"
+  ],
+  "categories": [
+    {
+      "id": "venues",
+      "name": "Venues",
+      "sub": "Hotels, lawns, rooftops, halls & private spaces",
+      "image": "https://images.unsplash.com/photo-1587271636175-90d58cdad458?auto=format&fit=crop&w=1200&q=92"
+    },
+    {
+      "id": "photo-film",
+      "name": "Photography & Films",
+      "sub": "Candid stories, portraits, reels & films",
+      "image": "https://images.unsplash.com/photo-1770387688476-d7072fb2ca2e?auto=format&fit=crop&w=1200&q=92"
+    },
+    {
+      "id": "beauty",
+      "name": "Beauty & Styling",
+      "sub": "Makeup, hair, draping & on-event styling",
+      "image": "https://images.unsplash.com/photo-1781077126479-437220427c93?auto=format&fit=crop&w=1200&q=92"
+    },
+    {
+      "id": "planning",
+      "name": "Planning & Decor",
+      "sub": "Concept, production, florals & guest experience",
+      "image": "https://images.unsplash.com/photo-1771929836785-065bb7635053?auto=format&fit=crop&w=1200&q=92"
+    },
+    {
+      "id": "fashion",
+      "name": "Fashion & Styling",
+      "sub": "Indian occasionwear, couture & custom looks",
+      "image": "https://images.unsplash.com/photo-1771992226261-c1efb190ed34?auto=format&fit=crop&w=1200&q=92"
+    },
+    {
+      "id": "artists",
+      "name": "Mehndi & Artists",
+      "sub": "Henna, live artists & cultural experiences",
+      "image": "https://images.unsplash.com/photo-1770346279037-89853a3e8c60?auto=format&fit=crop&w=1200&q=92"
+    },
+    {
+      "id": "catering",
+      "name": "Catering",
+      "sub": "Menus, live counters, desserts & beverage service",
+      "image": "https://images.unsplash.com/photo-1732259495388-af40b972c311?auto=format&fit=crop&w=1200&q=92"
+    },
+    {
+      "id": "entertainment",
+      "name": "Entertainment",
+      "sub": "DJs, live acts, hosts & choreography",
+      "image": "https://images.unsplash.com/photo-1770387688486-397ff1afdb2c?auto=format&fit=crop&w=1200&q=92"
+    }
+  ],
+  "vendors": [
+    {
+      "id": "amber-courtyard",
+      "name": "Amber Courtyard",
+      "category": "Venues",
+      "city": "Jaipur",
+      "locality": "Kukas",
+      "rating": 4.9,
+      "reviews": 128,
+      "price": "₹3,200 onwards / plate",
+      "tag": "Heritage favourite",
+      "image": "https://images.unsplash.com/photo-1767158597961-bd58dccc16bd?auto=format&fit=crop&w=1600&q=92",
+      "images": [
+        "https://images.unsplash.com/photo-1767158597961-bd58dccc16bd?auto=format&fit=crop&w=1900&q=92",
+        "https://images.unsplash.com/photo-1587271636175-90d58cdad458?auto=format&fit=crop&w=1900&q=92",
+        "https://images.unsplash.com/photo-1771929836785-065bb7635053?auto=format&fit=crop&w=1900&q=92"
+      ],
+      "about": "A warm, palace-inspired celebration venue designed for weddings, milestone birthdays, engagement dinners and premium social functions.",
+      "services": [
+        "Indoor + outdoor spaces",
+        "Guest rooms",
+        "Catering",
+        "Decor flexibility",
+        "Valet parking"
+      ],
+      "capacity": "120–800 guests",
+      "experience": "Hospitality team with 9+ years of wedding experience",
+      "policy": "Outside decorators allowed with prior approval",
+      "verified": true,
+      "events": [
+        "Wedding",
+        "Engagement",
+        "Birthday",
+        "Anniversary",
+        "Baby Shower",
+        "Corporate",
+        "Festive",
+        "Private Party"
+      ]
+    },
+    {
+      "id": "raas-udaipur",
+      "name": "Raas by the Lake",
+      "category": "Venues",
+      "city": "Udaipur",
+      "locality": "Fateh Sagar",
+      "rating": 4.8,
+      "reviews": 84,
+      "price": "₹4,500 onwards / plate",
+      "tag": "Lakefront",
+      "image": "https://images.unsplash.com/photo-1770665567877-72ee8a7c9051?auto=format&fit=crop&w=1600&q=92",
+      "images": [
+        "https://images.unsplash.com/photo-1770665567877-72ee8a7c9051?auto=format&fit=crop&w=1900&q=92",
+        "https://images.unsplash.com/photo-1769500810743-5e5dd4fd5848?auto=format&fit=crop&w=1900&q=92",
+        "https://images.unsplash.com/photo-1771929836785-065bb7635053?auto=format&fit=crop&w=1900&q=92"
+      ],
+      "about": "A refined lakeside venue for intimate weddings, anniversaries, private dinners and destination celebrations.",
+      "services": [
+        "Lake view lawn",
+        "Rooms",
+        "Poolside events",
+        "Catering",
+        "Airport transfers"
+      ],
+      "capacity": "80–350 guests",
+      "experience": "Destination wedding specialists",
+      "policy": "Panel decorators + select outside teams",
+      "verified": true,
+      "events": [
+        "Wedding",
+        "Engagement",
+        "Birthday",
+        "Anniversary",
+        "Baby Shower",
+        "Corporate",
+        "Festive",
+        "Private Party"
+      ]
+    },
+    {
+      "id": "frame-story",
+      "name": "Frame Story Co.",
+      "category": "Photography & Films",
+      "city": "Jaipur",
+      "locality": "C-Scheme",
+      "rating": 4.9,
+      "reviews": 176,
+      "price": "₹95,000 per day",
+      "tag": "Most saved",
+      "image": "https://images.unsplash.com/photo-1770387688476-d7072fb2ca2e?auto=format&fit=crop&w=1600&q=92",
+      "images": [
+        "https://images.unsplash.com/photo-1770387688476-d7072fb2ca2e?auto=format&fit=crop&w=1800&q=92",
+        "https://images.unsplash.com/photo-1769500810743-5e5dd4fd5848?auto=format&fit=crop&w=1800&q=92",
+        "https://images.unsplash.com/photo-1770387688486-397ff1afdb2c?auto=format&fit=crop&w=1800&q=92"
+      ],
+      "about": "Candid event photography with an editorial eye — natural emotion, beautiful light and films that feel personal rather than posed.",
+      "services": [
+        "Candid photography",
+        "Event photography",
+        "Films",
+        "Drone",
+        "Albums",
+        "Social edits"
+      ],
+      "capacity": "Photo + film team of 8",
+      "experience": "300+ weddings photographed",
+      "policy": "Travel charged at actuals",
+      "verified": true,
+      "events": [
+        "Wedding",
+        "Engagement",
+        "Birthday",
+        "Anniversary",
+        "Baby Shower",
+        "Corporate",
+        "Festive",
+        "Private Party"
+      ]
+    },
+    {
+      "id": "northstar-films",
+      "name": "Northstar Films",
+      "category": "Photography & Films",
+      "city": "Delhi NCR",
+      "locality": "Gurugram",
+      "rating": 4.8,
+      "reviews": 92,
+      "price": "₹1,25,000 per day",
+      "tag": "Editorial films",
+      "image": "https://images.unsplash.com/photo-1770387688486-397ff1afdb2c?auto=format&fit=crop&w=1600&q=92",
+      "images": [
+        "https://images.unsplash.com/photo-1770387688486-397ff1afdb2c?auto=format&fit=crop&w=1800&q=92",
+        "https://images.unsplash.com/photo-1781077127473-343904bb5856?auto=format&fit=crop&w=1800&q=92",
+        "https://images.unsplash.com/photo-1771929836785-065bb7635053?auto=format&fit=crop&w=1800&q=92"
+      ],
+      "about": "Story-led event films with a modern documentary approach, from intimate family functions to high-energy brand and social events.",
+      "services": [
+        "Cinematic film",
+        "Candid stills",
+        "Drone",
+        "Same-day edit",
+        "Social reels"
+      ],
+      "capacity": "Custom teams",
+      "experience": "8 years",
+      "policy": "Travel extra",
+      "verified": true,
+      "events": [
+        "Wedding",
+        "Engagement",
+        "Birthday",
+        "Anniversary",
+        "Baby Shower",
+        "Corporate",
+        "Festive",
+        "Private Party"
+      ]
+    },
+    {
+      "id": "mira-makeup",
+      "name": "Mira Artistry",
+      "category": "Beauty & Styling",
+      "city": "Jaipur",
+      "locality": "Vaishali Nagar",
+      "rating": 5,
+      "reviews": 67,
+      "price": "₹18,000 per event",
+      "tag": "Beauty favourite",
+      "image": "https://images.unsplash.com/photo-1781077126479-437220427c93?auto=format&fit=crop&w=1600&q=92",
+      "images": [
+        "https://images.unsplash.com/photo-1781077126479-437220427c93?auto=format&fit=crop&w=1800&q=92",
+        "https://images.unsplash.com/photo-1781077128119-f9977d4327b1?auto=format&fit=crop&w=1800&q=92",
+        "https://images.unsplash.com/photo-1771992226261-c1efb190ed34?auto=format&fit=crop&w=1800&q=92"
+      ],
+      "about": "Soft-glam makeup and styling focused on skin, longevity and looks that photograph beautifully in natural and event light.",
+      "services": [
+        "Makeup",
+        "Family makeup",
+        "Hair styling",
+        "Draping",
+        "Trial sessions"
+      ],
+      "capacity": "Bride + family team",
+      "experience": "6+ years",
+      "policy": "Travel and early call-time charges may apply",
+      "verified": true,
+      "events": [
+        "Wedding",
+        "Engagement",
+        "Anniversary",
+        "Festive",
+        "Private Party"
+      ]
+    },
+    {
+      "id": "the-wedding-edit",
+      "name": "The Celebration Edit",
+      "category": "Planning & Decor",
+      "city": "Jaipur",
+      "locality": "Civil Lines",
+      "rating": 4.9,
+      "reviews": 51,
+      "price": "₹2,50,000 planning fee",
+      "tag": "Full-service",
+      "image": "https://images.unsplash.com/photo-1771929836785-065bb7635053?auto=format&fit=crop&w=1600&q=92",
+      "images": [
+        "https://images.unsplash.com/photo-1771929836785-065bb7635053?auto=format&fit=crop&w=1800&q=92",
+        "https://images.unsplash.com/photo-1587271636175-90d58cdad458?auto=format&fit=crop&w=1800&q=92",
+        "https://images.unsplash.com/photo-1771992230505-97e0c3d38213?auto=format&fit=crop&w=1800&q=92"
+      ],
+      "about": "Full-service event planning and celebration design for hosts who want a strong point of view without production chaos.",
+      "services": [
+        "Venue sourcing",
+        "Vendor management",
+        "Decor direction",
+        "Guest logistics",
+        "Production",
+        "Hospitality desk"
+      ],
+      "capacity": "Full planning + coordination",
+      "experience": "Planning since 2018",
+      "policy": "Fixed planning fee; decor quoted separately",
+      "verified": true,
+      "events": [
+        "Wedding",
+        "Engagement",
+        "Birthday",
+        "Anniversary",
+        "Baby Shower",
+        "Corporate",
+        "Festive",
+        "Private Party"
+      ]
+    },
+    {
+      "id": "petal-and-promise",
+      "name": "Petal & Promise",
+      "category": "Planning & Decor",
+      "city": "Mumbai",
+      "locality": "Bandra",
+      "rating": 4.8,
+      "reviews": 73,
+      "price": "₹3,00,000 onwards",
+      "tag": "Design-led",
+      "image": "https://images.unsplash.com/photo-1587271636175-90d58cdad458?auto=format&fit=crop&w=1600&q=92",
+      "images": [
+        "https://images.unsplash.com/photo-1587271636175-90d58cdad458?auto=format&fit=crop&w=1800&q=92",
+        "https://images.unsplash.com/photo-1771992230505-97e0c3d38213?auto=format&fit=crop&w=1800&q=92",
+        "https://images.unsplash.com/photo-1771929836785-065bb7635053?auto=format&fit=crop&w=1800&q=92"
+      ],
+      "about": "Contemporary floral and event design for weddings, launches, private dinners and sophisticated city celebrations.",
+      "services": [
+        "Decor",
+        "Florals",
+        "Production",
+        "Styling"
+      ],
+      "capacity": "Boutique team",
+      "experience": "5+ years",
+      "policy": "Minimum production applies",
+      "verified": true,
+      "events": [
+        "Wedding",
+        "Engagement",
+        "Birthday",
+        "Anniversary",
+        "Baby Shower",
+        "Corporate",
+        "Festive",
+        "Private Party"
+      ]
+    },
+    {
+      "id": "noor-couture",
+      "name": "Noor Couture",
+      "category": "Fashion & Styling",
+      "city": "Delhi NCR",
+      "locality": "Shahpur Jat",
+      "rating": 4.7,
+      "reviews": 44,
+      "price": "₹25,000 occasionwear onwards",
+      "tag": "Occasionwear",
+      "image": "https://images.unsplash.com/photo-1771992226261-c1efb190ed34?auto=format&fit=crop&w=1600&q=92",
+      "images": [
+        "https://images.unsplash.com/photo-1771992226261-c1efb190ed34?auto=format&fit=crop&w=1800&q=92",
+        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1800&q=92",
+        "https://images.unsplash.com/photo-1781077128119-f9977d4327b1?auto=format&fit=crop&w=1800&q=92"
+      ],
+      "about": "Modern Indian occasionwear with heirloom embroidery and lighter silhouettes for weddings, engagements and festive functions.",
+      "services": [
+        "Lehengas",
+        "Sarees",
+        "Festive looks",
+        "Customisation",
+        "Occasionwear"
+      ],
+      "capacity": "Appointment studio",
+      "experience": "7 years",
+      "policy": "Made-to-order timelines 6–10 weeks",
+      "verified": true,
+      "events": [
+        "Wedding",
+        "Engagement",
+        "Festive"
+      ]
+    },
+    {
+      "id": "henna-house",
+      "name": "Henna House",
+      "category": "Mehndi & Artists",
+      "city": "Jaipur",
+      "locality": "Malviya Nagar",
+      "rating": 4.9,
+      "reviews": 88,
+      "price": "₹6,500 artist booking",
+      "tag": "Fine-line artists",
+      "image": "https://images.unsplash.com/photo-1770346279037-89853a3e8c60?auto=format&fit=crop&w=1600&q=92",
+      "images": [
+        "https://images.unsplash.com/photo-1770346279037-89853a3e8c60?auto=format&fit=crop&w=1800&q=92",
+        "https://images.unsplash.com/photo-1771992230505-97e0c3d38213?auto=format&fit=crop&w=1800&q=92",
+        "https://images.unsplash.com/photo-1781077126479-437220427c93?auto=format&fit=crop&w=1800&q=92"
+      ],
+      "about": "Fine-line henna and guest artist teams for weddings, engagements, baby showers and festive celebrations.",
+      "services": [
+        "Mehndi",
+        "Guest mehndi",
+        "Portrait motifs",
+        "Arabic styles",
+        "Event artist teams"
+      ],
+      "capacity": "Up to 15 artists",
+      "experience": "10 years",
+      "policy": "Travel extra outside Jaipur",
+      "verified": true,
+      "events": [
+        "Wedding",
+        "Engagement",
+        "Baby Shower",
+        "Festive",
+        "Private Party"
+      ]
+    },
+    {
+      "id": "feast-foundry",
+      "name": "Feast Foundry",
+      "category": "Catering",
+      "city": "Delhi NCR",
+      "locality": "Chhatarpur",
+      "rating": 4.8,
+      "reviews": 64,
+      "price": "₹2,200 onwards / plate",
+      "tag": "Menu studio",
+      "image": "https://images.unsplash.com/photo-1732259495388-af40b972c311?auto=format&fit=crop&w=1600&q=92",
+      "images": [
+        "https://images.unsplash.com/photo-1732259495388-af40b972c311?auto=format&fit=crop&w=1800&q=92",
+        "https://images.unsplash.com/photo-1754277198657-c288797a30a7?auto=format&fit=crop&w=1800&q=92",
+        "https://images.unsplash.com/photo-1771929836785-065bb7635053?auto=format&fit=crop&w=1800&q=92"
+      ],
+      "about": "Modern event catering with regional Indian menus, live counters and thoughtful presentation across social and corporate functions.",
+      "services": [
+        "North Indian",
+        "Regional menus",
+        "Live counters",
+        "Desserts",
+        "Beverage service"
+      ],
+      "capacity": "150–1500 guests",
+      "experience": "12 years",
+      "policy": "Tasting before confirmation",
+      "verified": true,
+      "events": [
+        "Wedding",
+        "Engagement",
+        "Birthday",
+        "Anniversary",
+        "Baby Shower",
+        "Corporate",
+        "Festive",
+        "Private Party"
+      ]
+    },
+    {
+      "id": "sangeet-social",
+      "name": "Sangeet Social",
+      "category": "Entertainment",
+      "city": "Mumbai",
+      "locality": "Andheri",
+      "rating": 4.9,
+      "reviews": 103,
+      "price": "₹35,000 onwards",
+      "tag": "High energy",
+      "image": "https://images.unsplash.com/photo-1770387688486-397ff1afdb2c?auto=format&fit=crop&w=1400&q=92",
+      "images": [
+        "https://images.unsplash.com/photo-1770387688486-397ff1afdb2c?auto=format&fit=crop&w=1200&q=92"
+      ],
+      "about": "High-energy entertainment, DJs and performance planning for sangeets, birthdays, launches, private parties and corporate nights.",
+      "services": [
+        "Sangeet choreography",
+        "Entries",
+        "Show flow",
+        "Artist coordination"
+      ],
+      "capacity": "Family groups of all sizes",
+      "experience": "400+ routines",
+      "policy": "Studio sessions + on-site rehearsals",
+      "verified": true,
+      "events": [
+        "Wedding",
+        "Engagement",
+        "Birthday",
+        "Anniversary",
+        "Corporate",
+        "Festive",
+        "Private Party"
+      ]
+    },
+    {
+      "id": "casa-goa",
+      "name": "Casa Maré",
+      "category": "Venues",
+      "city": "Goa",
+      "locality": "South Goa",
+      "rating": 4.8,
+      "reviews": 57,
+      "price": "₹4,00,000 per function",
+      "tag": "Coastal events",
+      "image": "https://images.unsplash.com/photo-1710952356679-1eff1cb5ba64?auto=format&fit=crop&w=1600&q=92",
+      "images": [
+        "https://images.unsplash.com/photo-1710952356679-1eff1cb5ba64?auto=format&fit=crop&w=1900&q=92",
+        "https://images.unsplash.com/photo-1769500810743-5e5dd4fd5848?auto=format&fit=crop&w=1900&q=92",
+        "https://images.unsplash.com/photo-1771929836785-065bb7635053?auto=format&fit=crop&w=1900&q=92"
+      ],
+      "about": "A breezy private villa-and-lawn venue for sunset weddings, milestone birthdays, private parties and coastal brand gatherings.",
+      "services": [
+        "Lawn",
+        "Villa rooms",
+        "Pool",
+        "Event kitchen",
+        "After-party space"
+      ],
+      "capacity": "60–280 guests",
+      "experience": "Destination events",
+      "policy": "Sound restrictions after local cut-off",
+      "verified": true,
+      "events": [
+        "Wedding",
+        "Engagement",
+        "Birthday",
+        "Anniversary",
+        "Baby Shower",
+        "Corporate",
+        "Festive",
+        "Private Party"
+      ]
+    }
+  ],
+  "weddings": [
+    {
+      "id": "aanya-veer",
+      "couple": "Aanya & Veer",
+      "city": "Jaipur",
+      "theme": "Heritage",
+      "culture": "North Indian",
+      "photos": 84,
+      "image": "https://images.unsplash.com/photo-1769500810743-5e5dd4fd5848?auto=format&fit=crop&w=1800&q=93",
+      "date": "December 2025",
+      "title": "A candlelit palace wedding with old-world Jaipur charm",
+      "summary": "Three days of marigolds, hand-painted details and a sunset ceremony framed by sandstone arches.",
+      "gallery": [
+        "https://images.unsplash.com/photo-1769500810743-5e5dd4fd5848?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1587271636175-90d58cdad458?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1771992230505-97e0c3d38213?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1759906760078-c33e976c82f4?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1770387688486-397ff1afdb2c?auto=format&fit=crop&w=1900&q=93"
+      ],
+      "vendors": [
+        "amber-courtyard",
+        "frame-story",
+        "mira-makeup",
+        "the-wedding-edit"
+      ],
+      "event_type": "Wedding"
+    },
+    {
+      "id": "meher-kabir",
+      "couple": "Meher & Kabir",
+      "city": "Udaipur",
+      "theme": "Romantic",
+      "culture": "Punjabi",
+      "photos": 116,
+      "image": "https://images.unsplash.com/photo-1781077127473-343904bb5856?auto=format&fit=crop&w=1800&q=93",
+      "date": "February 2026",
+      "title": "A lakeside celebration in ivory, rose and candlelight",
+      "summary": "A relaxed destination weekend where the decor stayed tonal and the lake did most of the talking.",
+      "gallery": [
+        "https://images.unsplash.com/photo-1781077127473-343904bb5856?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1781077128119-f9977d4327b1?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1771929836785-065bb7635053?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1770387688476-d7072fb2ca2e?auto=format&fit=crop&w=1900&q=93"
+      ],
+      "vendors": [
+        "raas-udaipur",
+        "frame-story"
+      ],
+      "event_type": "Wedding"
+    },
+    {
+      "id": "isha-arman",
+      "couple": "Isha & Arman",
+      "city": "Goa",
+      "theme": "Beach",
+      "culture": "Interfaith",
+      "photos": 72,
+      "image": "https://images.unsplash.com/photo-1770387688476-d7072fb2ca2e?auto=format&fit=crop&w=1800&q=93",
+      "date": "January 2026",
+      "title": "Barefoot vows, sunset dinner and a very good dance floor",
+      "summary": "An intimate Goa wedding designed around music, food and golden-hour portraits.",
+      "gallery": [
+        "https://images.unsplash.com/photo-1770387688476-d7072fb2ca2e?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1770346279037-89853a3e8c60?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1774814329659-34d24b76b53f?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1781077126479-437220427c93?auto=format&fit=crop&w=1900&q=93"
+      ],
+      "vendors": [
+        "casa-goa",
+        "northstar-films"
+      ],
+      "event_type": "Wedding"
+    },
+    {
+      "id": "tara-advait",
+      "couple": "Tara & Advait",
+      "city": "Mumbai",
+      "theme": "Modern",
+      "culture": "Maharashtrian",
+      "photos": 63,
+      "image": "https://images.unsplash.com/photo-1771929836785-065bb7635053?auto=format&fit=crop&w=1800&q=93",
+      "date": "March 2026",
+      "title": "A modern city wedding built around food, music and family",
+      "summary": "Warm lighting, contemporary florals and a high-energy sangeet in the heart of Mumbai.",
+      "gallery": [
+        "https://images.unsplash.com/photo-1771929836785-065bb7635053?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1770387688486-397ff1afdb2c?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1759906760078-c33e976c82f4?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1754277198657-c288797a30a7?auto=format&fit=crop&w=1900&q=93"
+      ],
+      "vendors": [
+        "petal-and-promise",
+        "sangeet-social"
+      ],
+      "event_type": "Wedding"
+    },
+    {
+      "id": "ria-roka",
+      "couple": "Ria & Dev · Roka",
+      "event_type": "Engagement",
+      "city": "Delhi NCR",
+      "theme": "Modern Indian",
+      "culture": "North Indian",
+      "photos": 46,
+      "image": "https://images.unsplash.com/photo-1776078171101-0776fd3a953f?auto=format&fit=crop&w=1800&q=93",
+      "date": "April 2026",
+      "title": "An intimate engagement with jewel tones, live music and family-style dining",
+      "summary": "A 120-guest roka designed around warm lighting, layered Indian textiles and a relaxed dinner that never felt over-produced.",
+      "gallery": [
+        "https://images.unsplash.com/photo-1776078171101-0776fd3a953f?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1744805624952-dab790f6b3bd?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1771929836785-065bb7635053?auto=format&fit=crop&w=1900&q=93"
+      ],
+      "vendors": [
+        "petal-and-promise",
+        "frame-story",
+        "mira-makeup",
+        "feast-foundry"
+      ]
+    },
+    {
+      "id": "aurora-summit",
+      "couple": "Aurora Leadership Summit",
+      "event_type": "Corporate",
+      "city": "Delhi NCR",
+      "theme": "Editorial Corporate",
+      "culture": "Business",
+      "photos": 58,
+      "image": "https://images.unsplash.com/photo-1695277789188-ec9ef58d3bc3?auto=format&fit=crop&w=1800&q=93",
+      "date": "May 2026",
+      "title": "A leadership summit with cinematic stage design and a sharper guest journey",
+      "summary": "A one-day corporate programme balancing keynote energy, breakout flow, premium hospitality and an evening networking finish.",
+      "gallery": [
+        "https://images.unsplash.com/photo-1695277789188-ec9ef58d3bc3?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1770387688486-397ff1afdb2c?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1744805624952-dab790f6b3bd?auto=format&fit=crop&w=1900&q=93"
+      ],
+      "vendors": [
+        "the-wedding-edit",
+        "northstar-films",
+        "feast-foundry",
+        "sangeet-social"
+      ]
+    },
+    {
+      "id": "meera-forty",
+      "couple": "Meera · Forty",
+      "event_type": "Birthday",
+      "city": "Mumbai",
+      "theme": "Dinner Party",
+      "culture": "Milestone",
+      "photos": 39,
+      "image": "https://images.unsplash.com/photo-1744805624952-dab790f6b3bd?auto=format&fit=crop&w=1800&q=93",
+      "date": "June 2026",
+      "title": "A milestone birthday built like a private supper club",
+      "summary": "Candlelight, deep florals, live music and a long-table menu turned a city birthday into a warm, grown-up celebration.",
+      "gallery": [
+        "https://images.unsplash.com/photo-1744805624952-dab790f6b3bd?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1732259495388-af40b972c311?auto=format&fit=crop&w=1900&q=93",
+        "https://images.unsplash.com/photo-1770387688486-397ff1afdb2c?auto=format&fit=crop&w=1900&q=93"
+      ],
+      "vendors": [
+        "petal-and-promise",
+        "feast-foundry",
+        "sangeet-social",
+        "frame-story"
+      ]
+    }
+  ],
+  "inspiration": [
+    {
+      "id": 1,
+      "category": "Occasion Style",
+      "title": "Rich red, styled lightly for a modern Indian function",
+      "image": "https://images.unsplash.com/photo-1771992226261-c1efb190ed34?auto=format&fit=crop&w=1400&q=92"
+    },
+    {
+      "id": 2,
+      "category": "Decor",
+      "title": "Candlelight, carnations and low tables",
+      "image": "https://images.unsplash.com/photo-1770346279037-89853a3e8c60?auto=format&fit=crop&w=1400&q=92"
+    },
+    {
+      "id": 3,
+      "category": "Photography",
+      "title": "Editorial portraits without the stiffness",
+      "image": "https://images.unsplash.com/photo-1781077127473-343904bb5856?auto=format&fit=crop&w=1400&q=92"
+    },
+    {
+      "id": 4,
+      "category": "Venues",
+      "title": "Palace courtyards at golden hour",
+      "image": "https://images.unsplash.com/photo-1587271636175-90d58cdad458?auto=format&fit=crop&w=1400&q=92"
+    },
+    {
+      "id": 5,
+      "category": "Food",
+      "title": "A dessert table worth photographing first",
+      "image": "https://images.unsplash.com/photo-1732259495388-af40b972c311?auto=format&fit=crop&w=1400&q=92"
+    },
+    {
+      "id": 6,
+      "category": "Baby Shower",
+      "title": "Soft florals and joyful family tables",
+      "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1400&q=92"
+    },
+    {
+      "id": 7,
+      "category": "Corporate",
+      "title": "Stage lighting that feels premium, not generic",
+      "image": "https://images.unsplash.com/photo-1771992230505-97e0c3d38213?auto=format&fit=crop&w=1400&q=92"
+    },
+    {
+      "id": 8,
+      "category": "Birthday",
+      "title": "A milestone dinner with personality",
+      "image": "https://images.unsplash.com/photo-1759906760078-c33e976c82f4?auto=format&fit=crop&w=1400&q=92"
+    },
+    {
+      "id": 9,
+      "category": "Invites & Gifting",
+      "title": "Minimal stationery and thoughtful gifting",
+      "image": "https://images.unsplash.com/photo-1774814329659-34d24b76b53f?auto=format&fit=crop&w=1400&q=92"
+    },
+    {
+      "id": 10,
+      "category": "Festive",
+      "title": "Colour, diyas and a modern festive table",
+      "image": "https://images.unsplash.com/photo-1770387688486-397ff1afdb2c?auto=format&fit=crop&w=1400&q=92"
+    }
+  ],
+  "articles": [
+    {
+      "id": "jaipur-venues",
+      "category": "Venues",
+      "title": "How to shortlist a Jaipur event venue without wasting weekends",
+      "excerpt": "A practical venue framework for weddings, birthdays, launches and milestone functions.",
+      "date": "18 Sep 2026",
+      "read": "6 min read",
+      "image": "https://images.unsplash.com/photo-1587271636175-90d58cdad458?auto=format&fit=crop&w=1600&q=92"
+    },
+    {
+      "id": "makeup-trial",
+      "category": "Planning",
+      "title": "The guest-flow details that make private events feel effortless",
+      "excerpt": "Arrival, seating, food, performance and exits matter more than most hosts expect.",
+      "date": "18 Sep 2026",
+      "read": "5 min read",
+      "image": "https://images.unsplash.com/photo-1781077126479-437220427c93?auto=format&fit=crop&w=1600&q=92"
+    },
+    {
+      "id": "guest-experience",
+      "category": "Corporate",
+      "title": "Build a corporate event run-of-show that actually holds",
+      "excerpt": "A clear sequence for stage, speakers, transitions, food and audience energy.",
+      "date": "15 Sep 2026",
+      "read": "7 min read",
+      "image": "https://images.unsplash.com/photo-1769500810743-5e5dd4fd5848?auto=format&fit=crop&w=1600&q=92"
+    },
+    {
+      "id": "decor-direction",
+      "category": "Decor",
+      "title": "Build a decor direction, not a folder of unrelated references",
+      "excerpt": "How to turn scattered inspiration into one coherent visual language.",
+      "date": "12 Sep 2026",
+      "read": "4 min read",
+      "image": "https://images.unsplash.com/photo-1771992230505-97e0c3d38213?auto=format&fit=crop&w=1600&q=92"
+    },
+    {
+      "id": "wedding-budget",
+      "category": "Budget",
+      "title": "An event budget that survives real life: the 8 buckets to plan first",
+      "excerpt": "The categories that protect your budget before the extras begin.",
+      "date": "09 Sep 2026",
+      "read": "8 min read",
+      "image": "https://images.unsplash.com/photo-1754277198657-c288797a30a7?auto=format&fit=crop&w=1600&q=92"
+    },
+    {
+      "id": "photo-brief",
+      "category": "Photography",
+      "title": "What to tell your event photographer before the function",
+      "excerpt": "A practical brief for moments, people, timing and must-have coverage.",
+      "date": "04 Sep 2026",
+      "read": "5 min read",
+      "image": "https://images.unsplash.com/photo-1770387688476-d7072fb2ca2e?auto=format&fit=crop&w=1600&q=92"
+    }
+  ],
+  "invites": [
+    {
+      "id": "gulab",
+      "name": "Gulab",
+      "style": "Floral",
+      "price": "₹499",
+      "bg": "#f4dedf",
+      "accent": "#7b2942"
+    },
+    {
+      "id": "mehr",
+      "name": "Mehr",
+      "style": "Traditional",
+      "price": "₹599",
+      "bg": "#f0ddc2",
+      "accent": "#7c3f26"
+    },
+    {
+      "id": "ivory",
+      "name": "Ivory",
+      "style": "Minimal",
+      "price": "₹399",
+      "bg": "#f5f1e9",
+      "accent": "#34302d"
+    },
+    {
+      "id": "noor",
+      "name": "Noor",
+      "style": "Modern",
+      "price": "₹549",
+      "bg": "#e8e3ec",
+      "accent": "#4b315f"
+    },
+    {
+      "id": "bagh",
+      "name": "Bagh",
+      "style": "Botanical",
+      "price": "₹649",
+      "bg": "#e7efe2",
+      "accent": "#36523b"
+    },
+    {
+      "id": "saanjh",
+      "name": "Saanjh",
+      "style": "Evening",
+      "price": "₹599",
+      "bg": "#2e2432",
+      "accent": "#e4bd82"
+    }
+  ],
+  "checklist": [
+    {
+      "group": "12–8 weeks",
+      "items": [
+        "Define the occasion, mood and non-negotiables",
+        "Set an initial event budget",
+        "Draft the guest count",
+        "Shortlist cities / venue type",
+        "Lock the date and venue"
+      ]
+    },
+    {
+      "group": "8–5 weeks",
+      "items": [
+        "Book planner or decor team",
+        "Book photography / film",
+        "Confirm catering direction",
+        "Book entertainment or programme talent",
+        "Plan styling, beauty or wardrobe needs"
+      ]
+    },
+    {
+      "group": "4–2 weeks",
+      "items": [
+        "Send invitations / confirmations",
+        "Finalise menu and service flow",
+        "Build the event run-of-show",
+        "Plan guest transport / parking / hospitality",
+        "Confirm stage, sound, lighting and decor production"
+      ]
+    },
+    {
+      "group": "Final week",
+      "items": [
+        "Confirm final guest count",
+        "Reconfirm vendor timings and balances",
+        "Finalise seating / access / VIP notes",
+        "Prepare weather and technical backup plans",
+        "Assign host-side point people for event day"
+      ]
+    }
+  ],
+  "event_types": [
+    {
+      "id": "wedding",
+      "name": "Wedding",
+      "sub": "Ceremonies, receptions & destination celebrations",
+      "image": "https://images.unsplash.com/photo-1769500810743-5e5dd4fd5848?auto=format&fit=crop&w=1400&q=94"
+    },
+    {
+      "id": "engagement",
+      "name": "Engagement",
+      "sub": "Roka, ring ceremonies & intimate gatherings",
+      "image": "https://images.unsplash.com/photo-1776078171101-0776fd3a953f?auto=format&fit=crop&w=1400&q=94"
+    },
+    {
+      "id": "birthday",
+      "name": "Birthday",
+      "sub": "Milestones, family parties & themed celebrations",
+      "image": "https://images.unsplash.com/photo-1770387688486-397ff1afdb2c?auto=format&fit=crop&w=1400&q=94"
+    },
+    {
+      "id": "anniversary",
+      "name": "Anniversary",
+      "sub": "Intimate dinners, renewals & landmark years",
+      "image": "https://images.unsplash.com/photo-1744805624952-dab790f6b3bd?auto=format&fit=crop&w=1400&q=94"
+    },
+    {
+      "id": "baby-shower",
+      "name": "Baby Shower",
+      "sub": "Godh bharai, family lunches & joyful reveals",
+      "image": "https://images.unsplash.com/photo-1732259495388-af40b972c311?auto=format&fit=crop&w=1400&q=94"
+    },
+    {
+      "id": "corporate",
+      "name": "Corporate",
+      "sub": "Launches, conferences, awards & brand events",
+      "image": "https://images.unsplash.com/photo-1695277789188-ec9ef58d3bc3?auto=format&fit=crop&w=1400&q=94"
+    },
+    {
+      "id": "festive",
+      "name": "Festive",
+      "sub": "Diwali, cultural functions & community gatherings",
+      "image": "https://images.unsplash.com/photo-1770346279037-89853a3e8c60?auto=format&fit=crop&w=1400&q=94"
+    },
+    {
+      "id": "private-party",
+      "name": "Private Party",
+      "sub": "Cocktails, dinners, reunions & after-parties",
+      "image": "https://images.unsplash.com/photo-1744805624952-dab790f6b3bd?auto=format&fit=crop&w=1400&q=94"
+    }
+  ]
+}
