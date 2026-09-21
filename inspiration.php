@@ -1,5 +1,84 @@
-<?php require __DIR__.'/includes/bootstrap.php';require __DIR__.'/includes/components.php';$pageTitle='Event Ideas & Inspiration';$pageDescription='Save decor, styling, photography, food, venue and celebration ideas you actually want to use.';$pageKey='inspiration';require __DIR__.'/includes/header.php';?>
-<main><?php wz_page_intro('THE INSPIRATION EDIT','Ideas worth<br><em>saving twice.</em>','Decor, styling, photography, food and details that can actually become a coherent event brief.'); ?>
-<section class="section"><div class="container"><div class="section-head reveal"><div><span class="eyebrow">VISUAL MOODBOARD</span><h2>Follow the feeling.</h2></div><p>Use the heart to build a lightweight inspiration board on this device.</p></div><div class="inspiration-masonry"><?php foreach(wz_data('inspiration') as $i=>$item):?><div class="masonry-item reveal"><img src="<?=h($item['image'])?>" alt="<?=h($item['title'])?>" loading="lazy"><div class="masonry-overlay"></div><div class="masonry-copy"><span><?=h($item['category'])?></span><h3><?=h($item['title'])?></h3></div><button class="save-idea" type="button" data-save-idea="<?=h((string)$item['id'])?>" aria-label="Save idea">♡</button></div><?php endforeach;?></div></div></section>
-<section class="quote-band"><div class="quote-band-media"><img src="https://images.unsplash.com/photo-1587271636175-90d58cdad458?auto=format&fit=crop&w=1200&q=92" alt="Indian celebration decor"></div><div class="quote-band-copy"><span class="eyebrow">TURN SAVES INTO A BRIEF</span><div class="quote-mark">“</div><blockquote>Don’t collect a hundred references. Find the five that agree with each other.</blockquote><footer>WEDDING ZA · DECOR DIRECTION</footer><div style="margin-top:25px"><a class="pill-btn wine" href="article.php?id=decor-direction">Read the decor guide ↗</a></div></div></section>
-</main><?php require __DIR__.'/includes/footer.php';?>
+<?php
+    require __DIR__.'/includes/bootstrap.php';
+    require __DIR__.'/includes/components.php';
+    $pageTitle='Event Ideas & Inspiration';
+    $pageDescription='Save decor, styling, photography, food, venue and celebration ideas you actually want to use.';
+    $pageKey='inspiration';
+    require __DIR__.'/includes/header.php';
+?>
+<main>
+    <?php
+        wz_page_intro('THE INSPIRATION EDIT','Ideas worth<br><em>saving twice.</em>','Decor, styling, photography, food and details that can actually become a coherent event brief.');
+    ?>
+    <section class="section">
+        <div class="container">
+            <div class="section-head reveal">
+                <div>
+                    <span class="eyebrow">
+                    VISUAL MOODBOARD
+                    </span>
+                    <h2>
+                    Follow the feeling.
+                    </h2>
+                </div>
+                <p>
+                Use the heart to build a lightweight inspiration board on this device.
+                </p>
+            </div>
+            <div class="inspiration-masonry">
+                <?php
+                    foreach(wz_data('inspiration') as $i=>$item):
+                ?>
+                    <div class="masonry-item reveal">
+                        <img src="<?=h($item['image'])?>
+                        " alt="
+                        <?= h($item['title']) ?>
+                        " loading="lazy">
+                        <div class="masonry-overlay">
+                        </div>
+                        <div class="masonry-copy">
+                            <span>
+                            <?= h($item['category']) ?>
+                            </span>
+                            <h3>
+                            <?= h($item['title']) ?>
+                            </h3>
+                        </div>
+                        <button class="save-idea" type="button" data-save-idea="<?=h((string)$item['id'])?>
+                        " aria-label="Save idea">♡
+                        </button>
+                    </div>
+                <?php
+                    endforeach;
+                ?>
+            </div>
+        </div>
+    </section>
+    <section class="quote-band">
+        <div class="quote-band-media">
+            <img src="https://images.unsplash.com/photo-1587271636175-90d58cdad458?auto=format&fit=crop&w=1200&q=92" alt="Indian celebration decor">
+        </div>
+        <div class="quote-band-copy">
+            <span class="eyebrow">
+            TURN SAVES INTO A BRIEF
+            </span>
+            <div class="quote-mark">
+                “
+            </div>
+            <blockquote>
+            Don’t collect a hundred references. Find the five that agree with each other.
+            </blockquote>
+            <footer>
+                WEDDING ZA · DECOR DIRECTION
+            </footer>
+            <div style="margin-top:25px">
+                <a class="pill-btn wine" href="article.php?id=decor-direction">
+                Read the decor guide ↗
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+<?php
+    require __DIR__.'/includes/footer.php';
+?>
