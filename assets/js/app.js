@@ -117,11 +117,33 @@
   }
 
   function initVendorFilters(){
-    const grid=$('#vendorListing');if(!grid)return;const cards=$$('.vendor-card',grid),q=$('#filterSearch'),event=$('#filterEvent'),city=$('#filterCity'),cat=$('#filterCategory'),sort=$('#filterSort'),count=$('#filterCount');
-    const run=()=>{const term=(q?.value||'').toLowerCase().trim(),ev=event?.value||'',cv=city?.value||'',cc=cat?.value||'';let shown=cards.filter(c=>{const events=(c.dataset.events||'').split('|');const ok=(!term||c.dataset.search.toLowerCase().includes(term))&&(!ev||events.includes(ev))&&(!cv||c.dataset.city===cv)&&(!cc||c.dataset.category===cc);c.classList.toggle('hidden',!ok);return ok});
+    const grid=$('#vendorListing');if(!grid)return;
+    const cards=$('.vendor-card',grid),q=$('#filterSearch'),event=$('#filterEvent'),city=$('#filterCity'),cat=$('#filterCategory'),sort=$('#filterSort'),count=$('#filterCount'),reset=$('#filterReset'),bar=$('#activeFilterBar');
+    const controls={event,city,category:cat};
+    const syncUrl=()=>{
+      const url=new URL(location.href);
+      ['event','city','category'].forEach(k=>{const el=controls[k];if(el?.value)url.searchParams.set(k,el.value);else url.searchParams.delete(k)});
+      history.replaceState({},'',url);
+    };
+    const renderChips=()=>{
+      if(!bar)return;
+      const chips=[];
+      Object.entries(controls).forEach(([key,el])=>{if(el?.value)chips.push(`<button type="button" data-clear-filter="${key}">${el.value} ×</button>`)});
+      bar.innerHTML=chips.join('');
+      bar.classList.toggle('has-filters',chips.length>0);
+    };
+    const run=()=>{
+      const term=(q?.value||'').toLowerCase().trim(),ev=event?.value||'',cv=city?.value||'',cc=cat?.value||'';
+      let shown=cards.filter(c=>{const events=(c.dataset.events||'').split('|');const ok=(!term||c.dataset.search.toLowerCase().includes(term))&&(!ev||events.includes(ev))&&(!cv||c.dataset.city===cv)&&(!cc||c.dataset.category===cc);c.classList.toggle('hidden',!ok);return ok});
       if(sort){const mode=sort.value;shown.sort((a,b)=>mode==='rating'?+b.dataset.rating-+a.dataset.rating:mode==='price'?+a.dataset.price-+b.dataset.price:0).forEach(c=>grid.appendChild(c))}
-      if(count)count.textContent=`${shown.length} vendor${shown.length===1?'':'s'} found`;$('#vendorEmpty')&&($('#vendorEmpty').hidden=shown.length>0)};
-    [q,event,city,cat,sort].forEach(el=>el?.addEventListener(el===q?'input':'change',run));run();
+      if(count)count.textContent=`${shown.length} vendor${shown.length===1?'':'s'} found`;
+      $('#vendorEmpty')&&($('#vendorEmpty').hidden=shown.length>0);
+      renderChips();syncUrl();
+    };
+    [q,event,city,cat,sort].forEach(el=>el?.addEventListener(el===q?'input':'change',run));
+    reset?.addEventListener('click',()=>{if(q)q.value='';[event,city,cat].forEach(el=>{if(el)el.value=''});if(sort)sort.value='featured';run()});
+    bar?.addEventListener('click',e=>{const b=e.target.closest('[data-clear-filter]');if(!b)return;const el=controls[b.dataset.clearFilter];if(el)el.value='';run()});
+    run();
   }
 
   function initPlanner(){
