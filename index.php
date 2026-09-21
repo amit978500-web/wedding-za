@@ -25,7 +25,7 @@ require __DIR__.'/includes/header.php';
     <p class="vision-hero-copy">From a 40-person dinner to a 4,000-guest celebration — discover remarkable venues, creators and event teams across India without drowning in options.</p>
     <div class="vision-hero-actions"><button type="button" class="vision-primary hero-mobile-plan" data-discovery-open>Plan your event <span>↗</span></button><a href="real-weddings.php" class="vision-secondary">Explore real celebrations</a></div>
     <div class="celebration-types" aria-label="Celebration types">
-      <?php foreach(array_slice($events,0,6) as $event):?><a href="vendors.php?event=<?=urlencode($event['name'])?>"><?=h($event['name'])?></a><?php endforeach;?>
+      <?php foreach(array_slice($events,0,6) as $event):?><a href="event.php?type=<?=urlencode($event['name'])?>"><?=h($event['name'])?></a><?php endforeach;?>
     </div>
 
     <form class="hero-plan-dock" id="heroPlanDock" action="vendors.php" method="get">
@@ -57,7 +57,7 @@ require __DIR__.'/includes/header.php';
     <div class="container vision-experience-head"><span>WZ / 02</span><div><small>START WITH THE OCCASION</small><h2>What are we<br>celebrating?</h2></div><p>Choose the function first. We will shape the vendor mix, venue direction and planning journey around the kind of event you are creating.</p></div>
     <div class="vision-category-track" id="visionCategoryTrack">
       <?php foreach($events as $i=>$event):?>
-      <a class="vision-category-panel" href="vendors.php?event=<?=urlencode($event['name'])?>">
+      <a class="vision-category-panel" href="event.php?type=<?=urlencode($event['name'])?>">
         <div class="vision-category-image"><img src="<?=h($event['image'])?>" alt="<?=h($event['name'])?> celebration" loading="lazy" decoding="async"></div>
         <div class="vision-category-number"><?=str_pad((string)($i+1),2,'0',STR_PAD_LEFT)?></div>
         <div class="vision-category-copy"><span>CELEBRATION</span><h3><?=h($event['name'])?></h3><p><?=h($event['sub'])?></p><b>Plan this event ↗</b></div>
