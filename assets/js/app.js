@@ -7,7 +7,7 @@
   window.addEventListener('DOMContentLoaded',()=>{
     document.body.classList.add('is-loading');
     setTimeout(()=>{document.body.classList.remove('is-loading');$('#preloader')?.classList.add('hide')},550);
-    initHeader(); initReveal(); initParallax(); initTransitions(); initShortlist(); initIdeaSaves(); initForms(); initVendorFilters(); initPlanner(); initBudget(); initInviteBuilder(); initShare();
+    initHeader(); initReveal(); initParallax(); initTransitions(); initShortlist(); initIdeaSaves(); initForms(); initVendorFilters(); initEventBrief(); initPlanner(); initBudget(); initInviteBuilder(); initShare();
   });
 
   function initHeader(){
@@ -101,7 +101,51 @@
     document.addEventListener('click',e=>{const b=e.target.closest('[data-shortlist]');if(!b)return;e.preventDefault();const id=b.dataset.shortlist,ids=shortlistIds(),next=ids.includes(id)?ids.filter(x=>x!==id):[...ids,id];storage.set('wz_shortlist',next);toast(next.includes(id)?'Saved to your shortlist ♡':'Removed from shortlist');sync()});sync();
   }
   function renderShortlist(ids){
-    const root=$('#shortlistGrid');if(!root)return; const cards=$$('.vendor-card[data-vendor-id]',root);cards.forEach(c=>c.classList.toggle('hidden',!ids.includes(c.dataset.vendorId))); const empty=$('#shortlistEmpty');if(empty)empty.hidden=ids.length>0;
+    const root=$('#shortlistGrid');
+    $('#shortlistHeroCount')&&($('#shortlistHeroCount').textContent=ids.length);
+    $('#plannerShortlistCount')&&($('#plannerShortlistCount').textContent=ids.length);
+    const heroText=$('#shortlistHeroText');
+    if(heroText)heroText.textContent=ids.length ? `${ids.length} saved profile${ids.length===1?'':'s'} ready to compare.` : 'Your shortlist is empty.';
+    if(!root)return;
+    const cards=$('.vendor-card[data-vendor-id]',root);
+    cards.forEach(c=>c.classList.toggle('hidden',!ids.includes(c.dataset.vendorId)));
+    const empty=$('#shortlistEmpty');if(empty)empty.hidden=ids.length>0;
+    $('#shortlistAction')?.classList.toggle('is-empty',ids.length===0);
+  }
+
+  function initEventBrief(){
+    const form=$('#eventBriefForm'), key='wz_event_brief';
+    const fields=form?$('[data-brief]',form):[];
+    const saved=storage.get(key,{});
+    const paintSummary=(data)=>{
+      const title=$('#shortlistBriefTitle'), meta=$('#shortlistBriefMeta');
+      if(title){
+        const parts=[data.event,data.city].filter(Boolean);
+        title.textContent=parts.length?parts.join(' · '):'No event brief yet';
+      }
+      if(meta){
+        const bits=[];
+        if(data.date)bits.push(new Date(data.date+'T12:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}));
+        if(data.guests)bits.push(`${data.guests} guests`);
+        if(data.budget)bits.push(data.budget);
+        if(data.direction)bits.push(data.direction);
+        meta.textContent=bits.length?bits.join(' · '):'Add occasion, city, date and guest count so your shortlist has context.';
+      }
+      const status=$('#briefStatus strong');
+      if(status)status.textContent=Object.values(data).some(Boolean)?'Brief saved automatically.':'Your brief saves automatically.';
+    };
+    if(form){
+      fields.forEach(f=>{if(saved[f.dataset.brief]!=null)f.value=saved[f.dataset.brief]});
+      const sync=()=>{
+        const data={};fields.forEach(f=>data[f.dataset.brief]=f.value.trim());
+        storage.set(key,data);paintSummary(data);
+      };
+      fields.forEach(f=>f.addEventListener('input',sync));
+      fields.forEach(f=>f.addEventListener('change',sync));
+      sync();
+    }else{
+      paintSummary(saved||{});
+    }
   }
 
   function initIdeaSaves(){
@@ -154,7 +198,9 @@
   function initBudget(){
     const table=$('#budgetTable');if(!table)return;const key='wz_budget';const inputs=$$('input[data-budget]',table),saved=storage.get(key,{});inputs.forEach(i=>{if(saved[i.dataset.budget]!=null)i.value=saved[i.dataset.budget]});
     const money=n=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(n||0);
-    const sync=()=>{const obj={};inputs.forEach(i=>obj[i.dataset.budget]=Number(i.value||0));storage.set(key,obj);let planned=0,spent=0;Object.entries(obj).forEach(([k,v])=>k.endsWith(':planned')?planned+=v:spent+=v);$('#budgetPlanned')&&($('#budgetPlanned').textContent=money(planned));$('#budgetSpent')&&($('#budgetSpent').textContent=money(spent));$('#budgetLeft')&&($('#budgetLeft').textContent=money(planned-spent))};inputs.forEach(i=>i.addEventListener('input',sync));sync();
+    const sync=()=>{const obj={};inputs.forEach(i=>obj[i.dataset.budget]=Number(i.value||0));storage.set(key,obj);let planned=0,spent=0;Object.entries(obj).forEach(([k,v])=>k.endsWith(':planned')?planned+=v:spent+=v);$('#budgetPlanned')&&($('#budgetPlanned').textContent=money(planned));$('#budgetSpent')&&($('#budgetSpent').textContent=money(spent));$('#budgetLeft')&&($('#budgetLeft').textContent=money(planned-spent));
+      $('.budget-row',table).slice(1).forEach(row=>{const ins=$('input',row),status=row.querySelector('[data-budget-status]');if(!status||ins.length<2)return;const p=Number(ins[0].value||0),s=Number(ins[1].value||0);status.textContent=!p&&!s?'Track':s>p?'Over plan':s===p&&p>0?'Fully spent':s>0?'In progress':'Planned';status.classList.toggle('over',s>p&&p>0)});
+    };inputs.forEach(i=>i.addEventListener('input',sync));sync();
   }
 
   function initInviteBuilder(){
