@@ -54,7 +54,7 @@ $pageKey = $pageKey ?? '';
       </div>
       <aside class="vision-menu-side">
         <div><small>POPULAR CITIES</small><a href="city.php?city=Jaipur">Jaipur</a><a href="city.php?city=Udaipur">Udaipur</a><a href="city.php?city=Goa">Goa</a><a href="city.php?city=Delhi%20NCR">Delhi NCR</a></div>
-        <div><small>YOUR SPACE</small><a href="shortlist.php">Shortlist</a><a href="invites.php">E-invites</a><a href="login.php">Log in</a><a href="register-vendor.php">For event businesses ↗</a></div>
+        <div><small>YOUR SPACE</small><a href="shortlist.php">Shortlist</a><a href="invites.php">E-invites</a><a href="account.php">My account</a><a href="login.php?role=vendor">Business login</a><a href="register-vendor.php">For event businesses ↗</a></div>
       </aside>
     </div>
   </div>
