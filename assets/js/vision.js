@@ -18,6 +18,30 @@
     addEventListener('scroll',tick,{passive:true}); tick();
   }
 
+  function heroPlanner(){
+    const form=$('#heroPlanDock'), eventSelect=$('#heroEvent'), preview=$('#heroPlanPreview'), label=$('#heroPlanLabel');
+    if(!form||!eventSelect)return;
+    const updateFieldState=()=>$('label',form).forEach(el=>{
+      const select=el.querySelector('select');
+      if(select)el.classList.toggle('is-filled',Boolean(select.value));
+    });
+    const updatePreview=()=>{
+      const opt=eventSelect.options[eventSelect.selectedIndex];
+      const src=opt?.dataset?.image;
+      if(label)label.textContent=eventSelect.value ? `Plan a ${eventSelect.value.toLowerCase()}` : 'Build your event team';
+      if(preview&&src&&preview.src!==src){
+        preview.classList.add('is-changing');
+        const img=new Image();
+        img.onload=()=>{preview.src=src;requestAnimationFrame(()=>preview.classList.remove('is-changing'))};
+        img.src=src;
+      }
+      updateFieldState();
+    };
+    eventSelect.addEventListener('change',updatePreview);
+    $('select',form).forEach(s=>s.addEventListener('change',updateFieldState));
+    updatePreview();
+  }
+
   function smoothScroll(){
     if(reduce || typeof Lenis==='undefined')return;
     const lenis=new Lenis({duration:.92,smoothWheel:true,wheelMultiplier:.9,touchMultiplier:1.05});
@@ -48,6 +72,7 @@
         .from('.vision-hero-copy',{y:28,opacity:0,duration:.75},'-=.72')
         .from('.vision-hero-actions',{y:20,opacity:0,duration:.6},'-=.58')
         .from('.celebration-types a',{y:16,opacity:0,duration:.45,stagger:.045},'-=.48')
+        .from('.hero-plan-dock',{y:28,opacity:0,duration:.8},'-=.52')
         .from('.vhero-float',{y:55,opacity:0,scale:.94,duration:1,stagger:.12},'-=.72');
       gsap.to('.vision-hero-bg img',{yPercent:9,ease:'none',scrollTrigger:{trigger:hero,start:'top top',end:'bottom top',scrub:true}});
       gsap.to('.vhero-float-a',{yPercent:-18,ease:'none',scrollTrigger:{trigger:hero,start:'top top',end:'bottom top',scrub:true}});
@@ -66,9 +91,9 @@
 
     // Horizontal category chapter.
     const exp=$('#visionExperience'), track=$('#visionCategoryTrack');
-    if(exp&&track&&innerWidth>720){
+    if(exp&&track&&innerWidth>900){
       const distance=()=>Math.max(0,track.scrollWidth-innerWidth+innerWidth*.12);
-      gsap.to(track,{x:()=>-distance(),ease:'none',scrollTrigger:{trigger:exp,start:'top top',end:()=>'+='+(distance()+innerHeight*.55),scrub:1,pin:$('.vision-experience-sticky'),invalidateOnRefresh:true,anticipatePin:1}});
+      gsap.to(track,{x:()=>-distance(),ease:'none',scrollTrigger:{trigger:exp,start:'top top',end:()=>'+='+(distance()+innerHeight*.35),scrub:.65,pin:$('.vision-experience-sticky'),invalidateOnRefresh:true,anticipatePin:1}});
     }
 
     // Destination rail: horizontal motion WITHOUT pinning the whole section.
@@ -112,7 +137,7 @@
   }
 
   addEventListener('DOMContentLoaded',()=>{
-    discovery();headerTone();smoothScroll();animate();nativeFallback();
+    discovery();headerTone();heroPlanner();smoothScroll();animate();nativeFallback();
   });
 
   // Re-measure scroll scenes after fonts and high-resolution imagery settle.
