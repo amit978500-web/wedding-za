@@ -69,6 +69,6 @@ $pageKey = $pageKey ?? '';
         <label><span>03 / Where?</span><select name="city"><option value="">All cities</option><?php foreach(wz_data('cities') as $city):?><option><?=h($city)?></option><?php endforeach;?></select></label>
         <button type="submit">Build my shortlist <span>↗</span></button>
       </form>
-      <div class="discovery-shortcuts"><span>Popular:</span><a href="vendors.php?event=Wedding">Wedding</a><a href="vendors.php?event=Birthday">Birthday</a><a href="vendors.php?event=Corporate">Corporate</a><a href="city.php?city=Jaipur">Jaipur</a></div>
+      <div class="discovery-shortcuts"><span>Popular:</span><a href="event.php?type=Wedding">Wedding</a><a href="event.php?type=Birthday">Birthday</a><a href="event.php?type=Corporate">Corporate</a><a href="city.php?city=Jaipur">Jaipur</a></div>
     </div>
   </div>
