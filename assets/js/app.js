@@ -1,34 +1,71 @@
 (() => {
   'use strict';
-  const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)];
-  const storage= {
-    get(k,f=[]) {
+
+  const qs = (selector, context = document) => {
+    return context.querySelector(selector);
+  };
+
+  const qsa = (selector, context = document) => {
+    return [...context.querySelectorAll(selector)];
+  };
+
+  const storage = {
+    get(key, fallback = []) {
       try {
-        return JSON.parse(localStorage.getItem(k))??f
-      }
-      catch {
-        return f
+        const raw = localStorage.getItem(key);
+
+        if (raw === null) {
+          return fallback;
+        }
+
+        return JSON.parse(raw);
+      } catch {
+        return fallback;
       }
     },
-    set(k,v) {
-      localStorage.setItem(k,JSON.stringify(v))
+
+    set(key, value) {
+      localStorage.setItem(
+        key,
+        JSON.stringify(value)
+      );
+
+      window.dispatchEvent(
+        new CustomEvent('wz:storage', {
+          detail: {
+            key,
+            value,
+          },
+        })
+      );
+    },
+  };
+
+  function toast(message) {
+    const element = qs('#toast');
+
+    if (!element) {
+      return;
     }
-  };
-  const toast=(msg)=> {
-    const el=$('#toast');
-    if(!el)return;
-    el.textContent=msg;
-    el.classList.add('show');
+
+    element.textContent = message;
+    element.classList.add('show');
+
     clearTimeout(window.__wzToast);
-    window.__wzToast=setTimeout(()=>el.classList.remove('show'),2600)
-  };
-  window.addEventListener('DOMContentLoaded',()=> {
+
+    window.__wzToast = setTimeout(() => {
+      element.classList.remove('show');
+    }, 2600);
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
     document.body.classList.add('is-loading');
-    setTimeout(()=> {
+
+    setTimeout(() => {
       document.body.classList.remove('is-loading');
-      $('#preloader')?.classList.add('hide')
-    },
-    550);
+      qs('#preloader')?.classList.add('hide');
+    }, 550);
+
     initHeader();
     initReveal();
     initParallax();
@@ -42,502 +79,1444 @@
     initBudget();
     initInviteBuilder();
     initShare();
-  }
-  );
+    initWorkspaceSync();
+  });
+
   function initHeader() {
-    const header=$('#siteHeader'), progress=$('#pageProgress'), btn=$('#menuToggle'), menu=$('#mobileMenu');
-    const onScroll=()=> {
-      const y=window.scrollY, max=document.documentElement.scrollHeight-innerHeight;
-      header?.classList.toggle('scrolled',y>12);
-      if(progress)progress.style.width=`${max>0?(y/max)*100:0}%`;
-    };
-    addEventListener('scroll',onScroll, {
-      passive:true
-    }
-    );
-    onScroll();
-    const toggle=(open)=> {
-      document.body.classList.toggle('menu-open',open);
-      btn?.classList.toggle('active',open);
-      btn?.setAttribute('aria-expanded',String(open));
-      menu?.classList.toggle('open',open);
-      menu?.setAttribute('aria-hidden',String(!open));
-    };
-    btn?.addEventListener('click',()=>toggle(!menu?.classList.contains('open')));
-    menu?.addEventListener('click',e=> {
-      if(e.target.closest('a'))toggle(false)
-    }
-    );
-    addEventListener('keydown',e=> {
-      if(e.key==='Escape')toggle(false)
-    }
-    );
-  }
-  function initReveal() {
-    const els=$$('.reveal');
-    if(!els.length)return;
-    if(!('IntersectionObserver'in window)) {
-      els.forEach(e=>e.classList.add('in-view'));
-      return
-    }
-    const io=new IntersectionObserver(entries=>entries.forEach(x=> {
-      if(x.isIntersecting) {
-        x.target.classList.add('in-view');
-        io.unobserve(x.target)
-      }
-    }
-    ), {
-      threshold:.12,rootMargin:'0px 0px -30px'
-    }
-    );
-    els.forEach(e=>io.observe(e));
-  }
-  function initCursor() {
-    if(matchMedia('(pointer:coarse)').matches)return;
-    const dot=$('.cursor-dot'),ring=$('.cursor-ring');
-    if(!dot||!ring)return;
-    let x=0,y=0,rx=0,ry=0;
-    const move=e=> {
-      x=e.clientX;
-      y=e.clientY;
-      dot.style.opacity=ring.style.opacity='1';
-      dot.style.transform=`translate(${x-2.5}px,${y-2.5}px)`
-    };
-    addEventListener('mousemove',move);
-    const loop=()=> {
-      rx+=(x-rx)*.14;
-      ry+=(y-ry)*.14;
-      ring.style.transform=`translate(${rx-17}px,${ry-17}px)`;
-      requestAnimationFrame(loop)
-    };
-    loop();
-    $$('a,button,input,select,textarea').forEach(el=> {
-      el.addEventListener('mouseenter',()=>ring.classList.add('is-link'));
-      el.addEventListener('mouseleave',()=>ring.classList.remove('is-link'))
-    }
-    );
-  }
-  function initParallax() {
-    if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-    const els=$$('[data-parallax]');
-    if(!els.length)return;
-    let ticking=false;
-    const paint=()=> {
-      const vh=innerHeight;
-      els.forEach(el=> {
-        const r=el.getBoundingClientRect(), speed=parseFloat(el.dataset.parallax||'.08'),mid=r.top+r.height/2-vh/2;
-        el.style.transform=`translate3d(0,${mid*-speed}px,0)`
-      }
+    const header = qs('#siteHeader');
+    const progress = qs('#pageProgress');
+    const button = qs('#menuToggle');
+    const menu = qs('#mobileMenu');
+
+    const onScroll = () => {
+      const y = window.scrollY;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+
+      header?.classList.toggle(
+        'scrolled',
+        y > 12
       );
-      ticking=false
-    };
-    addEventListener('scroll',()=> {
-      if(!ticking) {
-        requestAnimationFrame(paint);
-        ticking=true
+
+      if (progress) {
+        const percentage = max > 0
+          ? (y / max) * 100
+          : 0;
+
+        progress.style.width = percentage + '%';
       }
-    },
-    {
-      passive:true
-    }
+    };
+
+    const setMenu = (open) => {
+      document.body.classList.toggle(
+        'menu-open',
+        open
+      );
+
+      button?.classList.toggle(
+        'active',
+        open
+      );
+
+      button?.setAttribute(
+        'aria-expanded',
+        String(open)
+      );
+
+      menu?.classList.toggle(
+        'open',
+        open
+      );
+
+      menu?.setAttribute(
+        'aria-hidden',
+        String(!open)
+      );
+    };
+
+    window.addEventListener(
+      'scroll',
+      onScroll,
+      {
+        passive: true,
+      }
     );
+
+    button?.addEventListener('click', () => {
+      setMenu(
+        !menu?.classList.contains('open')
+      );
+    });
+
+    menu?.addEventListener('click', (event) => {
+      if (event.target.closest('a')) {
+        setMenu(false);
+      }
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        setMenu(false);
+      }
+    });
+
+    onScroll();
+  }
+
+  function initReveal() {
+    const elements = qsa('.reveal');
+
+    if (!elements.length) {
+      return;
+    }
+
+    if (!('IntersectionObserver' in window)) {
+      elements.forEach((element) => {
+        element.classList.add('in-view');
+      });
+
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        threshold: 0.12,
+        rootMargin: '0px 0px -30px',
+      }
+    );
+
+    elements.forEach((element) => {
+      observer.observe(element);
+    });
+  }
+
+  function initParallax() {
+    if (
+      window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      ).matches
+    ) {
+      return;
+    }
+
+    const elements = qsa('[data-parallax]');
+
+    if (!elements.length) {
+      return;
+    }
+
+    let ticking = false;
+
+    const paint = () => {
+      const viewportHeight = window.innerHeight;
+
+      elements.forEach((element) => {
+        const rect = element.getBoundingClientRect();
+
+        const speed = parseFloat(
+          element.dataset.parallax || '.08'
+        );
+
+        const midpoint =
+          rect.top +
+          rect.height / 2 -
+          viewportHeight / 2;
+
+        element.style.transform =
+          'translate3d(0,' +
+          midpoint * -speed +
+          'px,0)';
+      });
+
+      ticking = false;
+    };
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (ticking) {
+          return;
+        }
+
+        window.requestAnimationFrame(paint);
+        ticking = true;
+      },
+      {
+        passive: true,
+      }
+    );
+
     paint();
   }
-  function initMagnetic() {
-    if(matchMedia('(pointer:coarse)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-    $$('.magnetic').forEach(el=> {
-      el.addEventListener('mousemove',e=> {
-        const r=el.getBoundingClientRect(),x=e.clientX-r.left-r.width/2,y=e.clientY-r.top-r.height/2;
-        el.style.transform=`translate(${x*.12}px,${y*.18}px)`
-      }
-      );
-      el.addEventListener('mouseleave',()=>el.style.transform='')
-    }
-    );
-  }
-  function initTilt() {
-    if(matchMedia('(pointer:coarse)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-    $$('.tilt-card').forEach(card=> {
-      let frame=0;
-      const move=e=> {
-        cancelAnimationFrame(frame);
-        frame=requestAnimationFrame(()=> {
-          const r=card.getBoundingClientRect();
-          const px=(e.clientX-r.left)/r.width-.5, py=(e.clientY-r.top)/r.height-.5;
-          card.style.setProperty('--mx',`${(px+.5)*100}%`);
-          card.style.setProperty('--my',`${(py+.5)*100}%`);
-          card.style.transform=`perspective(1100px) rotateX(${py*-3.2}deg) rotateY(${px*4.2}deg) translateY(-6px)`;
-        }
-        );
-      };
-      card.addEventListener('mousemove',move);
-      card.addEventListener('mouseleave',()=> {
-        cancelAnimationFrame(frame);
-        card.style.transform='';
-        card.style.setProperty('--mx','50%');
-        card.style.setProperty('--my','50%')
-      }
-      );
-    }
-    );
-  }
-  function initSpotlights() {
-    if(matchMedia('(pointer:coarse)').matches)return;
-    $$('.city-tile,.category-luxe,.form-card,.planner-group,.fact-card,.budget-card,.enquiry-card,.auth-card').forEach(el=> {
-      el.dataset.spotlight='';
-      el.addEventListener('mousemove',e=> {
-        const r=el.getBoundingClientRect();
-        el.style.setProperty('--mx',`${e.clientX-r.left}px`);
-        el.style.setProperty('--my',`${e.clientY-r.top}px`);
-      }
-      );
-    }
-    );
-    $$('.vendor-card').forEach(el=>el.addEventListener('mousemove',e=> {
-      const r=el.getBoundingClientRect();
-      el.style.setProperty('--mx',`${e.clientX-r.left}px`);
-      el.style.setProperty('--my',`${e.clientY-r.top}px`);
-    }
-    ));
-  }
-  function initHeroMotion() {
-    if(matchMedia('(pointer:coarse)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-    const hero=$('.hero-premium'), orb=$('.hero-orb');
-    if(!hero||!orb)return;
-    hero.addEventListener('mousemove',e=> {
-      const r=hero.getBoundingClientRect(), x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
-      orb.style.marginLeft=`${x*12}px`;
-      orb.style.marginTop=`${y*10}px`;
-    }
-    );
-    hero.addEventListener('mouseleave',()=> {
-      orb.style.marginLeft='';
-      orb.style.marginTop=''
-    }
-    );
-  }
+
   function initTransitions() {
-    const wipe=$('#pageWipe');
-    if(!wipe)return;
-    $$('a[href]').forEach(a=>a.addEventListener('click',e=> {
-      const href=a.getAttribute('href')||'';
-      if(href.startsWith('#')||href.startsWith('mailto:')||href.startsWith('tel:')||a.target==='_blank'||e.ctrlKey||e.metaKey||e.shiftKey)return;
-      let u;
-      try {
-        u=new URL(a.href,location.href)
-      }
-      catch {
-        return
-      }
-      if(u.origin!==location.origin)return;
-      e.preventDefault();
-      wipe.classList.add('active');
-      setTimeout(()=>location.href=a.href,470)
+    const wipe = qs('#pageWipe');
+
+    if (!wipe) {
+      return;
     }
-    ));
-  }
-  function shortlistIds() {
-    return storage.get('wz_shortlist',[])
-  }
-  function initShortlist() {
-    const sync=()=> {
-      const ids=shortlistIds();
-      $('#shortlistCount')&&( $('#shortlistCount').textContent=ids.length );
-      $$('[data-shortlist]').forEach(b=> {
-        const on=ids.includes(b.dataset.shortlist);
-        b.classList.toggle('active',on);
-        if(b.classList.contains('heart-btn'))b.textContent=on?'♥':'♡';
-        else b.textContent=on?'♥ Saved to shortlist':'♡ Save to shortlist';
-        b.setAttribute('aria-pressed',String(on))
-      }
-      );
-      renderShortlist(ids)
-    };
-    document.addEventListener('click',e=> {
-      const b=e.target.closest('[data-shortlist]');
-      if(!b)return;
-      e.preventDefault();
-      const id=b.dataset.shortlist,ids=shortlistIds(),next=ids.includes(id)?ids.filter(x=>x!==id):[...ids,id];
-      storage.set('wz_shortlist',next);
-      toast(next.includes(id)?'Saved to your shortlist ♡':'Removed from shortlist');
-      sync()
-    }
-    );
-    sync();
-  }
-  function renderShortlist(ids) {
-    const root=$('#shortlistGrid');
-    $('#shortlistHeroCount')&&($('#shortlistHeroCount').textContent=ids.length);
-    $('#plannerShortlistCount')&&($('#plannerShortlistCount').textContent=ids.length);
-    const heroText=$('#shortlistHeroText');
-    if(heroText)heroText.textContent=ids.length ? `${ids.length} saved profile${ids.length===1?'':'s'} ready to compare.` : 'Your shortlist is empty.';
-    if(!root)return;
-    const cards=$('.vendor-card[data-vendor-id]',root);
-    cards.forEach(c=>c.classList.toggle('hidden',!ids.includes(c.dataset.vendorId)));
-    const empty=$('#shortlistEmpty');
-    if(empty)empty.hidden=ids.length>0;
-    $('#shortlistAction')?.classList.toggle('is-empty',ids.length===0);
-  }
-  function initEventBrief() {
-    const form=$('#eventBriefForm'), key='wz_event_brief';
-    const fields=form?$('[data-brief]',form):[];
-    const saved=storage.get(key, {
-    }
-    );
-    const paintSummary=(data)=> {
-      const title=$('#shortlistBriefTitle'), meta=$('#shortlistBriefMeta');
-      if(title) {
-        const parts=[data.event,data.city].filter(Boolean);
-        title.textContent=parts.length?parts.join(' · '):'No event brief yet';
-      }
-      if(meta) {
-        const bits=[];
-        if(data.date)bits.push(new Date(data.date+'T12:00:00').toLocaleDateString('en-IN', {
-          day:'numeric',month:'short',year:'numeric'
+
+    qsa('a[href]').forEach((anchor) => {
+      anchor.addEventListener('click', (event) => {
+        const href = anchor.getAttribute('href') || '';
+
+        if (
+          href.startsWith('#') ||
+          href.startsWith('mailto:') ||
+          href.startsWith('tel:') ||
+          anchor.target === '_blank' ||
+          event.ctrlKey ||
+          event.metaKey ||
+          event.shiftKey
+        ) {
+          return;
         }
-        ));
-        if(data.guests)bits.push(`${data.guests} guests`);
-        if(data.budget)bits.push(data.budget);
-        if(data.direction)bits.push(data.direction);
-        meta.textContent=bits.length?bits.join(' · '):'Add occasion, city, date and guest count so your shortlist has context.';
-      }
-      const status=$('#briefStatus strong');
-      if(status)status.textContent=Object.values(data).some(Boolean)?'Brief saved automatically.':'Your brief saves automatically.';
-    };
-    if(form) {
-      fields.forEach(f=> {
-        if(saved[f.dataset.brief]!=null)f.value=saved[f.dataset.brief]
-      }
-      );
-      const sync=()=> {
-        const data= {
-        };
-        fields.forEach(f=>data[f.dataset.brief]=f.value.trim());
-        storage.set(key,data);
-        paintSummary(data);
-      };
-      fields.forEach(f=>f.addEventListener('input',sync));
-      fields.forEach(f=>f.addEventListener('change',sync));
-      sync();
-    } else {
-      paintSummary(saved|| {
-      }
-      );
-    }
+
+        let target;
+
+        try {
+          target = new URL(
+            anchor.href,
+            window.location.href
+          );
+        } catch {
+          return;
+        }
+
+        if (target.origin !== window.location.origin) {
+          return;
+        }
+
+        event.preventDefault();
+
+        wipe.classList.add('active');
+
+        setTimeout(() => {
+          window.location.href = anchor.href;
+        }, 470);
+      });
+    });
   }
-  function initIdeaSaves() {
-    const key='wz_ideas', sync=()=> {
-      const ids=storage.get(key,[]);
-      $$('[data-save-idea]').forEach(b=> {
-        const on=ids.includes(b.dataset.saveIdea);
-        b.classList.toggle('saved',on);
-        b.textContent=on?'♥':'♡'
-      }
-      )
-    };
-    document.addEventListener('click',e=> {
-      const b=e.target.closest('[data-save-idea]');
-      if(!b)return;
-      e.preventDefault();
-      const id=b.dataset.saveIdea,ids=storage.get(key,[]),next=ids.includes(id)?ids.filter(x=>x!==id):[...ids,id];
-      storage.set(key,next);
-      toast(next.includes(id)?'Idea saved to your board':'Idea removed');
-      sync()
-    }
+
+  function shortlistIds() {
+    return storage.get(
+      'wz_shortlist',
+      []
     );
+  }
+
+  function initShortlist() {
+    const sync = () => {
+      const ids = shortlistIds();
+      const count = qs('#shortlistCount');
+
+      if (count) {
+        count.textContent = String(ids.length);
+      }
+
+      qsa('[data-shortlist]').forEach((button) => {
+        const id = button.dataset.shortlist;
+        const selected = ids.includes(id);
+
+        button.classList.toggle(
+          'active',
+          selected
+        );
+
+        if (button.classList.contains('heart-btn')) {
+          button.textContent = selected
+            ? '♥'
+            : '♡';
+        } else {
+          button.textContent = selected
+            ? '♥ Saved to shortlist'
+            : '♡ Save to shortlist';
+        }
+
+        button.setAttribute(
+          'aria-pressed',
+          String(selected)
+        );
+      });
+
+      renderShortlist(ids);
+    };
+
+    document.addEventListener('click', (event) => {
+      const button = event.target.closest(
+        '[data-shortlist]'
+      );
+
+      if (!button) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const id = button.dataset.shortlist;
+      const ids = shortlistIds();
+
+      const next = ids.includes(id)
+        ? ids.filter((item) => item !== id)
+        : [...ids, id];
+
+      storage.set(
+        'wz_shortlist',
+        next
+      );
+
+      toast(
+        next.includes(id)
+          ? 'Saved to your shortlist ♡'
+          : 'Removed from shortlist'
+      );
+
+      sync();
+    });
+
     sync();
   }
+
+  function renderShortlist(ids) {
+    const root = qs('#shortlistGrid');
+    const heroCount = qs('#shortlistHeroCount');
+    const plannerCount = qs('#plannerShortlistCount');
+    const heroText = qs('#shortlistHeroText');
+    const emptyState = qs('#shortlistEmpty');
+    const action = qs('#shortlistAction');
+
+    if (heroCount) {
+      heroCount.textContent = String(ids.length);
+    }
+
+    if (plannerCount) {
+      plannerCount.textContent = String(ids.length);
+    }
+
+    if (heroText) {
+      heroText.textContent = ids.length
+        ? ids.length +
+          ' saved profile' +
+          (ids.length === 1 ? '' : 's') +
+          ' ready to compare.'
+        : 'Your shortlist is empty.';
+    }
+
+    if (root) {
+      qsa(
+        '.vendor-card[data-vendor-id]',
+        root
+      ).forEach((card) => {
+        card.classList.toggle(
+          'hidden',
+          !ids.includes(card.dataset.vendorId)
+        );
+      });
+    }
+
+    if (emptyState) {
+      emptyState.hidden = ids.length > 0;
+    }
+
+    action?.classList.toggle(
+      'is-empty',
+      ids.length === 0
+    );
+  }
+
+  function initEventBrief() {
+    const form = qs('#eventBriefForm');
+    const key = 'wz_event_brief';
+    const saved = storage.get(key, {});
+
+    const paintSummary = (data) => {
+      const title = qs('#shortlistBriefTitle');
+      const meta = qs('#shortlistBriefMeta');
+      const status = qs('#briefStatus strong');
+
+      if (title) {
+        const parts = [
+          data.event,
+          data.city,
+        ].filter(Boolean);
+
+        title.textContent = parts.length
+          ? parts.join(' · ')
+          : 'No event brief yet';
+      }
+
+      if (meta) {
+        const bits = [];
+
+        if (data.date) {
+          bits.push(
+            new Date(
+              data.date + 'T12:00:00'
+            ).toLocaleDateString(
+              'en-IN',
+              {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+              }
+            )
+          );
+        }
+
+        if (data.guests) {
+          bits.push(
+            data.guests + ' guests'
+          );
+        }
+
+        if (data.budget) {
+          bits.push(data.budget);
+        }
+
+        if (data.direction) {
+          bits.push(data.direction);
+        }
+
+        meta.textContent = bits.length
+          ? bits.join(' · ')
+          : 'Add occasion, city, date and guest count so your shortlist has context.';
+      }
+
+      if (status) {
+        status.textContent = Object.values(data).some(Boolean)
+          ? 'Brief saved automatically.'
+          : 'Your brief saves automatically.';
+      }
+    };
+
+    if (!form) {
+      paintSummary(saved || {});
+      return;
+    }
+
+    const fields = qsa(
+      '[data-brief]',
+      form
+    );
+
+    fields.forEach((field) => {
+      const value = saved[field.dataset.brief];
+
+      if (value !== undefined && value !== null) {
+        field.value = value;
+      }
+    });
+
+    const sync = () => {
+      const data = {};
+
+      fields.forEach((field) => {
+        data[field.dataset.brief] =
+          field.value.trim();
+      });
+
+      storage.set(
+        key,
+        data
+      );
+
+      paintSummary(data);
+    };
+
+    fields.forEach((field) => {
+      field.addEventListener(
+        'input',
+        sync
+      );
+
+      field.addEventListener(
+        'change',
+        sync
+      );
+    });
+
+    sync();
+  }
+
+  function initIdeaSaves() {
+    const key = 'wz_ideas';
+
+    const sync = () => {
+      const ids = storage.get(
+        key,
+        []
+      );
+
+      qsa('[data-save-idea]').forEach((button) => {
+        const selected = ids.includes(
+          button.dataset.saveIdea
+        );
+
+        button.classList.toggle(
+          'saved',
+          selected
+        );
+
+        button.textContent = selected
+          ? '♥'
+          : '♡';
+      });
+    };
+
+    document.addEventListener('click', (event) => {
+      const button = event.target.closest(
+        '[data-save-idea]'
+      );
+
+      if (!button) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const id = button.dataset.saveIdea;
+
+      const ids = storage.get(
+        key,
+        []
+      );
+
+      const next = ids.includes(id)
+        ? ids.filter((item) => item !== id)
+        : [...ids, id];
+
+      storage.set(
+        key,
+        next
+      );
+
+      toast(
+        next.includes(id)
+          ? 'Idea saved to your board'
+          : 'Idea removed'
+      );
+
+      sync();
+    });
+
+    sync();
+  }
+
   function initForms() {
-    $$('form[data-async]').forEach(form=>form.addEventListener('submit',async e=> {
-      e.preventDefault();
-      const btn=form.querySelector('[type=submit]'),box=form.querySelector('.success-box');
-      const label=btn?.textContent;
-      if(btn) {
-        btn.disabled=true;
-        btn.textContent='Sending…'
-      };
-      try {
-        const res=await fetch(form.action||'api/lead.php', {
-          method:'POST',body:new FormData(form),headers: {
-            'X-Requested-With':'XMLHttpRequest'
+    qsa('form[data-async]').forEach((form) => {
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const button = form.querySelector(
+          '[type=submit]'
+        );
+
+        const successBox = form.querySelector(
+          '.success-box'
+        );
+
+        const label = button?.textContent;
+
+        if (button) {
+          button.disabled = true;
+          button.textContent = 'Sending…';
+        }
+
+        try {
+          const response = await fetch(
+            form.action || 'api/lead.php',
+            {
+              method: 'POST',
+              body: new FormData(form),
+              headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+              },
+            }
+          );
+
+          const output = await response.json();
+
+          if (!response.ok || !output.ok) {
+            throw new Error(
+              output.message ||
+              'Could not submit'
+            );
+          }
+
+          form.reset();
+
+          if (successBox) {
+            successBox.textContent =
+              output.message ||
+              'Thanks — we received it.';
+
+            successBox.classList.add('show');
+          }
+
+          toast(
+            output.message ||
+            'Thanks — we received it.'
+          );
+        } catch (error) {
+          toast(
+            error.message ||
+            'Something went wrong. Please try again.'
+          );
+        } finally {
+          if (button) {
+            button.disabled = false;
+            button.textContent = label;
           }
         }
-        );
-        const out=await res.json();
-        if(!res.ok||!out.ok)throw new Error(out.message||'Could not submit');
-        form.reset();
-        if(box) {
-          box.textContent=out.message||'Thanks — we received it.';
-          box.classList.add('show')
-        }
-        toast(out.message||'Thanks — we received it.');
-      } catch (err) {
-        toast(err.message||'Something went wrong. Please try again.')
-      } finally {
-        if(btn) {
-          btn.disabled=false;
-          btn.textContent=label
-        }
-      }
-    }
-    ));
+      });
+    });
   }
+
   function initVendorFilters() {
-    const grid=$('#vendorListing');
-    if(!grid)return;
-    const cards=$('.vendor-card',grid),q=$('#filterSearch'),event=$('#filterEvent'),city=$('#filterCity'),cat=$('#filterCategory'),sort=$('#filterSort'),count=$('#filterCount'),reset=$('#filterReset'),bar=$('#activeFilterBar');
-    const controls= {
-      event,city,category:cat
+    const grid = qs('#vendorListing');
+
+    if (!grid) {
+      return;
+    }
+
+    const cards = qsa(
+      '.vendor-card',
+      grid
+    );
+
+    const search = qs('#filterSearch');
+    const event = qs('#filterEvent');
+    const city = qs('#filterCity');
+    const category = qs('#filterCategory');
+    const sort = qs('#filterSort');
+    const count = qs('#filterCount');
+    const reset = qs('#filterReset');
+    const activeBar = qs('#activeFilterBar');
+
+    const controls = {
+      event,
+      city,
+      category,
     };
-    const syncUrl=()=> {
-      const url=new URL(location.href);
-      ['event','city','category'].forEach(k=> {
-        const el=controls[k];
-        if(el?.value)url.searchParams.set(k,el.value);
-        else url.searchParams.delete(k)
-      }
+
+    const syncUrl = () => {
+      const url = new URL(
+        window.location.href
       );
-      history.replaceState( {
-      },
-      '',url);
+
+      Object.entries(controls).forEach(
+        ([key, control]) => {
+          if (control?.value) {
+            url.searchParams.set(
+              key,
+              control.value
+            );
+          } else {
+            url.searchParams.delete(key);
+          }
+        }
+      );
+
+      window.history.replaceState(
+        {},
+        '',
+        url
+      );
     };
-    const renderChips=()=> {
-      if(!bar)return;
-      const chips=[];
-      Object.entries(controls).forEach(([key,el])=> {
-        if(el?.value)chips.push(`<button type="button" data-clear-filter="${key}">${el.value} ×</button>`)
+
+    const renderChips = () => {
+      if (!activeBar) {
+        return;
       }
+
+      const chips = [];
+
+      Object.entries(controls).forEach(
+        ([key, control]) => {
+          if (!control?.value) {
+            return;
+          }
+
+          chips.push(
+            '<button type="button" data-clear-filter="' +
+            key +
+            '">' +
+            control.value +
+            ' ×</button>'
+          );
+        }
       );
-      bar.innerHTML=chips.join('');
-      bar.classList.toggle('has-filters',chips.length>0);
+
+      activeBar.innerHTML = chips.join('');
+
+      activeBar.classList.toggle(
+        'has-filters',
+        chips.length > 0
+      );
     };
-    const run=()=> {
-      const term=(q?.value||'').toLowerCase().trim(),ev=event?.value||'',cv=city?.value||'',cc=cat?.value||'';
-      let shown=cards.filter(c=> {
-        const events=(c.dataset.events||'').split('|');
-        const ok=(!term||c.dataset.search.toLowerCase().includes(term))&&(!ev||events.includes(ev))&&(!cv||c.dataset.city===cv)&&(!cc||c.dataset.category===cc);
-        c.classList.toggle('hidden',!ok);
-        return ok
+
+    const run = () => {
+      const term = (
+        search?.value || ''
+      ).toLowerCase().trim();
+
+      const eventValue = event?.value || '';
+      const cityValue = city?.value || '';
+      const categoryValue = category?.value || '';
+
+      const shown = cards.filter((card) => {
+        const events = (
+          card.dataset.events || ''
+        ).split('|');
+
+        const matches =
+          (!term ||
+            card.dataset.search
+              .toLowerCase()
+              .includes(term)) &&
+          (!eventValue ||
+            events.includes(eventValue)) &&
+          (!cityValue ||
+            card.dataset.city === cityValue) &&
+          (!categoryValue ||
+            card.dataset.category === categoryValue);
+
+        card.classList.toggle(
+          'hidden',
+          !matches
+        );
+
+        return matches;
+      });
+
+      if (sort) {
+        const mode = sort.value;
+
+        shown
+          .sort((left, right) => {
+            if (mode === 'rating') {
+              return (
+                Number(right.dataset.rating) -
+                Number(left.dataset.rating)
+              );
+            }
+
+            if (mode === 'price') {
+              return (
+                Number(left.dataset.price) -
+                Number(right.dataset.price)
+              );
+            }
+
+            return 0;
+          })
+          .forEach((card) => {
+            grid.appendChild(card);
+          });
       }
-      );
-      if(sort) {
-        const mode=sort.value;
-        shown.sort((a,b)=>mode==='rating'?+b.dataset.rating-+a.dataset.rating:mode==='price'?+a.dataset.price-+b.dataset.price:0).forEach(c=>grid.appendChild(c))
+
+      if (count) {
+        count.textContent =
+          shown.length +
+          ' vendor' +
+          (shown.length === 1 ? '' : 's') +
+          ' found';
       }
-      if(count)count.textContent=`${shown.length} vendor${shown.length===1?'':'s'} found`;
-      $('#vendorEmpty')&&($('#vendorEmpty').hidden=shown.length>0);
+
+      const empty = qs('#vendorEmpty');
+
+      if (empty) {
+        empty.hidden = shown.length > 0;
+      }
+
       renderChips();
       syncUrl();
     };
-    [q,event,city,cat,sort].forEach(el=>el?.addEventListener(el===q?'input':'change',run));
-    reset?.addEventListener('click',()=> {
-      if(q)q.value='';
-      [event,city,cat].forEach(el=> {
-        if(el)el.value=''
+
+    [
+      search,
+      event,
+      city,
+      category,
+      sort,
+    ].forEach((control) => {
+      if (!control) {
+        return;
       }
+
+      const eventName =
+        control === search
+          ? 'input'
+          : 'change';
+
+      control.addEventListener(
+        eventName,
+        run
       );
-      if(sort)sort.value='featured';
-      run()
-    }
-    );
-    bar?.addEventListener('click',e=> {
-      const b=e.target.closest('[data-clear-filter]');
-      if(!b)return;
-      const el=controls[b.dataset.clearFilter];
-      if(el)el.value='';
-      run()
-    }
-    );
+    });
+
+    reset?.addEventListener('click', () => {
+      if (search) {
+        search.value = '';
+      }
+
+      [
+        event,
+        city,
+        category,
+      ].forEach((control) => {
+        if (control) {
+          control.value = '';
+        }
+      });
+
+      if (sort) {
+        sort.value = 'featured';
+      }
+
+      run();
+    });
+
+    activeBar?.addEventListener('click', (eventObject) => {
+      const button = eventObject.target.closest(
+        '[data-clear-filter]'
+      );
+
+      if (!button) {
+        return;
+      }
+
+      const control = controls[
+        button.dataset.clearFilter
+      ];
+
+      if (control) {
+        control.value = '';
+      }
+
+      run();
+    });
+
     run();
   }
+
   function initPlanner() {
-    const root=$('#plannerChecklist');
-    if(!root)return;
-    const boxes=$$('input[type=checkbox][data-task]',root),key='wz_tasks';
-    const saved=storage.get(key,[]);
-    boxes.forEach(b=>b.checked=saved.includes(b.dataset.task));
-    const sync=()=> {
-      const done=boxes.filter(b=>b.checked).map(b=>b.dataset.task);
-      storage.set(key,done);
-      const pct=boxes.length?Math.round(done.length/boxes.length*100):0;
-      const ring=$('#progressRing');
-      if(ring)ring.style.setProperty('--p',pct);
-      $('#progressPct')&&($('#progressPct').textContent=`${pct}%`);
-      $('#progressDone')&&($('#progressDone').textContent=`${done.length}/${boxes.length}`)
+    const root = qs('#plannerChecklist');
+
+    if (!root) {
+      return;
+    }
+
+    const boxes = qsa(
+      'input[type=checkbox][data-task]',
+      root
+    );
+
+    const key = 'wz_tasks';
+
+    const saved = storage.get(
+      key,
+      []
+    );
+
+    boxes.forEach((box) => {
+      box.checked = saved.includes(
+        box.dataset.task
+      );
+    });
+
+    const sync = () => {
+      const completed = boxes
+        .filter((box) => box.checked)
+        .map((box) => box.dataset.task);
+
+      storage.set(
+        key,
+        completed
+      );
+
+      const percentage = boxes.length
+        ? Math.round(
+            completed.length /
+            boxes.length *
+            100
+          )
+        : 0;
+
+      const ring = qs('#progressRing');
+
+      if (ring) {
+        ring.style.setProperty(
+          '--p',
+          percentage
+        );
+      }
+
+      const percentageText = qs('#progressPct');
+      const doneText = qs('#progressDone');
+
+      if (percentageText) {
+        percentageText.textContent =
+          percentage + '%';
+      }
+
+      if (doneText) {
+        doneText.textContent =
+          completed.length +
+          '/' +
+          boxes.length;
+      }
     };
-    boxes.forEach(b=>b.addEventListener('change',sync));
+
+    boxes.forEach((box) => {
+      box.addEventListener(
+        'change',
+        sync
+      );
+    });
+
     sync();
   }
+
   function initBudget() {
-    const table=$('#budgetTable');
-    if(!table)return;
-    const key='wz_budget';
-    const inputs=$$('input[data-budget]',table),saved=storage.get(key, {
+    const table = qs('#budgetTable');
+
+    if (!table) {
+      return;
     }
+
+    const key = 'wz_budget';
+
+    const inputs = qsa(
+      'input[data-budget]',
+      table
     );
-    inputs.forEach(i=> {
-      if(saved[i.dataset.budget]!=null)i.value=saved[i.dataset.budget]
-    }
+
+    const saved = storage.get(
+      key,
+      {}
     );
-    const money=n=>new Intl.NumberFormat('en-IN', {
-      style:'currency',currency:'INR',maximumFractionDigits:0
-    }
-    ).format(n||0);
-    const sync=()=> {
-      const obj= {
-      };
-      inputs.forEach(i=>obj[i.dataset.budget]=Number(i.value||0));
-      storage.set(key,obj);
-      let planned=0,spent=0;
-      Object.entries(obj).forEach(([k,v])=>k.endsWith(':planned')?planned+=v:spent+=v);
-      $('#budgetPlanned')&&($('#budgetPlanned').textContent=money(planned));
-      $('#budgetSpent')&&($('#budgetSpent').textContent=money(spent));
-      $('#budgetLeft')&&($('#budgetLeft').textContent=money(planned-spent));
-      $('.budget-row',table).slice(1).forEach(row=> {
-        const ins=$('input',row),status=row.querySelector('[data-budget-status]');
-        if(!status||ins.length<2)return;
-        const p=Number(ins[0].value||0),s=Number(ins[1].value||0);
-        status.textContent=!p&&!s?'Track':s>p?'Over plan':s===p&&p>0?'Fully spent':s>0?'In progress':'Planned';
-        status.classList.toggle('over',s>p&&p>0)
+
+    inputs.forEach((input) => {
+      const value = saved[
+        input.dataset.budget
+      ];
+
+      if (value !== undefined && value !== null) {
+        input.value = value;
       }
+    });
+
+    const money = (value) => {
+      return new Intl.NumberFormat(
+        'en-IN',
+        {
+          style: 'currency',
+          currency: 'INR',
+          maximumFractionDigits: 0,
+        }
+      ).format(value || 0);
+    };
+
+    const sync = () => {
+      const data = {};
+
+      inputs.forEach((input) => {
+        data[input.dataset.budget] =
+          Number(input.value || 0);
+      });
+
+      storage.set(
+        key,
+        data
+      );
+
+      let planned = 0;
+      let spent = 0;
+
+      Object.entries(data).forEach(
+        ([budgetKey, value]) => {
+          if (budgetKey.endsWith(':planned')) {
+            planned += value;
+          } else {
+            spent += value;
+          }
+        }
+      );
+
+      const plannedText = qs('#budgetPlanned');
+      const spentText = qs('#budgetSpent');
+      const remainingText = qs('#budgetLeft');
+
+      if (plannedText) {
+        plannedText.textContent = money(planned);
+      }
+
+      if (spentText) {
+        spentText.textContent = money(spent);
+      }
+
+      if (remainingText) {
+        remainingText.textContent = money(
+          planned - spent
+        );
+      }
+
+      qsa(
+        '.budget-row',
+        table
+      ).slice(1).forEach((row) => {
+        const rowInputs = qsa(
+          'input',
+          row
+        );
+
+        const status = row.querySelector(
+          '[data-budget-status]'
+        );
+
+        if (
+          !status ||
+          rowInputs.length < 2
+        ) {
+          return;
+        }
+
+        const rowPlanned = Number(
+          rowInputs[0].value || 0
+        );
+
+        const rowSpent = Number(
+          rowInputs[1].value || 0
+        );
+
+        if (!rowPlanned && !rowSpent) {
+          status.textContent = 'Track';
+        } else if (
+          rowSpent > rowPlanned &&
+          rowPlanned > 0
+        ) {
+          status.textContent = 'Over plan';
+        } else if (
+          rowSpent === rowPlanned &&
+          rowPlanned > 0
+        ) {
+          status.textContent = 'Fully spent';
+        } else if (rowSpent > 0) {
+          status.textContent = 'In progress';
+        } else {
+          status.textContent = 'Planned';
+        }
+
+        status.classList.toggle(
+          'over',
+          rowSpent > rowPlanned &&
+          rowPlanned > 0
+        );
+      });
+    };
+
+    inputs.forEach((input) => {
+      input.addEventListener(
+        'input',
+        sync
+      );
+    });
+
+    sync();
+  }
+
+  function initInviteBuilder() {
+    const live = qs('#liveInvite');
+
+    if (!live) {
+      return;
+    }
+
+    const names = qs('#inviteNames');
+    const date = qs('#inviteDate');
+    const venue = qs('#inviteVenue');
+    const theme = qs('#inviteTheme');
+
+    const themes = {
+      gulab: [
+        '#f4dedf',
+        '#7b2942',
+      ],
+      mehr: [
+        '#f0ddc2',
+        '#7c3f26',
+      ],
+      ivory: [
+        '#f5f1e9',
+        '#34302d',
+      ],
+      noor: [
+        '#e8e3ec',
+        '#4b315f',
+      ],
+      bagh: [
+        '#e7efe2',
+        '#36523b',
+      ],
+      saanjh: [
+        '#2e2432',
+        '#e4bd82',
+      ],
+    };
+
+    const sync = () => {
+      const selectedTheme =
+        themes[theme?.value] ||
+        themes.gulab;
+
+      live.style.background =
+        selectedTheme[0];
+
+      live.style.color =
+        selectedTheme[1];
+
+      live.querySelector(
+        '[data-live-names]'
+      ).textContent =
+        names?.value ||
+        'Your Celebration';
+
+      live.querySelector(
+        '[data-live-date]'
+      ).textContent = date?.value
+        ? new Date(
+            date.value + 'T12:00:00'
+          ).toLocaleDateString(
+            'en-IN',
+            {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            }
+          )
+        : '12 December 2026';
+
+      live.querySelector(
+        '[data-live-venue]'
+      ).textContent =
+        venue?.value ||
+        'Jaipur, Rajasthan';
+    };
+
+    [
+      names,
+      date,
+      venue,
+      theme,
+    ].forEach((control) => {
+      control?.addEventListener(
+        'input',
+        sync
+      );
+    });
+
+    qs('#downloadInvite')?.addEventListener(
+      'click',
+      () => {
+        const selectedTheme =
+          themes[theme?.value] ||
+          themes.gulab;
+
+        const displayName =
+          names?.value.trim() ||
+          'Your Celebration';
+
+        const displayVenue =
+          venue?.value.trim() ||
+          'Jaipur, Rajasthan';
+
+        const displayDate =
+          date?.value
+            ? new Date(
+                date.value + 'T12:00:00'
+              ).toLocaleDateString(
+                'en-IN',
+                {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                }
+              )
+            : '12 December 2026';
+
+        const documentHtml =
+          '<!doctype html>' +
+          '<html lang="en">' +
+          '<head>' +
+          '<meta charset="utf-8">' +
+          '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+          '<title>' +
+          displayName.replace(/[<>]/g, '') +
+          '</title>' +
+          '<style>' +
+          'html,body{margin:0;min-height:100%;}' +
+          'body{display:grid;place-items:center;min-height:100vh;' +
+          'background:' +
+          selectedTheme[0] +
+          ';color:' +
+          selectedTheme[1] +
+          ';font-family:Georgia,serif;text-align:center;}' +
+          '.card{padding:60px 30px;max-width:700px;}' +
+          '.eyebrow{font:700 11px Arial,sans-serif;letter-spacing:.2em;}' +
+          'h1{font-size:clamp(56px,10vw,110px);line-height:.9;font-weight:400;margin:28px 0;}' +
+          'p{font:14px Arial,sans-serif;letter-spacing:.04em;}' +
+          '</style>' +
+          '</head>' +
+          '<body>' +
+          '<main class="card">' +
+          '<div class="eyebrow">YOU’RE INVITED</div>' +
+          '<h1>' +
+          displayName.replace(/[<>]/g, '') +
+          '</h1>' +
+          '<p>' +
+          displayDate.replace(/[<>]/g, '') +
+          '</p>' +
+          '<p>' +
+          displayVenue.replace(/[<>]/g, '') +
+          '</p>' +
+          '</main>' +
+          '</body>' +
+          '</html>';
+
+        const blob = new Blob(
+          [documentHtml],
+          {
+            type: 'text/html;charset=utf-8',
+          }
+        );
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+
+        link.href = url;
+        link.download =
+          'wedding-za-invite.html';
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        URL.revokeObjectURL(url);
+
+        toast(
+          'Invitation exported. Open it in a browser to share or print to PDF.'
+        );
+      }
+    );
+
+    sync();
+  }
+
+  function initShare() {
+    qsa('[data-share]').forEach((button) => {
+      button.addEventListener(
+        'click',
+        async () => {
+          try {
+            await navigator.clipboard.writeText(
+              window.location.href
+            );
+
+            toast('Link copied');
+          } catch {
+            toast(
+              'Copy the page URL to share'
+            );
+          }
+        }
+      );
+    });
+  }
+
+  function initWorkspaceSync() {
+    const boot = window.WZ_BOOT || {};
+
+    if (
+      !boot.loggedIn ||
+      boot.role !== 'host' ||
+      !boot.databaseReady
+    ) {
+      return;
+    }
+
+    let timer = null;
+    let hydrating = false;
+
+    const keys = [
+      'wz_event_brief',
+      'wz_tasks',
+      'wz_budget',
+      'wz_shortlist',
+    ];
+
+    const snapshot = () => {
+      return {
+        brief: storage.get(
+          'wz_event_brief',
+          {}
+        ),
+        tasks: storage.get(
+          'wz_tasks',
+          []
+        ),
+        budget: storage.get(
+          'wz_budget',
+          {}
+        ),
+        shortlist: storage.get(
+          'wz_shortlist',
+          []
+        ),
+      };
+    };
+
+    const hasLocalData = () => {
+      const data = snapshot();
+
+      return (
+        Object.keys(data.brief).length > 0 ||
+        data.tasks.length > 0 ||
+        Object.keys(data.budget).length > 0 ||
+        data.shortlist.length > 0
       );
     };
-    inputs.forEach(i=>i.addEventListener('input',sync));
-    sync();
-  }
-  function initInviteBuilder() {
-    const live=$('#liveInvite');
-    if(!live)return;
-    const names=$('#inviteNames'),date=$('#inviteDate'),venue=$('#inviteVenue'),theme=$('#inviteTheme');
-    const themes= {
-      gulab:['#f4dedf','#7b2942'],mehr:['#f0ddc2','#7c3f26'],ivory:['#f5f1e9','#34302d'],noor:['#e8e3ec','#4b315f'],bagh:['#e7efe2','#36523b'],saanjh:['#2e2432','#e4bd82']
-    };
-    const sync=()=> {
-      const t=themes[theme?.value]||themes.gulab;
-      live.style.background=t[0];
-      live.style.color=t[1];
-      live.querySelector('[data-live-names]').textContent=names?.value||'Your Celebration';
-      live.querySelector('[data-live-date]').textContent=date?.value?new Date(date.value+'T12:00:00').toLocaleDateString('en-IN', {
-        day:'numeric',month:'long',year:'numeric'
+
+    const save = async () => {
+      if (hydrating) {
+        return;
       }
-      ):'12 December 2026';
-      live.querySelector('[data-live-venue]').textContent=venue?.value||'Jaipur, Rajasthan'
-    };
-    [names,date,venue,theme].forEach(x=>x?.addEventListener('input',sync));
-    sync();
-    $('#downloadInvite')?.addEventListener('click',()=>toast('Preview ready. PDF export can be connected in production.'));
-  }
-  function initShare() {
-    $$('[data-share]').forEach(b=>b.addEventListener('click',async()=> {
+
       try {
-        await navigator.clipboard.writeText(location.href);
-        toast('Link copied')
+        await fetch(
+          'api/workspace.php',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify({
+              csrf: boot.csrf,
+              ...snapshot(),
+            }),
+          }
+        );
+      } catch {
+        // Local browser storage remains the fallback.
       }
-      catch {
-        toast('Copy the page URL to share')
+    };
+
+    const queueSave = () => {
+      clearTimeout(timer);
+
+      timer = setTimeout(
+        save,
+        500
+      );
+    };
+
+    window.addEventListener(
+      'wz:storage',
+      (event) => {
+        if (
+          keys.includes(
+            event.detail?.key
+          )
+        ) {
+          queueSave();
+        }
       }
-    }
-    ));
+    );
+
+    fetch('api/workspace.php', {
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+    })
+      .then((response) => response.json())
+      .then((output) => {
+        if (
+          !output.ok ||
+          !output.configured
+        ) {
+          return;
+        }
+
+        const workspace =
+          output.workspace || {};
+
+        const serverHasData =
+          Object.keys(
+            workspace.brief || {}
+          ).length > 0 ||
+          (workspace.tasks || []).length > 0 ||
+          Object.keys(
+            workspace.budget || {}
+          ).length > 0 ||
+          (workspace.shortlist || []).length > 0;
+
+        if (
+          serverHasData &&
+          !hasLocalData()
+        ) {
+          hydrating = true;
+
+          localStorage.setItem(
+            'wz_event_brief',
+            JSON.stringify(
+              workspace.brief || {}
+            )
+          );
+
+          localStorage.setItem(
+            'wz_tasks',
+            JSON.stringify(
+              workspace.tasks || []
+            )
+          );
+
+          localStorage.setItem(
+            'wz_budget',
+            JSON.stringify(
+              workspace.budget || {}
+            )
+          );
+
+          localStorage.setItem(
+            'wz_shortlist',
+            JSON.stringify(
+              workspace.shortlist || []
+            )
+          );
+
+          window.location.reload();
+          return;
+        }
+
+        if (
+          !serverHasData &&
+          hasLocalData()
+        ) {
+          queueSave();
+        }
+      })
+      .catch(() => {
+        // Local browser storage remains the fallback.
+      });
   }
-}
-)();
+})();
