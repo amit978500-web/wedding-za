@@ -1,10 +1,9 @@
-# Wedding Za — All Celebrations Edition 3.2
+# Wedding Za — Full Website Release 1.0
 
-Wedding Za is now positioned as a premium Indian **celebration and event discovery platform**, not a wedding-only directory.
+Wedding Za is a premium Indian celebration discovery and planning platform for:
 
-It supports discovery for:
 - Weddings
-- Engagements / roka
+- Engagements and roka
 - Birthdays
 - Anniversaries
 - Baby showers
@@ -12,72 +11,214 @@ It supports discovery for:
 - Festive functions
 - Private parties
 
-Weddings remain an important category, but the homepage, vendor finder, vendor directory, planning tools, editorial system and business onboarding are now designed around multiple event types.
+The codebase is intentionally written in a simple, readable, line-by-line style.
 
-## Start on Windows
-1. Extract the ZIP completely.
+## Product areas
+
+The website includes:
+
+- Multi-event cinematic homepage
+- Dynamic event landing pages
+- Dynamic city landing pages
+- Vendor discovery and filtering
+- Vendor profile pages
+- Shortlist
+- Event brief
+- Planning checklist
+- Budget tracker
+- Persistent planning workspace for signed-in hosts
+- Host account workspace
+- Vendor account and business onboarding
+- Vendor business dashboard
+- Database-backed enquiries
+- Real celebrations
+- Inspiration board
+- Journal and articles
+- E-invite builder with standalone HTML export
+- Contact, careers and legal pages
+- Dynamic sitemap and SEO metadata
+
+## Local start
+
+### Windows
+
+1. Clone or download the repository.
 2. Double-click `START-WEDDING-ZA.bat`.
-3. Keep the black terminal window open.
-4. The browser opens automatically, normally at `http://127.0.0.1:8088`.
+3. Keep the terminal window open.
+4. The browser normally opens at `http://127.0.0.1:8088`.
 
-The launcher detects PHP in PATH and common XAMPP, Laragon and WAMP installations.
+The launcher checks common PHP installations including XAMPP, Laragon and WAMP.
 
-## Manual start
+### Manual PHP start
+
 ```bash
 php -S 127.0.0.1:8088
 ```
-Then open `http://127.0.0.1:8088`.
 
-## Main UX changes
-- New multi-event cinematic homepage hero.
-- Hero message: **“Whatever the occasion. Make it unforgettable.”**
-- Indian event imagery rather than wedding-only hero imagery.
-- Event-type shortcuts directly in the hero.
-- Dedicated event-type discovery chapter for eight celebration types.
-- Vendor finder now asks: event type → vendor category → city.
-- Vendor directory has a working event-type filter.
-- Vendor profiles contain multi-event suitability data.
-- Broader vendor categories: Photography & Films, Beauty & Styling, Fashion & Styling, Entertainment, etc.
-- Real Celebrations now includes Wedding, Engagement, Corporate and Birthday examples.
-- Planner/checklist and budget language updated for general events.
-- Inspiration and Journal content broadened beyond weddings.
-- Vendor onboarding and contact flows updated for event businesses and hosts.
+Then open:
 
-## Animation
+```text
+http://127.0.0.1:8088
+```
+
+## Database setup
+
+The public website works without MySQL.
+
+Without MySQL:
+
+- Shortlist is stored in the browser.
+- Planner data is stored in the browser.
+- Account access runs in local session mode.
+- Lead forms fall back to `storage/leads.csv`.
+
+With MySQL configured:
+
+- Users are persistent.
+- Passwords use PHP `password_hash()`.
+- Host planning workspaces sync to the database.
+- Vendor business profiles are persistent.
+- Vendor enquiries are stored in the database.
+- Vendor dashboard reads real business data.
+
+Setup:
+
+1. Create a MySQL database.
+2. Import `database/schema.sql`.
+3. Copy `config.example.php` to `config.local.php`.
+4. Fill in the database credentials.
+5. Set `app_url` to the production site URL.
+
+See `database/README.md` for the short setup guide.
+
+Never commit `config.local.php`.
+
+## Account routes
+
+Host:
+
+```text
+register.php?role=host
+login.php?role=host
+account.php
+```
+
+Vendor:
+
+```text
+register.php?role=vendor
+login.php?role=vendor
+register-vendor.php
+vendor-dashboard.php
+```
+
+## Important files
+
+```text
+index.php
+event.php
+city.php
+vendors.php
+vendor.php
+planner.php
+shortlist.php
+account.php
+register.php
+register-vendor.php
+vendor-dashboard.php
+invites.php
+api/lead.php
+api/workspace.php
+includes/auth.php
+includes/database.php
+assets/data/site.json
+assets/js/app.js
+assets/js/vision.js
+assets/css/app.css
+assets/css/vision.css
+database/schema.sql
+```
+
+## Code style
+
+Read:
+
+```text
+docs/CODE-STYLE.md
+```
+
+Project rules include:
+
+- one logical statement per line
+- readable PHP control flow
+- visibly nested HTML/PHP templates
+- expanded JavaScript functions
+- one CSS declaration per line
+- no minified-looking source code
+
+The repository also includes `.editorconfig`.
+
+## Quality checks
+
+GitHub Actions validates:
+
+- every PHP file with `php -l`
+- `assets/js/app.js` with `node --check`
+- `assets/js/vision.js` with `node --check`
+- `assets/data/site.json`
+
+Workflow:
+
+```text
+.github/workflows/code-quality.yml
+```
+
+## Motion dependencies
+
 Advanced motion uses CDN-hosted:
+
 - GSAP 3.15.0
 - ScrollTrigger 3.15.0
 - Lenis 1.3.26
 
-The destination rail remains non-pinned to avoid the stuck-scroll feeling fixed in the previous build. Reduced-motion accessibility is retained.
+The site still retains its non-pinned city rail behavior and a reduced-motion fallback.
 
-## Main files
-- `index.php` — all-celebrations cinematic homepage
-- `vendors.php` — event-aware vendor directory
-- `vendor.php` — dynamic vendor profile
-- `city.php` — dynamic city guide
-- `inspiration.php` — inspiration board
-- `real-weddings.php` — Real Celebrations archive (legacy filename retained for compatibility)
-- `wedding-story.php` — dynamic celebration story (legacy filename retained)
-- `blog.php` / `article.php` — journal
-- `planner.php` — event checklist + budget tracker
-- `invites.php` — digital invitation builder
-- `shortlist.php` — saved vendors
-- `register-vendor.php` — event-business onboarding
-- `vendor-dashboard.php` — business dashboard concept
-- `assets/data/site.json` — event types, vendors, stories and editorial demo data
-- `assets/css/vision.css` — editorial design system
-- `assets/js/app.js` — filters, shortlist, planner, forms and core interactions
-- `assets/js/vision.js` — cinematic motion layer
-- `api/lead.php` — local demo lead endpoint
+## Production deployment
 
-## Production note
-This is a strong PHP front-end/product foundation. Before public launch, connect production authentication, a database/CMS, CRM/email delivery, uploads, moderation, analytics, security controls and backups.
+For a normal PHP shared host:
 
----
+1. Upload the repository contents to the web root.
+2. Use PHP 8.1 or newer.
+3. Create/import the MySQL database.
+4. Add `config.local.php`.
+5. Ensure `storage/` is writable if CSV fallback is required.
+6. Confirm Apache reads `.htaccess`.
+7. Open `sitemap.php` and confirm production URLs.
+8. Test host registration and login.
+9. Test vendor registration and dashboard.
+10. Test enquiry submission.
+11. Test planner sync while logged in.
+12. Enable HTTPS.
 
-## Professional Git workflow
+## Current external dependencies
 
-This project is prepared for GitHub with a stable `main` branch and a daily-work `develop` branch.
+The design still uses remote:
 
-Read `GIT-START-HERE.txt` and `docs/DEVELOPMENT-WORKFLOW.md` before connecting the remote repository. Runtime lead data and secret/environment files are excluded by `.gitignore`.
+- Google Fonts
+- Unsplash demo imagery
+- GSAP / ScrollTrigger / Lenis CDNs
+
+For a completely self-hosted production package, replace remote demo imagery with licensed local media and choose a compliant font delivery strategy.
+
+## Git workflow
+
+- `main` — stable releases
+- `develop` — integration branch
+- `feature/*` — focused feature work
+- `release/*` — final release preparation
+
+Read:
+
+```text
+docs/DEVELOPMENT-WORKFLOW.md
+```
