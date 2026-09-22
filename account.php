@@ -1,145 +1,180 @@
 <?php
-    require __DIR__.'/includes/bootstrap.php';
-    require __DIR__.'/includes/auth.php';
-    require __DIR__.'/includes/components.php';
-    wz_require_role('host');
-    $user=wz_user();
-    $pageTitle='My Wedding Za';
-    $pageDescription='Your Wedding Za account workspace.';
-    $pageKey='account';
-    require __DIR__.'/includes/header.php';
+
+require __DIR__ . '/includes/bootstrap.php';
+require __DIR__ . '/includes/auth.php';
+require __DIR__ . '/includes/components.php';
+
+wz_require_role('host');
+
+$user = wz_user();
+$databaseReady = wz_database_ready();
+
+$pageTitle = 'My Wedding Za';
+$pageDescription = 'Your Wedding Za account workspace.';
+$pageKey = 'account';
+
+require __DIR__ . '/includes/header.php';
 ?>
+
 <main>
     <section class="account-v2-hero">
         <div class="container account-v2-hero-grid">
             <div>
                 <span class="eyebrow">
-                YOUR ACCOUNT
+                    YOUR ACCOUNT
                 </span>
+
                 <h1>
-                Welcome back,
-                <br>
-                <em>
-                <?= h(explode(' ',(string)$user['name'])[0]) ?>
-                .
-                </em>
+                    Welcome back,
+                    <br>
+                    <em>
+                        <?= h(explode(' ', (string)$user['name'])[0]) ?>.
+                    </em>
                 </h1>
+
                 <p>
-                Your saved vendors, event brief and planning tools live here. The current build uses browser storage for planning data and PHP session state for the signed-in account shell.
+                    Your shortlist, event brief, checklist and budget
+                    are connected through one planning workspace.
                 </p>
             </div>
+
             <div class="account-v2-card">
-                <span>
-                ACCOUNT TYPE
-                </span>
+                <span>ACCOUNT TYPE</span>
+
                 <strong>
-                Host / Planner
+                    Host / Planner
                 </strong>
+
                 <p>
-                <?= h((string)$user['email']) ?>
+                    <?= h((string)$user['email']) ?>
                 </p>
+
+                <p>
+                    <?= $databaseReady
+                        ? 'Cloud workspace sync is active.'
+                        : 'Local browser workspace is active.' ?>
+                </p>
+
                 <a href="logout.php">
-                Log out ↗
+                    Log out ↗
                 </a>
             </div>
         </div>
     </section>
+
     <section class="section paper-2">
         <div class="container account-v2-grid">
             <a href="planner.php">
-            <span>
-            01
-            </span>
-            <h3>
-            Planning Studio
-            </h3>
-            <p>
-            Event brief, checklist, budget and progress.
-            </p>
-            <b>
-            Open workspace ↗
-            </b>
+                <span>01</span>
+
+                <h3>
+                    Planning Studio
+                </h3>
+
+                <p>
+                    Event brief, checklist, budget and progress.
+                </p>
+
+                <b>
+                    Open workspace ↗
+                </b>
             </a>
+
             <a href="shortlist.php">
-            <span>
-            02
-            </span>
-            <h3>
-            Shortlist
-            </h3>
-            <p>
-            Review the vendors worth contacting.
-            </p>
-            <b>
-            Review saves ↗
-            </b>
+                <span>02</span>
+
+                <h3>
+                    Shortlist
+                </h3>
+
+                <p>
+                    Compare the vendors you are seriously considering.
+                </p>
+
+                <b>
+                    Review saves ↗
+                </b>
             </a>
+
             <a href="vendors.php">
-            <span>
-            03
-            </span>
-            <h3>
-            Discover
-            </h3>
-            <p>
-            Find venues and teams by occasion and city.
-            </p>
-            <b>
-            Find vendors ↗
-            </b>
+                <span>03</span>
+
+                <h3>
+                    Discover
+                </h3>
+
+                <p>
+                    Find venues and teams by occasion and city.
+                </p>
+
+                <b>
+                    Find vendors ↗
+                </b>
             </a>
+
             <a href="invites.php">
-            <span>
-            04
-            </span>
-            <h3>
-            Invitations
-            </h3>
-            <p>
-            Shape the first guest-facing impression.
-            </p>
-            <b>
-            Open invites ↗
-            </b>
+                <span>04</span>
+
+                <h3>
+                    Invitations
+                </h3>
+
+                <p>
+                    Build and share the first guest-facing impression.
+                </p>
+
+                <b>
+                    Open invites ↗
+                </b>
             </a>
         </div>
     </section>
+
     <section class="section">
         <div class="container account-state-grid">
             <div>
                 <span class="eyebrow">
-                ACCOUNT FOUNDATION
+                    WORKSPACE STATUS
                 </span>
+
                 <h2>
-                Ready for the
-                <br>
-                <em>
-                database layer.
-                </em>
+                    Your planning,
+                    <br>
+                    <em>kept together.</em>
                 </h2>
             </div>
+
             <div>
-                <p>
-                This account shell already separates authentication state from planning state. The next backend phase can move users, event briefs, shortlists and enquiries into MySQL while preserving the current UX.
-                </p>
-                <div class="account-tech-list">
-                    <span>
-                    PHP sessions
-                    </span>
-                    <span>
-                    CSRF protection
-                    </span>
-                    <span>
-                    Role-aware routes
-                    </span>
-                    <span>
-                    MySQL-ready separation
-                    </span>
-                </div>
+                <?php if ($databaseReady): ?>
+                    <p>
+                        Your account is connected to MySQL.
+                        Planning data is cached in your browser for speed
+                        and synced to your Wedding Za account automatically.
+                    </p>
+
+                    <div class="account-tech-list">
+                        <span>Persistent account</span>
+                        <span>Workspace sync</span>
+                        <span>CSRF protection</span>
+                        <span>Secure password hash</span>
+                    </div>
+                <?php else: ?>
+                    <p>
+                        This installation is running without MySQL.
+                        Your planning tools still work using local browser storage.
+                        Configure the database to enable cross-device account sync.
+                    </p>
+
+                    <div class="account-tech-list">
+                        <span>Local shortlist</span>
+                        <span>Local event brief</span>
+                        <span>Local checklist</span>
+                        <span>Local budget</span>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </section>
 </main>
-<?php
-    require __DIR__.'/includes/footer.php';
-?>
+
+<?php require __DIR__ . '/includes/footer.php'; ?>
