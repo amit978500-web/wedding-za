@@ -4,4 +4,4 @@ Disallow: /api/
 Disallow: /database/
 Disallow: /config.local.php
 
-Sitemap: /sitemap.xml
+Sitemap: /sitemap.php
