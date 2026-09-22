@@ -1228,8 +1228,93 @@
     qs('#downloadInvite')?.addEventListener(
       'click',
       () => {
+        const selectedTheme =
+          themes[theme?.value] ||
+          themes.gulab;
+
+        const displayName =
+          names?.value.trim() ||
+          'Your Celebration';
+
+        const displayVenue =
+          venue?.value.trim() ||
+          'Jaipur, Rajasthan';
+
+        const displayDate =
+          date?.value
+            ? new Date(
+                date.value + 'T12:00:00'
+              ).toLocaleDateString(
+                'en-IN',
+                {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                }
+              )
+            : '12 December 2026';
+
+        const documentHtml =
+          '<!doctype html>' +
+          '<html lang="en">' +
+          '<head>' +
+          '<meta charset="utf-8">' +
+          '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+          '<title>' +
+          displayName.replace(/[<>]/g, '') +
+          '</title>' +
+          '<style>' +
+          'html,body{margin:0;min-height:100%;}' +
+          'body{display:grid;place-items:center;min-height:100vh;' +
+          'background:' +
+          selectedTheme[0] +
+          ';color:' +
+          selectedTheme[1] +
+          ';font-family:Georgia,serif;text-align:center;}' +
+          '.card{padding:60px 30px;max-width:700px;}' +
+          '.eyebrow{font:700 11px Arial,sans-serif;letter-spacing:.2em;}' +
+          'h1{font-size:clamp(56px,10vw,110px);line-height:.9;font-weight:400;margin:28px 0;}' +
+          'p{font:14px Arial,sans-serif;letter-spacing:.04em;}' +
+          '</style>' +
+          '</head>' +
+          '<body>' +
+          '<main class="card">' +
+          '<div class="eyebrow">YOU’RE INVITED</div>' +
+          '<h1>' +
+          displayName.replace(/[<>]/g, '') +
+          '</h1>' +
+          '<p>' +
+          displayDate.replace(/[<>]/g, '') +
+          '</p>' +
+          '<p>' +
+          displayVenue.replace(/[<>]/g, '') +
+          '</p>' +
+          '</main>' +
+          '</body>' +
+          '</html>';
+
+        const blob = new Blob(
+          [documentHtml],
+          {
+            type: 'text/html;charset=utf-8',
+          }
+        );
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+
+        link.href = url;
+        link.download =
+          'wedding-za-invite.html';
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        URL.revokeObjectURL(url);
+
         toast(
-          'Preview ready. PDF export can be connected in production.'
+          'Invitation exported. Open it in a browser to share or print to PDF.'
         );
       }
     );
