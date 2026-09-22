@@ -1,7 +1,18 @@
 Options -Indexes
+
 DirectoryIndex index.php
 ErrorDocument 404 /404.php
+
+RewriteEngine On
+RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
+<FilesMatch "^(config\.local\.php|\.env.*)$">
+    Require all denied
+</FilesMatch>
+
 <IfModule mod_headers.c>
-  Header always set X-Content-Type-Options "nosniff"
-  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
 </IfModule>
