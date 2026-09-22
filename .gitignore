@@ -5,6 +5,7 @@ storage/*.csv
 !storage/.htaccess
 
 # Environment / secrets
+config.local.php
 .env
 .env.*
 !.env.example
