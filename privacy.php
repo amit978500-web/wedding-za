@@ -1,2 +1,48 @@
-<?php require __DIR__.'/includes/bootstrap.php';require __DIR__.'/includes/components.php';$pageTitle='Privacy Policy';$pageDescription='Wedding Za privacy policy demo.';$pageKey='privacy';require __DIR__.'/includes/header.php';?>
-<main><?php wz_page_intro('LEGAL','Privacy policy','How information is handled in this demo build and what must be configured before production launch.'); ?><section class="section-sm"><div class="container legal-copy"><h2>1. Demo status</h2><p>This package is a development/demo website. Shortlists, inspiration saves, checklist progress and budget values are stored in your browser using localStorage.</p><h2>2. Form submissions</h2><p>Contact, vendor application, wedding submission and vendor enquiry forms are stored in the server-side file <code>storage/leads.csv</code> for local testing. Do not collect real customer data until your hosting, consent language, retention policy and access controls are configured.</p><h2>3. Production requirements</h2><p>Before launch, add your final legal entity details, lawful basis/consent approach, analytics/cookie disclosures, data retention periods, privacy contact and any third-party processors such as CRM, email, payments and hosting providers.</p><h2>4. Security</h2><p>Use HTTPS, restrict access to the storage directory, keep PHP and dependencies updated, and move sensitive data into a properly secured database or CRM.</p></div></section></main><?php require __DIR__.'/includes/footer.php';?>
+<?php
+    require __DIR__.'/includes/bootstrap.php';
+    require __DIR__.'/includes/components.php';
+    $pageTitle='Privacy Policy';
+    $pageDescription='Wedding Za privacy policy demo.';
+    $pageKey='privacy';
+    require __DIR__.'/includes/header.php';
+?>
+<main>
+    <?php
+        wz_page_intro('LEGAL','Privacy policy','How information is handled in this demo build and what must be configured before production launch.');
+    ?>
+    <section class="section-sm">
+        <div class="container legal-copy">
+            <h2>
+            1. Demo status
+            </h2>
+            <p>
+            This package is a development/demo website. Shortlists, inspiration saves, checklist progress and budget values are stored in your browser using localStorage.
+            </p>
+            <h2>
+            2. Form submissions
+            </h2>
+            <p>
+            Contact, vendor application, wedding submission and vendor enquiry forms are stored in the server-side file
+            <code>
+            storage/leads.csv
+            </code>
+            for local testing. Do not collect real customer data until your hosting, consent language, retention policy and access controls are configured.
+            </p>
+            <h2>
+            3. Production requirements
+            </h2>
+            <p>
+            Before launch, add your final legal entity details, lawful basis/consent approach, analytics/cookie disclosures, data retention periods, privacy contact and any third-party processors such as CRM, email, payments and hosting providers.
+            </p>
+            <h2>
+            4. Security
+            </h2>
+            <p>
+            Use HTTPS, restrict access to the storage directory, keep PHP and dependencies updated, and move sensitive data into a properly secured database or CRM.
+            </p>
+        </div>
+    </section>
+</main>
+<?php
+    require __DIR__.'/includes/footer.php';
+?>

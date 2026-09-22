@@ -1,22 +1,45 @@
 # Changelog
 
-All notable Wedding Za changes will be recorded here.
+All notable Wedding Za changes are recorded here.
 
-## [Unreleased]
-
-### Planned
-- Continue premium all-events UI/UX refinement.
-- Replace remaining generic imagery with curated India-first event photography.
-- Expand vendor/event data and production backend integrations.
-
-## [0.1.0] - 2026-09-21
+## [1.0.0] - 2026-09-22
 
 ### Added
-- PHP-based Wedding Za marketplace foundation.
-- Multi-event positioning for weddings, engagements, birthdays, anniversaries, baby showers, corporate events, festive functions and private parties.
-- Vendor discovery and profile flows.
-- City/event discovery pages.
-- Real celebrations, inspiration and journal sections.
-- Planner, shortlist, invitation builder and vendor dashboard concepts.
-- India-focused visual direction and smoother scroll behavior.
-- Lead capture endpoint with local CSV storage for development.
+
+- Full multi-event positioning across Wedding Za.
+- Premium homepage planning dock.
+- Vendor Discovery V2.
+- Event-aware vendor filtering.
+- Vendor Profile V2.
+- Dynamic event landing pages.
+- Dynamic city landing pages.
+- Connected Planning Studio.
+- Connected Shortlist workspace.
+- Host account workspace.
+- Vendor account flow.
+- Vendor business onboarding.
+- Vendor business dashboard.
+- Optional MySQL persistence.
+- Password-hashed persistent accounts.
+- CSRF-protected account actions.
+- Database-backed lead and enquiry storage.
+- Persistent host planning workspace sync.
+- CSV fallback for local development.
+- Dynamic sitemap.
+- Canonical and Open Graph metadata.
+- Functional standalone e-invite export.
+- GitHub Actions syntax checks.
+- Repository-wide human-readable code style rules.
+
+### Changed
+
+- Reworked the codebase into simple line-by-line formatting.
+- Removed fake vendor dashboard KPI data from the production path.
+- Replaced placeholder account messaging with real persistence status.
+- Updated asset cache version to 4.0.0.
+- Strengthened Apache security headers and config protection.
+
+### Notes
+
+- Demo images and advanced animation libraries are still loaded remotely.
+- Production email delivery, image uploads and payment processing are not included in 1.0.0.

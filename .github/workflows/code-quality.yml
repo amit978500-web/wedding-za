@@ -1,0 +1,46 @@
+name: Code Quality
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - develop
+      - "feature/**"
+      - "release/**"
+
+jobs:
+  syntax:
+    name: PHP and JavaScript syntax
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+
+      - name: Check PHP syntax
+        shell: bash
+        run: |
+          set -e
+          while IFS= read -r -d '' file; do
+            php -l "$file"
+          done < <(find . -type f -name "*.php" -print0)
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check assets/js/app.js
+          node --check assets/js/vision.js
+
+      - name: Validate JSON
+        run: |
+          node -e "JSON.parse(require('fs').readFileSync('assets/data/site.json', 'utf8')); console.log('site.json OK')"
