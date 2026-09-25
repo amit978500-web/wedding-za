@@ -40,7 +40,7 @@
     }
 
     const updateFieldState = () => {
-      $('label', form).forEach((field) => {
+      $$('label', form).forEach((field) => {
         const select = field.querySelector('select');
 
         if (!select) {
@@ -95,7 +95,7 @@
       updatePreview
     );
 
-    $('select', form).forEach((select) => {
+    $$('select', form).forEach((select) => {
       select.addEventListener(
         'change',
         updateFieldState
