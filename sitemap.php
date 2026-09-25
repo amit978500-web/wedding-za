@@ -3,8 +3,12 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/includes/database.php';
+require_once __DIR__ . '/includes/content.php';
+require_once __DIR__ . '/includes/vendors.php';
 
-header('Content-Type: application/xml; charset=utf-8');
+header(
+    'Content-Type: application/xml; charset=utf-8'
+);
 
 function wz_xml(string $value): string
 {
@@ -30,20 +34,41 @@ $urls = [
 
 foreach (wz_data('cities') as $city) {
     $urls[] = wz_app_url(
-        'city.php?city=' . urlencode($city)
+        'city.php?city=' .
+        urlencode($city)
     );
 }
 
 foreach (wz_data('event_types') as $event) {
     $urls[] = wz_app_url(
-        'event.php?type=' . urlencode(
+        'event.php?type=' .
+        urlencode(
             (string)$event['name']
+        )
+    );
+}
+
+foreach (wz_published_articles() as $article) {
+    $urls[] = wz_app_url(
+        'article.php?id=' .
+        urlencode(
+            (string)$article['id']
+        )
+    );
+}
+
+foreach (wz_public_vendors() as $vendor) {
+    $urls[] = wz_app_url(
+        'vendor.php?id=' .
+        urlencode(
+            (string)$vendor['id']
         )
     );
 }
 
 echo '<?xml version="1.0" encoding="UTF-8"?>';
 echo "\n";
+
 echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 echo "\n";
 
