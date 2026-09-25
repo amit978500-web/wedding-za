@@ -23,6 +23,25 @@ if (
         $approval = (string)($_POST['approval_status'] ?? 'pending');
         $featured = isset($_POST['featured']) ? 1 : 0;
 
+        $plan = (string)($_POST['plan'] ?? 'free');
+        $billingStatus = (string)($_POST['billing_status'] ?? 'inactive');
+
+        if (!in_array(
+            $plan,
+            ['free', 'featured', 'pro'],
+            true
+        )) {
+            $plan = 'free';
+        }
+
+        if (!in_array(
+            $billingStatus,
+            ['inactive', 'trial', 'active', 'past_due', 'cancelled'],
+            true
+        )) {
+            $billingStatus = 'inactive';
+        }
+
         if (!in_array(
             $approval,
             ['pending', 'approved', 'rejected'],
@@ -34,13 +53,17 @@ if (
         $statement = $pdo->prepare(
             'UPDATE vendor_profiles
              SET approval_status = :approval_status,
-                 featured = :featured
+                 featured = :featured,
+                 plan = :plan,
+                 billing_status = :billing_status
              WHERE id = :id'
         );
 
         $statement->execute([
             'approval_status' => $approval,
             'featured' => $featured,
+            'plan' => $plan,
+            'billing_status' => $billingStatus,
             'id' => $vendorId,
         ]);
 
@@ -51,6 +74,8 @@ if (
             [
                 'approval_status' => $approval,
                 'featured' => $featured,
+                'plan' => $plan,
+                'billing_status' => $billingStatus,
             ]
         );
 
@@ -113,6 +138,8 @@ require __DIR__ . '/includes/header.php';
                     <th>Price</th>
                     <th>Approval</th>
                     <th>Featured</th>
+                    <th>Plan</th>
+                    <th>Billing</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -146,6 +173,14 @@ require __DIR__ . '/includes/header.php';
 
                         <td>
                             <?= !empty($vendor['featured']) ? 'Yes' : 'No' ?>
+                        </td>
+
+                        <td>
+                            <?= h((string)$vendor['plan']) ?>
+                        </td>
+
+                        <td>
+                            <?= h((string)$vendor['billing_status']) ?>
                         </td>
 
                         <td>
@@ -186,6 +221,28 @@ require __DIR__ . '/includes/header.php';
                                     Featured
                                 </label>
 
+                                <select name="plan">
+                                    <?php foreach (['free', 'featured', 'pro'] as $plan): ?>
+                                        <option
+                                            value="<?= h($plan) ?>"
+                                            <?= $plan === $vendor['plan'] ? 'selected' : '' ?>
+                                        >
+                                            <?= h(ucfirst($plan)) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+
+                                <select name="billing_status">
+                                    <?php foreach (['inactive', 'trial', 'active', 'past_due', 'cancelled'] as $billingStatus): ?>
+                                        <option
+                                            value="<?= h($billingStatus) ?>"
+                                            <?= $billingStatus === $vendor['billing_status'] ? 'selected' : '' ?>
+                                        >
+                                            <?= h(ucwords(str_replace('_', ' ', $billingStatus))) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+
                                 <button
                                     class="admin-button"
                                     type="submit"
@@ -199,7 +256,7 @@ require __DIR__ . '/includes/header.php';
 
                 <?php if (!$vendors): ?>
                     <tr>
-                        <td colspan="8">
+                        <td colspan="10">
                             No vendor profiles yet.
                         </td>
                     </tr>
