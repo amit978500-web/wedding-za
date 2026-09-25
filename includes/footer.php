@@ -155,6 +155,6 @@ window.WZ_BOOT = <?= json_encode([
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
 <script src="assets/js/app.js?v=4.0.0"></script>
-<script src="assets/js/vision.js?v=4.0.0"></script>
+<script src="assets/js/vision.js?v=4.0.1"></script>
 </body>
 </html>
