@@ -103,3 +103,32 @@ test('homepage animation boot has no runtime errors', async ({ page }) => {
 
   expect(hasGsap).toBeTruthy();
 });
+
+
+test('header exposes login and signup actions', async ({ page }) => {
+  await page.goto('/', {
+    waitUntil: 'domcontentloaded',
+  });
+
+  await expect(
+    page.locator('.vision-auth-login')
+  ).toBeVisible();
+
+  await expect(
+    page.locator('.vision-auth-signup')
+  ).toBeVisible();
+
+  await expect(
+    page.locator('.vision-auth-login')
+  ).toHaveAttribute(
+    'href',
+    'login.php?role=host'
+  );
+
+  await expect(
+    page.locator('.vision-auth-signup')
+  ).toHaveAttribute(
+    'href',
+    'register.php?role=host'
+  );
+});
