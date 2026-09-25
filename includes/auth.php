@@ -554,7 +554,8 @@ function wz_require_role(string $role): void
     ) {
         if ($role === 'admin') {
             header(
-                'Location: admin/login.php'
+                'Location: ' .
+                wz_app_url('admin/login.php')
             );
 
             exit;
