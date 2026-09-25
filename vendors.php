@@ -98,11 +98,11 @@
                             <?php
                                 foreach(wz_data('event_types') as $event):
                             ?>
-                                <option value="<?=h($event['name'])?>
-                                "
-                                <?= $selectedEvent===$event['name']?'selected':'' ?>
+                                <option
+                                    value="<?= h($event['name']) ?>"
+                                    <?= $selectedEvent === $event['name'] ? 'selected' : '' ?>
                                 >
-                                <?= h($event['name']) ?>
+                                    <?= h($event['name']) ?>
                                 </option>
                             <?php
                                 endforeach;
@@ -120,11 +120,11 @@
                             <?php
                                 foreach(wz_data('cities') as $city):
                             ?>
-                                <option value="<?=h($city)?>
-                                "
-                                <?= $selectedCity===$city?'selected':'' ?>
+                                <option
+                                    value="<?= h($city) ?>"
+                                    <?= $selectedCity === $city ? 'selected' : '' ?>
                                 >
-                                <?= h($city) ?>
+                                    <?= h($city) ?>
                                 </option>
                             <?php
                                 endforeach;
@@ -142,11 +142,11 @@
                             <?php
                                 foreach(wz_data('categories') as $c):
                             ?>
-                                <option value="<?=h($c['name'])?>
-                                "
-                                <?= $selectedCategory===$c['name']?'selected':'' ?>
+                                <option
+                                    value="<?= h($c['name']) ?>"
+                                    <?= $selectedCategory === $c['name'] ? 'selected' : '' ?>
                                 >
-                                <?= h($c['name']) ?>
+                                    <?= h($c['name']) ?>
                                 </option>
                             <?php
                                 endforeach;
