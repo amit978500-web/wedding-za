@@ -2,6 +2,7 @@ User-agent: *
 Disallow: /storage/
 Disallow: /api/
 Disallow: /database/
+Disallow: /admin/
 Disallow: /config.local.php
 
 Sitemap: /sitemap.php
