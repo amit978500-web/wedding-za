@@ -1,4 +1,4 @@
-# Wedding Za — Full Website Release 1.0
+# Wedding Za — Production-Ready Marketplace Foundation
 
 Wedding Za is a premium Indian celebration discovery and planning platform for:
 
@@ -37,6 +37,16 @@ The website includes:
 - E-invite builder with standalone HTML export
 - Contact, careers and legal pages
 - Dynamic sitemap and SEO metadata
+- Protected admin operations workspace
+- Vendor moderation and listing plans
+- Lead operations and internal notes
+- Journal CMS
+- Secure media library and vendor gallery uploads
+- Audit logging
+- Login throttling and stronger session security
+- Protected health monitoring
+- Database backup command
+- Desktop and mobile Chromium QA
 
 ## Local start
 
@@ -163,9 +173,12 @@ The repository also includes `.editorconfig`.
 GitHub Actions validates:
 
 - every PHP file with `php -l`
-- `assets/js/app.js` with `node --check`
-- `assets/js/vision.js` with `node --check`
-- `assets/data/site.json`
+- JavaScript syntax
+- JSON validity
+- clean MySQL 8 schema import
+- live PHP HTTP smoke tests
+- desktop Chromium routes and interactions
+- mobile Chromium routes and interactions
 
 Workflow:
 
@@ -222,3 +235,41 @@ Read:
 ```text
 docs/DEVELOPMENT-WORKFLOW.md
 ```
+
+
+## Admin operations
+
+Create an admin account from the command line:
+
+```bash
+php scripts/create-admin.php "Admin Name" admin@example.com "StrongPassword123"
+```
+
+Then open:
+
+```text
+/admin/login.php
+```
+
+See `docs/OPERATIONS.md` for vendor moderation, media uploads, backups, health checks and release operations.
+
+## Media uploads
+
+Production media uploads support JPG, PNG and WebP.
+
+Uploaded media is:
+
+- MIME-validated
+- size-limited
+- dimension-validated
+- randomly renamed
+- recorded in MySQL
+- blocked from PHP execution
+
+Use only owned or properly licensed media.
+
+## Analytics
+
+Set `analytics.measurement_id` in `config.local.php` when your production analytics/privacy setup is ready.
+
+Analytics remains disabled when the value is blank.
