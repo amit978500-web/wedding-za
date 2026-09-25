@@ -32,3 +32,9 @@ tmp/
 # Build / archive outputs
 *.zip
 *.tar.gz
+
+uploads/media/*
+!uploads/media/.gitkeep
+!uploads/media/.htaccess
+storage/backups/
+storage/logs/
