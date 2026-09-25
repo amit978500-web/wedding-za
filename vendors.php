@@ -1,12 +1,14 @@
 <?php
     require __DIR__.'/includes/bootstrap.php';
     require __DIR__.'/includes/components.php';
+    require __DIR__.'/includes/vendors.php';
     $pageTitle='Event Vendors';
     $pageDescription='Browse venues, photographers, planners, decorators, caterers, artists and event specialists across India.';
     $pageKey='vendors';
     $selectedEvent=(string)($_GET['event']??'');
     $selectedCity=(string)($_GET['city']??'');
     $selectedCategory=(string)($_GET['category']??'');
+    $publicVendors = wz_public_vendors();
     require __DIR__.'/includes/header.php';
 ?>
 <main>
@@ -96,11 +98,11 @@
                             <?php
                                 foreach(wz_data('event_types') as $event):
                             ?>
-                                <option value="<?=h($event['name'])?>
-                                "
-                                <?= $selectedEvent===$event['name']?'selected':'' ?>
+                                <option
+                                    value="<?= h($event['name']) ?>"
+                                    <?= $selectedEvent === $event['name'] ? 'selected' : '' ?>
                                 >
-                                <?= h($event['name']) ?>
+                                    <?= h($event['name']) ?>
                                 </option>
                             <?php
                                 endforeach;
@@ -118,11 +120,11 @@
                             <?php
                                 foreach(wz_data('cities') as $city):
                             ?>
-                                <option value="<?=h($city)?>
-                                "
-                                <?= $selectedCity===$city?'selected':'' ?>
+                                <option
+                                    value="<?= h($city) ?>"
+                                    <?= $selectedCity === $city ? 'selected' : '' ?>
                                 >
-                                <?= h($city) ?>
+                                    <?= h($city) ?>
                                 </option>
                             <?php
                                 endforeach;
@@ -140,11 +142,11 @@
                             <?php
                                 foreach(wz_data('categories') as $c):
                             ?>
-                                <option value="<?=h($c['name'])?>
-                                "
-                                <?= $selectedCategory===$c['name']?'selected':'' ?>
+                                <option
+                                    value="<?= h($c['name']) ?>"
+                                    <?= $selectedCategory === $c['name'] ? 'selected' : '' ?>
                                 >
-                                <?= h($c['name']) ?>
+                                    <?= h($c['name']) ?>
                                 </option>
                             <?php
                                 endforeach;
@@ -250,7 +252,9 @@
                     </div>
                     <div class="vendor-grid vendor-grid-v2" id="vendorListing">
                         <?php
-                            foreach(wz_data('vendors') as $v)wz_vendor_card($v);
+                            foreach ($publicVendors as $v) {
+                                wz_vendor_card($v);
+                            }
                         ?>
                     </div>
                     <div class="empty-state" id="vendorEmpty" hidden>

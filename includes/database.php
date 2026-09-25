@@ -22,6 +22,18 @@ function wz_config(): array
             'password' => getenv('WZ_DB_PASSWORD') ?: '',
             'charset' => getenv('WZ_DB_CHARSET') ?: 'utf8mb4',
         ],
+        'analytics' => [
+            'measurement_id' => getenv('WZ_ANALYTICS_ID') ?: '',
+        ],
+        'seo' => [
+            'organization_name' => 'Wedding Za',
+            'default_og_image' => getenv('WZ_DEFAULT_OG_IMAGE') ?: '',
+            'contact_email' => getenv('WZ_CONTACT_EMAIL') ?: '',
+            'contact_phone' => getenv('WZ_CONTACT_PHONE') ?: '',
+        ],
+        'operations' => [
+            'health_token' => getenv('WZ_HEALTH_TOKEN') ?: '',
+        ],
     ];
 
     $localConfig = WZ_ROOT . '/config.local.php';
