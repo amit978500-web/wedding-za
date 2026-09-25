@@ -171,7 +171,7 @@ if (wz_is_logged_in()) {
 
     <link
         rel="stylesheet"
-        href="assets/css/vision.css?v=4.0.0"
+        href="assets/css/vision.css?v=4.0.1"
     >
 </head>
 
@@ -265,6 +265,36 @@ if (wz_is_logged_in()) {
                     ♡
                     <b id="shortlistCount">0</b>
                 </a>
+
+                <?php if (!wz_is_logged_in()): ?>
+                    <div
+                        class="vision-auth-cta"
+                        aria-label="Account access"
+                    >
+                        <a
+                            class="vision-auth-login"
+                            href="login.php?role=host"
+                        >
+                            Log in
+                        </a>
+
+                        <a
+                            class="vision-auth-signup"
+                            href="register.php?role=host"
+                        >
+                            Sign up
+                            <span>↗</span>
+                        </a>
+                    </div>
+                <?php else: ?>
+                    <a
+                        class="vision-auth-account"
+                        href="<?= h($accountUrl) ?>"
+                    >
+                        <?= h($accountLabel) ?>
+                        <span>↗</span>
+                    </a>
+                <?php endif; ?>
 
                 <button
                     class="vision-menu-btn"
