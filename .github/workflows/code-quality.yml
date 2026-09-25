@@ -127,3 +127,32 @@ jobs:
         if: failure()
         run: |
           cat /tmp/wedding-za-php.log
+
+
+  browser:
+    name: Chromium desktop and mobile smoke test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: pdo_mysql, fileinfo
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install QA dependencies
+        run: |
+          npm install
+          npx playwright install --with-deps chromium
+
+      - name: Run browser QA
+        run: |
+          npm run test:e2e
