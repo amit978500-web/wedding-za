@@ -30,30 +30,78 @@
     tick();
   }
   function heroPlanner() {
-    const form=$('#heroPlanDock'), eventSelect=$('#heroEvent'), preview=$('#heroPlanPreview'), label=$('#heroPlanLabel');
-    if(!form||!eventSelect)return;
-    const updateFieldState=()=>$('label',form).forEach(el=> {
-      const select=el.querySelector('select');
-      if(select)el.classList.toggle('is-filled',Boolean(select.value));
+    const form = $('#heroPlanDock');
+    const eventSelect = $('#heroEvent');
+    const preview = $('#heroPlanPreview');
+    const label = $('#heroPlanLabel');
+
+    if (!form || !eventSelect) {
+      return;
     }
-    );
-    const updatePreview=()=> {
-      const opt=eventSelect.options[eventSelect.selectedIndex];
-      const src=opt?.dataset?.image;
-      if(label)label.textContent=eventSelect.value ? `Plan a ${eventSelect.value.toLowerCase()}` : 'Build your event team';
-      if(preview&&src&&preview.src!==src) {
-        preview.classList.add('is-changing');
-        const img=new Image();
-        img.onload=()=> {
-          preview.src=src;
-          requestAnimationFrame(()=>preview.classList.remove('is-changing'))
-        };
-        img.src=src;
+
+    const updateFieldState = () => {
+      $$('label', form).forEach((field) => {
+        const select = field.querySelector('select');
+
+        if (!select) {
+          return;
+        }
+
+        field.classList.toggle(
+          'is-filled',
+          Boolean(select.value)
+        );
+      });
+    };
+
+    const updatePreview = () => {
+      const option = eventSelect.options[
+        eventSelect.selectedIndex
+      ];
+
+      const source = option?.dataset?.image;
+
+      if (label) {
+        label.textContent = eventSelect.value
+          ? `Plan a ${eventSelect.value.toLowerCase()}`
+          : 'Build your event team';
       }
+
+      if (
+        preview &&
+        source &&
+        preview.src !== source
+      ) {
+        preview.classList.add('is-changing');
+
+        const image = new Image();
+
+        image.onload = () => {
+          preview.src = source;
+
+          requestAnimationFrame(() => {
+            preview.classList.remove('is-changing');
+          });
+        };
+
+        image.src = source;
+      }
+
       updateFieldState();
     };
-    eventSelect.addEventListener('change',updatePreview);
-    $('select',form).forEach(s=>s.addEventListener('change',updateFieldState));
+
+    eventSelect.addEventListener(
+      'change',
+      updatePreview
+    );
+
+    $$('select', form).forEach((select) => {
+      select.addEventListener(
+        'change',
+        updateFieldState
+      );
+    });
+
     updatePreview();
   }
   function smoothScroll() {
