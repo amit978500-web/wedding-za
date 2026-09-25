@@ -15,6 +15,27 @@ if (!$article) {
 $pageTitle = (string)$article['title'];
 $pageDescription = (string)$article['excerpt'];
 $pageKey = 'article';
+$pageImage = (string)($article['image'] ?? '');
+
+$structuredData = [
+    [
+        '@context' => 'https://schema.org',
+        '@type' => 'Article',
+        'headline' => (string)$article['title'],
+        'description' => (string)$article['excerpt'],
+        'image' => $pageImage,
+        'mainEntityOfPage' => wz_app_url(
+            'article.php?id=' .
+            urlencode(
+                (string)$article['id']
+            )
+        ),
+        'publisher' => [
+            '@type' => 'Organization',
+            'name' => 'Wedding Za',
+        ],
+    ],
+];
 
 $bodyMap = [
     'jaipur-venues' => [
