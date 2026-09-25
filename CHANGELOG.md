@@ -2,6 +2,47 @@
 
 All notable Wedding Za changes are recorded here.
 
+## [1.1.0] - 2026-09-25
+
+### Added
+
+- Protected admin operations workspace.
+- Vendor approval, featuring and plan controls.
+- Free / Featured / Pro vendor plan foundation.
+- Lead status management and internal notes.
+- User account status management.
+- Journal CMS connected to public articles.
+- Secure media upload service.
+- Admin media library.
+- Vendor portfolio uploads.
+- Approved MySQL vendors in the public marketplace.
+- Audit logging.
+- Login throttling.
+- Stronger password policy.
+- CLI-only admin account creator.
+- Protected health endpoint.
+- Database backup command.
+- Operations runbook.
+- Configurable analytics.
+- Organization, WebSite, Article and LocalBusiness structured data.
+- CMS articles and approved vendors in the dynamic sitemap.
+- MySQL schema validation in CI.
+- HTTP smoke testing.
+- Chromium desktop and mobile browser QA.
+
+### Changed
+
+- Re-aligned `develop` with the tested `main` release before hardening work.
+- Strengthened browser security headers and CSP.
+- Blocked admin routes from crawler indexing.
+- Extended vendor records for uploaded galleries and commercial plan state.
+
+### Notes
+
+- Real licensed production photography still needs to be supplied and uploaded.
+- Payment gateway processing is not connected; vendor plan and billing-state operations are prepared for future payment integration.
+- Transactional email remains a separate production phase.
+
 ## [1.0.0] - 2026-09-22
 
 ### Added
