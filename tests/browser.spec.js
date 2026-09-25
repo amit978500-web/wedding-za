@@ -105,30 +105,29 @@ test('homepage animation boot has no runtime errors', async ({ page }) => {
 });
 
 
-test('header exposes login and signup actions', async ({ page }) => {
+test('header exposes account actions responsively', async ({ page }, testInfo) => {
   await page.goto('/', {
     waitUntil: 'domcontentloaded',
   });
 
-  await expect(
-    page.locator('.vision-auth-login')
-  ).toBeVisible();
+  const login = page.locator('.vision-auth-login');
+  const signup = page.locator('.vision-auth-signup');
 
-  await expect(
-    page.locator('.vision-auth-signup')
-  ).toBeVisible();
+  await expect(signup).toBeVisible();
 
-  await expect(
-    page.locator('.vision-auth-login')
-  ).toHaveAttribute(
+  await expect(signup).toHaveAttribute(
+    'href',
+    'register.php?role=host'
+  );
+
+  await expect(login).toHaveAttribute(
     'href',
     'login.php?role=host'
   );
 
-  await expect(
-    page.locator('.vision-auth-signup')
-  ).toHaveAttribute(
-    'href',
-    'register.php?role=host'
-  );
+  if (testInfo.project.name === 'desktop-chromium') {
+    await expect(login).toBeVisible();
+  } else {
+    await expect(login).toBeHidden();
+  }
 });
