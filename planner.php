@@ -110,9 +110,8 @@
                         <?php
                             foreach(wz_data('event_types') as $event):
                         ?>
-                            <option value="<?=h($event['name'])?>
-                            ">
-                            <?= h($event['name']) ?>
+                            <option value="<?= h($event['name']) ?>">
+                                <?= h($event['name']) ?>
                             </option>
                         <?php
                             endforeach;
@@ -130,9 +129,8 @@
                         <?php
                             foreach(wz_data('cities') as $city):
                         ?>
-                            <option value="<?=h($city)?>
-                            ">
-                            <?= h($city) ?>
+                            <option value="<?= h($city) ?>">
+                                <?= h($city) ?>
                             </option>
                         <?php
                             endforeach;
@@ -159,20 +157,24 @@
                         <option value="">
                         Choose range
                         </option>
-                        <option>
-                        Under ₹5 lakh
+                        <option value="Under ₹5 lakh">
+                            Under ₹5 lakh
                         </option>
-                        <option>
-                        ₹5–15 lakh
+
+                        <option value="₹5–15 lakh">
+                            ₹5–15 lakh
                         </option>
-                        <option>
-                        ₹15–30 lakh
+
+                        <option value="₹15–30 lakh">
+                            ₹15–30 lakh
                         </option>
-                        <option>
-                        ₹30–60 lakh
+
+                        <option value="₹30–60 lakh">
+                            ₹30–60 lakh
                         </option>
-                        <option>
-                        ₹60 lakh+
+
+                        <option value="₹60 lakh+">
+                            ₹60 lakh+
                         </option>
                     </select>
                 </label>
