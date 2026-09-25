@@ -228,7 +228,7 @@ body.vision-site::before {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 20px
+  gap: 14px
 }
 
 .vision-discover {
@@ -263,6 +263,95 @@ body.vision-site::before {
 
 .vision-header.scrolled .vision-heart b {
   color: var(--v-cream)
+}
+
+.vision-auth-cta {
+  display: flex;
+  align-items: stretch;
+  min-height: 42px;
+  border: 1px solid rgba(255,255,255,.48);
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(18,14,12,.18);
+  backdrop-filter: blur(14px);
+  transition:
+    border-color .3s var(--v-ease),
+    background .3s var(--v-ease),
+    transform .3s var(--v-ease)
+}
+
+.vision-auth-cta:hover {
+  border-color: rgba(255,255,255,.88);
+  transform: translateY(-1px)
+}
+
+.vision-auth-login,
+.vision-auth-signup,
+.vision-auth-account {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  white-space: nowrap;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase
+}
+
+.vision-auth-login {
+  padding: 0 14px;
+  color: inherit
+}
+
+.vision-auth-signup {
+  gap: 8px;
+  padding: 0 16px;
+  background: #fff;
+  color: var(--v-ink)
+}
+
+.vision-auth-signup span,
+.vision-auth-account span {
+  font-size: 12px;
+  transition: transform .3s var(--v-ease)
+}
+
+.vision-auth-signup:hover span,
+.vision-auth-account:hover span {
+  transform: translate(2px,-2px)
+}
+
+.vision-auth-account {
+  gap: 9px;
+  min-width: 120px;
+  padding: 0 17px;
+  border: 1px solid rgba(255,255,255,.55);
+  border-radius: 999px;
+  background: rgba(18,14,12,.18);
+  color: inherit;
+  backdrop-filter: blur(14px);
+  transition:
+    background .3s var(--v-ease),
+    color .3s var(--v-ease),
+    transform .3s var(--v-ease)
+}
+
+.vision-auth-account:hover {
+  background: #fff;
+  color: var(--v-ink);
+  transform: translateY(-1px)
+}
+
+.vision-header.scrolled .vision-auth-cta,
+.vision-header.scrolled .vision-auth-account {
+  border-color: rgba(23,18,15,.28);
+  background: rgba(255,255,255,.64)
+}
+
+.vision-header.scrolled .vision-auth-signup {
+  background: var(--v-ink);
+  color: #fff
 }
 
 .vision-menu-btn {
@@ -2168,6 +2257,17 @@ body.menu-open .vision-header {
     display: none
   }
 
+  .vision-auth-cta,
+  .vision-auth-account {
+    min-height: 40px
+  }
+
+  .vision-auth-login,
+  .vision-auth-signup,
+  .vision-auth-account {
+    min-height: 40px
+  }
+
   .vision-hero h1 {
     font-size: clamp(76px,13vw,130px)
   }
@@ -2291,6 +2391,34 @@ body.menu-open .vision-header {
 
   .vision-heart {
     font-size: 19px
+  }
+
+  .vision-auth-login {
+    display: none
+  }
+
+  .vision-auth-signup {
+    padding: 0 13px
+  }
+
+  .vision-auth-signup {
+    font-size: 0
+  }
+
+  .vision-auth-signup::before {
+    content: "Join";
+    font-size: 9px
+  }
+
+  .vision-auth-account {
+    min-width: 0;
+    padding: 0 13px;
+    font-size: 0
+  }
+
+  .vision-auth-account::before {
+    content: "Account";
+    font-size: 9px
   }
 
   .vision-menu-btn {
