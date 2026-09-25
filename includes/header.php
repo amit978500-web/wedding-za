@@ -10,6 +10,42 @@ $pageKey = $pageKey ?? '';
 $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
 $canonicalUrl = wz_app_url(ltrim($requestUri, '/'));
 
+$seoConfig = wz_config()['seo'] ?? [];
+$analyticsConfig = wz_config()['analytics'] ?? [];
+
+$pageImage = $pageImage
+    ?? ($seoConfig['default_og_image'] ?? '');
+
+$structuredData = $structuredData ?? [];
+
+$baseStructuredData = [
+    [
+        '@context' => 'https://schema.org',
+        '@type' => 'Organization',
+        'name' => (string)($seoConfig['organization_name'] ?? 'Wedding Za'),
+        'url' => wz_app_url(''),
+        'email' => (string)($seoConfig['contact_email'] ?? ''),
+        'telephone' => (string)($seoConfig['contact_phone'] ?? ''),
+    ],
+    [
+        '@context' => 'https://schema.org',
+        '@type' => 'WebSite',
+        'name' => 'Wedding Za',
+        'url' => wz_app_url(''),
+    ],
+];
+
+$structuredData = array_merge(
+    $baseStructuredData,
+    is_array($structuredData)
+        ? $structuredData
+        : []
+);
+
+$analyticsId = trim(
+    (string)($analyticsConfig['measurement_id'] ?? '')
+);
+
 $accountUrl = 'login.php?role=host';
 $accountLabel = 'Log in';
 
@@ -67,6 +103,42 @@ if (wz_is_logged_in()) {
         property="og:url"
         content="<?= h($canonicalUrl) ?>"
     >
+
+    <?php if ($pageImage !== ''): ?>
+        <meta
+            property="og:image"
+            content="<?= h($pageImage) ?>"
+        >
+    <?php endif; ?>
+
+    <?php foreach ($structuredData as $schema): ?>
+        <script type="application/ld+json"><?= json_encode(
+            array_filter(
+                $schema,
+                fn ($value): bool => $value !== ''
+            ),
+            JSON_UNESCAPED_SLASHES
+            | JSON_UNESCAPED_UNICODE
+        ) ?></script>
+    <?php endforeach; ?>
+
+    <?php if ($analyticsId !== ''): ?>
+        <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=<?= h($analyticsId) ?>"
+        ></script>
+
+        <script>
+            window.dataLayer = window.dataLayer || [];
+
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+
+            gtag('js', new Date());
+            gtag('config', <?= json_encode($analyticsId) ?>);
+        </script>
+    <?php endif; ?>
 
     <title><?= h($pageTitle) ?> · Wedding Za</title>
 
