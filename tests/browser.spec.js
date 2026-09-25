@@ -76,3 +76,30 @@ test('admin login is isolated from public account login', async ({ page }) => {
     'noindex,nofollow'
   );
 });
+
+
+test('homepage animation boot has no runtime errors', async ({ page }) => {
+  const errors = [];
+
+  page.on('pageerror', (error) => {
+    errors.push(error.message);
+  });
+
+  await page.goto('/', {
+    waitUntil: 'networkidle',
+  });
+
+  await page.waitForTimeout(1200);
+
+  expect(errors).toEqual([]);
+
+  const hero = page.locator('.vision-hero');
+
+  await expect(hero).toBeVisible();
+
+  const hasGsap = await page.evaluate(() => {
+    return typeof window.gsap !== 'undefined';
+  });
+
+  expect(hasGsap).toBeTruthy();
+});
