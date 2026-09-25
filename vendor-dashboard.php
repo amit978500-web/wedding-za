@@ -10,6 +10,7 @@ $pdo = wz_db();
 
 $profile = null;
 $enquiries = [];
+$gallery = [];
 $newEnquiryCount = 0;
 $totalEnquiryCount = 0;
 $profileCompleteness = 0;
@@ -30,6 +31,14 @@ if ($pdo && !empty($user['id'])) {
     $profile = $profileStatement->fetch() ?: null;
 
     if ($profile) {
+        $gallery = json_decode(
+            (string)($profile['gallery_json'] ?? '[]'),
+            true
+        );
+
+        if (!is_array($gallery)) {
+            $gallery = [];
+        }
         $businessName = (string)$profile['business_name'];
 
         $enquiryStatement = $pdo->prepare(
@@ -345,6 +354,92 @@ require __DIR__ . '/includes/header.php';
                         <small>What clients should know</small>
                     </div>
                 </div>
+            </section>
+
+            <section class="business-panel">
+                <div class="business-panel-head">
+                    <div>
+                        <span class="eyebrow">
+                            PORTFOLIO MEDIA
+                        </span>
+
+                        <h2>
+                            Add real work,
+                            <br>
+                            <em>not stock imagery.</em>
+                        </h2>
+                    </div>
+                </div>
+
+                <?php if ($profile): ?>
+                    <form
+                        class="form-stack"
+                        data-async
+                        action="api/media-upload.php"
+                        method="post"
+                        enctype="multipart/form-data"
+                    >
+                        <input
+                            type="hidden"
+                            name="csrf"
+                            value="<?= h(wz_csrf_token()) ?>"
+                        >
+
+                        <div class="field">
+                            <label for="vendorGalleryImage">
+                                Portfolio image
+                            </label>
+
+                            <input
+                                id="vendorGalleryImage"
+                                type="file"
+                                name="image"
+                                accept="image/jpeg,image/png,image/webp"
+                                required
+                            >
+                        </div>
+
+                        <div class="field">
+                            <label for="vendorGalleryAlt">
+                                Alt text
+                            </label>
+
+                            <input
+                                id="vendorGalleryAlt"
+                                name="alt_text"
+                                maxlength="255"
+                                placeholder="Describe this event image"
+                            >
+                        </div>
+
+                        <button
+                            class="pill-btn wine"
+                            type="submit"
+                        >
+                            Upload portfolio image ↗
+                        </button>
+
+                        <div class="success-box"></div>
+                    </form>
+
+                    <?php if ($gallery): ?>
+                        <div class="story-gallery vendor-story-gallery">
+                            <?php foreach ($gallery as $imagePath): ?>
+                                <figure>
+                                    <img
+                                        src="<?= h((string)$imagePath) ?>"
+                                        alt="<?= h((string)$profile['business_name']) ?> portfolio"
+                                        loading="lazy"
+                                    >
+                                </figure>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <p class="business-tech-note">
+                        Submit your business profile before uploading portfolio media.
+                    </p>
+                <?php endif; ?>
             </section>
 
             <section class="business-panel">
