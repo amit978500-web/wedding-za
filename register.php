@@ -155,7 +155,7 @@ require __DIR__ . '/includes/header.php';
                             id="registerPassword"
                             type="password"
                             name="password"
-                            minlength="8"
+                            minlength="10"
                             required
                             autocomplete="new-password"
                         >
@@ -170,7 +170,7 @@ require __DIR__ . '/includes/header.php';
                             id="registerPasswordConfirm"
                             type="password"
                             name="confirm_password"
-                            minlength="8"
+                            minlength="10"
                             required
                             autocomplete="new-password"
                         >

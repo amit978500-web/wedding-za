@@ -1,8 +1,9 @@
 <?php
     require __DIR__.'/includes/bootstrap.php';
     require __DIR__.'/includes/components.php';
+    require __DIR__.'/includes/vendors.php';
     $id=(string)($_GET['id']??'amber-courtyard');
-    $v=wz_vendor($id)??(wz_data('vendors')[0]??null);
+    $v=wz_public_vendor($id)??(wz_public_vendors()[0]??null);
     if(!$v) {
     http_response_code(404);
     header('Location:404.php');
@@ -11,6 +12,23 @@
     $pageTitle=$v['name'];
     $pageDescription=$v['about'];
     $pageKey='vendor';
+    $pageImage=(string)($v['image']??'');
+
+    $structuredData=[
+        [
+            '@context'=>'https://schema.org',
+            '@type'=>'LocalBusiness',
+            'name'=>(string)$v['name'],
+            'description'=>(string)$v['about'],
+            'image'=>$pageImage,
+            'areaServed'=>(string)($v['city']??'India'),
+            'url'=>wz_app_url(
+                'vendor.php?id='.
+                urlencode((string)$v['id'])
+            ),
+        ],
+    ];
+
     require __DIR__.'/includes/header.php';
     $images=$v['images']??[$v['image']];
     while(count($images)<3)$images[]=$v['image'];
@@ -334,11 +352,8 @@
                     <div class="success-box">
                     </div>
                     <p class="form-note">
-                    Demo enquiries are saved locally to
-                    <code>
-                    storage/leads.csv
-                    </code>
-                    . Connect your CRM/email before production launch.
+                    Enquiries are stored securely in the Wedding Za lead system.
+                    
                     </p>
                 </form>
             </aside>
@@ -368,7 +383,7 @@
             <div class="vendor-grid">
                 <?php
                     $n=0;
-                    foreach(wz_data('vendors') as $x) {
+                    foreach(wz_public_vendors() as $x) {
                     if($x['id']!==$v['id']&&$x['category']===$v['category']) {
                     wz_vendor_card($x);
                     if(++$n===3)break;

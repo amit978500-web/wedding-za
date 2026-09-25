@@ -1,124 +1,169 @@
 <?php
-    require __DIR__.'/includes/bootstrap.php';
-    require __DIR__.'/includes/components.php';
-    $id=(string)($_GET['id']??'jaipur-venues');
-    $a=wz_article($id)??(wz_data('articles')[0]??null);
-    if(!$a) {
-    header('Location:404.php');
+
+require __DIR__ . '/includes/bootstrap.php';
+require __DIR__ . '/includes/components.php';
+require __DIR__ . '/includes/content.php';
+
+$id = (string)($_GET['id'] ?? 'jaipur-venues');
+$article = wz_published_article($id);
+
+if (!$article) {
+    header('Location: 404.php');
     exit;
-    }
-    $pageTitle=$a['title'];
-    $pageDescription=$a['excerpt'];
-    $pageKey='article';
-    require __DIR__.'/includes/header.php';
-    $bodyMap=[
-    'jaipur-venues'=>['Start with the operational reality','The prettiest venue can be the wrong venue if guest flow, access, parking, sound limits or service logistics do not work. Shortlist with a practical layer before you visit.','Compare capacity function-by-function','Ask for realistic seated and floating capacities for every space you plan to use. A dinner, conference, birthday or ceremony can consume the same room very differently.','Treat logistics as part of the venue cost','Transport, valet, rooms, loading access and overtime can change the economics quickly. Map the real event journey before comparing quotes.'],
-    'makeup-trial'=>['Hospitality is choreography','A private event feels effortless only when arrival, seating, service, performances and exits are intentionally timed.','Build one source of truth','Create a guest-facing schedule with venue details, parking or transport notes, dress cues and a single contact for questions.','Design buffer into every transition','The fastest timeline is rarely the real timeline when dozens or hundreds of guests are moving, eating or waiting for a programme cue.'],
-    'guest-experience'=>['Run-of-show is your event spine','A corporate event feels polished when speakers, AV, hospitality and transitions are planned as one system rather than separate vendor tasks.','Build cue ownership','Every major moment should have one person responsible for the cue: doors, walk-ons, video, lights, microphones and audience movement.','Protect reset time','Breakouts, stage changes and meal service need buffer. A schedule that looks efficient on paper can feel rushed in the room.'],
-    'decor-direction'=>['Edit before you brief','Your decorator cannot build clarity from 80 unrelated screenshots. Reduce the moodboard until references agree on palette, density, material and lighting.','Name the feeling','Use words such as intimate, botanical, graphic, old-world or contemporary. A feeling is more useful than a folder with no hierarchy.','Choose anchor moments','Spend visual energy where guests spend time: arrival, dining, stage, photo moment and main function. Not every corner needs to become a photo set.'],
-    'wedding-budget'=>['Budget the big movers first','Venue, food, production, decor, photo and hospitality usually have more power to move your total than the smaller line items.','Create a contingency before spending','Protect a percentage of the budget for guest changes, logistics, technical additions and last-minute production needs.','Track committed and paid separately','A deposit is not the same as the final liability. Your tracker should show committed total, payment made and balance due.'],
-    'photo-brief'=>['Give context, not a shot-list novel','Your photographer needs the event flow, important people and must-not-miss moments more than a hundred copied poses.','Name the people who matter','Assign one point person who can help gather key groups or VIPs quickly without pulling the photographer away from the event.','Share visual preferences with examples','If you love documentary, editorial, flash-heavy party photos or clean corporate coverage, show a small consistent reference set.']];
-    $b=$bodyMap[$id]??$bodyMap['jaipur-venues'];
+}
+
+$pageTitle = (string)$article['title'];
+$pageDescription = (string)$article['excerpt'];
+$pageKey = 'article';
+$pageImage = (string)($article['image'] ?? '');
+
+$structuredData = [
+    [
+        '@context' => 'https://schema.org',
+        '@type' => 'Article',
+        'headline' => (string)$article['title'],
+        'description' => (string)$article['excerpt'],
+        'image' => $pageImage,
+        'mainEntityOfPage' => wz_app_url(
+            'article.php?id=' .
+            urlencode(
+                (string)$article['id']
+            )
+        ),
+        'publisher' => [
+            '@type' => 'Organization',
+            'name' => 'Wedding Za',
+        ],
+    ],
+];
+
+$bodyMap = [
+    'jaipur-venues' => [
+        'Start with the operational reality',
+        'The prettiest venue can be the wrong venue if guest flow, access, parking, sound limits or service logistics do not work. Shortlist with a practical layer before you visit.',
+        'Compare capacity function-by-function',
+        'Ask for realistic seated and floating capacities for every space you plan to use. A dinner, conference, birthday or ceremony can consume the same room very differently.',
+        'Treat logistics as part of the venue cost',
+        'Transport, valet, rooms, loading access and overtime can change the economics quickly. Map the real event journey before comparing quotes.',
+    ],
+];
+
+require __DIR__ . '/includes/header.php';
+
+$isCmsArticle = ($article['source'] ?? '') === 'database';
+$bodyBlocks = $isCmsArticle
+    ? wz_article_body_blocks((string)($article['body'] ?? ''))
+    : [];
+
+$fallbackBody = $bodyMap[$id]
+    ?? $bodyMap['jaipur-venues'];
 ?>
+
 <main>
     <section class="article-hero">
         <div class="container article-hero-inner reveal">
             <span class="eyebrow">
-            <?= h($a['category']) ?>
+                <?= h((string)$article['category']) ?>
             </span>
+
             <h1>
-            <?= h($a['title']) ?>
+                <?= h((string)$article['title']) ?>
             </h1>
+
             <div class="article-meta">
-                <span>
-                <?= h($a['date']) ?>
-                </span>
-                <span>
-                <?= h($a['read']) ?>
-                </span>
-                <span>
-                Wedding Za Journal
-                </span>
+                <span><?= h((string)$article['date']) ?></span>
+                <span><?= h((string)$article['read']) ?></span>
+                <span>Wedding Za Journal</span>
             </div>
         </div>
-        <div class="container article-cover reveal">
-            <img src="<?=h($a['image'])?>
-            " alt="
-            <?= h($a['title']) ?>
-            ">
-        </div>
+
+        <?php if (!empty($article['image'])): ?>
+            <div class="container article-cover reveal">
+                <img
+                    src="<?= h((string)$article['image']) ?>"
+                    alt="<?= h((string)$article['title']) ?>"
+                >
+            </div>
+        <?php endif; ?>
     </section>
+
     <section class="section-sm">
         <div class="container article-layout">
             <aside class="article-aside">
                 <div>
-                    <small>
-                    SHARE THIS GUIDE
-                    </small>
+                    <small>SHARE THIS GUIDE</small>
+
                     <div class="article-share">
-                        <button type="button" data-share>
-                        LINK
+                        <button
+                            type="button"
+                            data-share
+                        >
+                            LINK
                         </button>
                     </div>
                 </div>
             </aside>
+
             <article class="article-body">
                 <p>
-                <strong>
-                <?= h($a['excerpt']) ?>
-                </strong>
+                    <strong>
+                        <?= h((string)$article['excerpt']) ?>
+                    </strong>
                 </p>
-                <h2>
-                <?= h($b[0]) ?>
-                </h2>
-                <p>
-                <?= h($b[1]) ?>
-                </p>
-                <blockquote>
-                Make the practical decision first. Then make it beautiful.
-                </blockquote>
-                <h2>
-                <?= h($b[2]) ?>
-                </h2>
-                <p>
-                <?= h($b[3]) ?>
-                </p>
-                <h2>
-                <?= h($b[4]) ?>
-                </h2>
-                <p>
-                <?= h($b[5]) ?>
-                </p>
-                <h3>
-                A simple rule
-                </h3>
-                <p>
-                When two options look equally beautiful, choose the one that removes friction for you, your guests and the team delivering the event. That decision tends to age better than the trendier one.
-                </p>
+
+                <?php if ($isCmsArticle): ?>
+                    <?php foreach ($bodyBlocks as $block): ?>
+                        <p>
+                            <?= nl2br(h($block)) ?>
+                        </p>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <h2><?= h($fallbackBody[0]) ?></h2>
+                    <p><?= h($fallbackBody[1]) ?></p>
+
+                    <blockquote>
+                        Make the practical decision first.
+                        Then make it beautiful.
+                    </blockquote>
+
+                    <h2><?= h($fallbackBody[2]) ?></h2>
+                    <p><?= h($fallbackBody[3]) ?></p>
+
+                    <h2><?= h($fallbackBody[4]) ?></h2>
+                    <p><?= h($fallbackBody[5]) ?></p>
+                <?php endif; ?>
             </article>
+
             <aside class="article-related">
-                <h3>
-                Keep reading
-                </h3>
+                <h3>Keep reading</h3>
+
                 <?php
-                    foreach(array_slice(array_filter(wz_data('articles'),fn($x)=>$x['id']!==$a['id']),0,3) as $r):
+                $related = array_values(
+                    array_filter(
+                        wz_published_articles(),
+                        fn (array $item): bool =>
+                            (string)$item['id'] !== $id
+                    )
+                );
                 ?>
-                    <a class="related-mini" href="article.php?id=<?=urlencode($r['id'])?>
-                    ">
-                    <span>
-                    <?= h($r['category']) ?>
-                    </span>
-                    <b>
-                    <?= h($r['title']) ?>
-                    </b>
+
+                <?php foreach (array_slice($related, 0, 3) as $item): ?>
+                    <a
+                        class="related-mini"
+                        href="article.php?id=<?= urlencode((string)$item['id']) ?>"
+                    >
+                        <span>
+                            <?= h((string)$item['category']) ?>
+                        </span>
+
+                        <b>
+                            <?= h((string)$item['title']) ?>
+                        </b>
                     </a>
-                <?php
-                    endforeach;
-                ?>
+                <?php endforeach; ?>
             </aside>
         </div>
     </section>
 </main>
-<?php
-    require __DIR__.'/includes/footer.php';
-?>
+
+<?php require __DIR__ . '/includes/footer.php'; ?>
