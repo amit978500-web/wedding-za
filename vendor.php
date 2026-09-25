@@ -12,6 +12,23 @@
     $pageTitle=$v['name'];
     $pageDescription=$v['about'];
     $pageKey='vendor';
+    $pageImage=(string)($v['image']??'');
+
+    $structuredData=[
+        [
+            '@context'=>'https://schema.org',
+            '@type'=>'LocalBusiness',
+            'name'=>(string)$v['name'],
+            'description'=>(string)$v['about'],
+            'image'=>$pageImage,
+            'areaServed'=>(string)($v['city']??'India'),
+            'url'=>wz_app_url(
+                'vendor.php?id='.
+                urlencode((string)$v['id'])
+            ),
+        ],
+    ];
+
     require __DIR__.'/includes/header.php';
     $images=$v['images']??[$v['image']];
     while(count($images)<3)$images[]=$v['image'];
