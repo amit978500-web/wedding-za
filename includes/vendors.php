@@ -74,9 +74,14 @@ function wz_database_vendor_to_card(array $profile): array
             $profile['starting_price']
             ?: 'Ask for pricing'
         ),
-        'tag' => !empty($profile['featured'])
-            ? 'Wedding Za featured'
-            : 'Verified business',
+        'tag' => ($profile['plan'] ?? 'free') === 'pro'
+            ? 'Wedding Za Pro'
+            : (
+                !empty($profile['featured'])
+                || ($profile['plan'] ?? 'free') === 'featured'
+                    ? 'Wedding Za featured'
+                    : 'Verified business'
+            ),
         'image' => $heroImage,
         'images' => $images,
         'about' => (string)(
@@ -96,7 +101,14 @@ function wz_database_vendor_to_card(array $profile): array
                 )
             )
         ),
-        'featured' => !empty($profile['featured']),
+        'featured' => !empty($profile['featured'])
+            || in_array(
+                (string)($profile['plan'] ?? 'free'),
+                ['featured', 'pro'],
+                true
+            ),
+        'plan' => (string)($profile['plan'] ?? 'free'),
+        'billing_status' => (string)($profile['billing_status'] ?? 'inactive'),
         'database_profile_id' => (int)$profile['id'],
         'database_user_id' => (int)$profile['user_id'],
     ];
