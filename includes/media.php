@@ -274,3 +274,77 @@ function wz_vendor_append_media(
 
     return true;
 }
+
+
+function wz_venue_append_media(
+    int $userId,
+    string $relativePath
+): bool {
+    $pdo = wz_db();
+
+    if (!$pdo) {
+        return false;
+    }
+
+    $statement = $pdo->prepare(
+        'SELECT id, gallery_json, hero_image_url
+         FROM venue_profiles
+         WHERE user_id = :user_id
+         LIMIT 1'
+    );
+
+    $statement->execute([
+        'user_id' => $userId,
+    ]);
+
+    $profile = $statement->fetch();
+
+    if (!$profile) {
+        return false;
+    }
+
+    $gallery = json_decode(
+        (string)($profile['gallery_json'] ?? '[]'),
+        true
+    );
+
+    if (!is_array($gallery)) {
+        $gallery = [];
+    }
+
+    if (!in_array(
+        $relativePath,
+        $gallery,
+        true
+    )) {
+        $gallery[] = $relativePath;
+    }
+
+    $gallery = array_slice(
+        $gallery,
+        -30
+    );
+
+    $heroImage = trim(
+        (string)($profile['hero_image_url'] ?? '')
+    );
+
+    if ($heroImage === '') {
+        $heroImage = $relativePath;
+    }
+
+    $update = $pdo->prepare(
+        'UPDATE venue_profiles
+         SET gallery_json = :gallery_json,
+             hero_image_url = :hero_image_url
+         WHERE id = :id'
+    );
+
+    $update->execute([
+        'gallery_json' => json_encode($gallery),
+        'hero_image_url' => $heroImage,
+        'id' => (int)$profile['id'],
+    ]);
+
+    return true;
+}

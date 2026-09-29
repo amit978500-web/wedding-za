@@ -5,7 +5,7 @@ require __DIR__ . '/includes/auth.php';
 
 $role = (string)($_GET['role'] ?? $_POST['role'] ?? 'host');
 
-if (!in_array($role, ['host', 'vendor'], true)) {
+if (!in_array($role, ['host', 'vendor', 'venue'], true)) {
     $role = 'host';
 }
 
@@ -26,9 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
 
         if ($result['ok']) {
-            $destination = $role === 'vendor'
-                ? 'vendor-dashboard.php'
-                : 'account.php';
+            $destination = match ($role) {
+                'vendor' => 'crm/vendor/index.php',
+                'venue' => 'crm/venue/index.php',
+                default => 'crm/customer/index.php',
+            };
 
             header('Location: ' . $destination);
             exit;
@@ -50,9 +52,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $role
             );
 
-            $destination = $role === 'vendor'
-                ? 'vendor-dashboard.php'
-                : 'account.php';
+            $destination = match ($role) {
+                'vendor' => 'crm/vendor/index.php',
+                'venue' => 'crm/venue/index.php',
+                default => 'crm/customer/index.php',
+            };
 
             header('Location: ' . $destination);
             exit;
@@ -60,9 +64,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageTitle = $role === 'vendor'
-    ? 'Vendor Sign In'
-    : 'Log In';
+$pageTitle = match ($role) {
+    'vendor' => 'Vendor Sign In',
+    'venue' => 'Venue Sign In',
+    default => 'Customer Sign In',
+};
 
 $pageDescription = 'Access your Wedding Za workspace.';
 $pageKey = 'login';
@@ -99,11 +105,19 @@ require __DIR__ . '/includes/header.php';
         <div class="auth-v2-panel">
             <div class="auth-v2-card">
                 <span class="eyebrow">
-                    <?= $role === 'vendor' ? 'BUSINESS ACCESS' : 'HOST ACCESS' ?>
+                    <?= match ($role) {
+                        'vendor' => 'VENDOR CRM ACCESS',
+                        'venue' => 'VENUE CRM ACCESS',
+                        default => 'CUSTOMER CRM ACCESS',
+                    } ?>
                 </span>
 
                 <h1>
-                    <?= $role === 'vendor' ? 'Vendor sign in' : 'Welcome back' ?>
+                    <?= match ($role) {
+                        'vendor' => 'Vendor sign in',
+                        'venue' => 'Venue sign in',
+                        default => 'Welcome back',
+                    } ?>
                 </h1>
 
                 <?php if ($databaseReady): ?>
@@ -190,23 +204,21 @@ require __DIR__ . '/includes/header.php';
                 </form>
 
                 <div class="auth-role-switch">
-                    <?php if ($role === 'vendor'): ?>
-                        <a href="login.php?role=host">
-                            I’m planning an event
-                        </a>
+                    <a href="login.php?role=host">
+                        Customer
+                    </a>
 
-                        <a href="register.php?role=vendor">
-                            Create business account
-                        </a>
-                    <?php else: ?>
-                        <a href="login.php?role=vendor">
-                            I’m an event business
-                        </a>
+                    <a href="login.php?role=vendor">
+                        Vendor
+                    </a>
 
-                        <a href="register.php?role=host">
-                            Create account
-                        </a>
-                    <?php endif; ?>
+                    <a href="login.php?role=venue">
+                        Venue
+                    </a>
+
+                    <a href="register.php?role=<?= h($role) ?>">
+                        Create account
+                    </a>
                 </div>
             </div>
         </div>

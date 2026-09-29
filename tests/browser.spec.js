@@ -131,3 +131,77 @@ test('header exposes account actions responsively', async ({ page }, testInfo) =
     await expect(login).toBeHidden();
   }
 });
+
+
+test('customer vendor and venue login routes render', async ({ page }) => {
+  const roles = [
+    {
+      role: 'host',
+      text: 'CUSTOMER CRM ACCESS',
+    },
+    {
+      role: 'vendor',
+      text: 'VENDOR CRM ACCESS',
+    },
+    {
+      role: 'venue',
+      text: 'VENUE CRM ACCESS',
+    },
+  ];
+
+  for (const item of roles) {
+    await page.goto(
+      '/login.php?role=' + item.role,
+      {
+        waitUntil: 'domcontentloaded',
+      }
+    );
+
+    await expect(
+      page.getByText(item.text)
+    ).toBeVisible();
+  }
+});
+
+test('private CRM routes redirect to matching login role', async ({ page }) => {
+  const routes = [
+    {
+      path: '/crm/customer/index.php',
+      role: 'host',
+    },
+    {
+      path: '/crm/vendor/index.php',
+      role: 'vendor',
+    },
+    {
+      path: '/crm/venue/index.php',
+      role: 'venue',
+    },
+  ];
+
+  for (const item of routes) {
+    await page.goto(
+      item.path,
+      {
+        waitUntil: 'domcontentloaded',
+      }
+    );
+
+    expect(page.url()).toContain(
+      'login.php?role=' + item.role
+    );
+  }
+});
+
+test('venue registration route is available', async ({ page }) => {
+  await page.goto(
+    '/register.php?role=venue',
+    {
+      waitUntil: 'domcontentloaded',
+    }
+  );
+
+  await expect(
+    page.getByText('VENUE CRM ACCOUNT')
+  ).toBeVisible();
+});

@@ -64,12 +64,36 @@ function wz_admin_active(string $page): string
                     Dashboard
                 </a>
 
+                <a<?= wz_admin_active('crm-enquiries') ?> href="crm-enquiries.php">
+                    CRM Enquiries
+                </a>
+
+                <a<?= wz_admin_active('bookings') ?> href="bookings.php">
+                    Bookings
+                </a>
+
+                <a<?= wz_admin_active('customers') ?> href="customers.php">
+                    Customers
+                </a>
+
+                <a<?= wz_admin_active('venues') ?> href="venues.php">
+                    Venues
+                </a>
+
                 <a<?= wz_admin_active('vendors') ?> href="vendors.php">
                     Vendors
                 </a>
 
+                <a<?= wz_admin_active('tasks') ?> href="tasks.php">
+                    Tasks
+                </a>
+
+                <a<?= wz_admin_active('messages') ?> href="messages.php">
+                    Messages
+                </a>
+
                 <a<?= wz_admin_active('leads') ?> href="leads.php">
-                    Leads
+                    Raw leads
                 </a>
 
                 <a<?= wz_admin_active('users') ?> href="users.php">
