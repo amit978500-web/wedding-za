@@ -14,6 +14,17 @@ $isSuccess = false;
 $pdo = wz_db();
 $action = (string)($_POST['action'] ?? 'profile');
 
+$eventTypes = wz_data('event_types');
+$cities = wz_data('cities');
+
+$budgetOptions = [
+    'Under ₹5 lakh',
+    '₹5–15 lakh',
+    '₹15–30 lakh',
+    '₹30–60 lakh',
+    '₹60 lakh+',
+];
+
 if (
     $pdo
     && $_SERVER['REQUEST_METHOD'] === 'POST'
@@ -52,59 +63,30 @@ if (
             $message = (string)$upload['message'];
         }
     } elseif ($crmRole === 'host') {
-        $statement = $pdo->prepare(
-            'INSERT INTO customer_profiles (
-                user_id,
-                phone,
-                city,
-                event_type,
-                event_date,
-                guest_count,
-                budget,
-                notes
-            ) VALUES (
-                :user_id,
-                :phone,
-                :city,
-                :event_type,
-                :event_date,
-                :guest_count,
-                :budget,
-                :notes
-            )
-            ON DUPLICATE KEY UPDATE
-                phone = VALUES(phone),
-                city = VALUES(city),
-                event_type = VALUES(event_type),
-                event_date = VALUES(event_date),
-                guest_count = VALUES(guest_count),
-                budget = VALUES(budget),
-                notes = VALUES(notes)'
+        $result = wz_crm_update_customer_profile(
+            $userId,
+            $_POST
         );
 
-        $statement->execute([
-            'user_id' => $userId,
-            'phone' => trim((string)($_POST['phone'] ?? '')),
-            'city' => trim((string)($_POST['city'] ?? '')),
-            'event_type' => trim((string)($_POST['event_type'] ?? '')),
-            'event_date' => !empty($_POST['event_date'])
-                ? (string)$_POST['event_date']
-                : null,
-            'guest_count' => !empty($_POST['guest_count'])
-                ? (int)$_POST['guest_count']
-                : null,
-            'budget' => trim((string)($_POST['budget'] ?? '')),
-            'notes' => trim((string)($_POST['notes'] ?? '')),
-        ]);
+        $message = (string)$result['message'];
+        $isSuccess = (bool)$result['ok'];
 
-        wz_audit(
-            'crm.customer_profile.updated',
-            'customer_profile',
-            $userId
-        );
+        if ($isSuccess) {
+            $crmUser['name'] = (string)$result['name'];
 
-        $message = 'Customer profile updated.';
-        $isSuccess = true;
+            wz_set_user_session([
+                'id' => $userId,
+                'name' => (string)$result['name'],
+                'email' => (string)$crmUser['email'],
+                'role' => 'host',
+            ]);
+
+            wz_audit(
+                'crm.customer_profile.updated',
+                'customer_profile',
+                $userId
+            );
+        }
     } elseif ($crmRole === 'vendor') {
         $events = array_values(
             array_filter(
@@ -319,6 +301,38 @@ require dirname(__DIR__) . '/includes/header.php';
 
         <div class="crm-form-grid">
             <?php if ($crmRole === 'host'): ?>
+                <div class="crm-field full">
+                    <span class="crm-eyebrow">
+                        PERSONAL DETAILS
+                    </span>
+                </div>
+
+                <div class="crm-field">
+                    <label for="customerName">
+                        Full name
+                    </label>
+
+                    <input
+                        id="customerName"
+                        name="name"
+                        value="<?= h((string)$crmUser['name']) ?>"
+                        required
+                    >
+                </div>
+
+                <div class="crm-field">
+                    <label for="customerEmail">
+                        Email
+                    </label>
+
+                    <input
+                        id="customerEmail"
+                        type="email"
+                        value="<?= h((string)$crmUser['email']) ?>"
+                        readonly
+                    >
+                </div>
+
                 <div class="crm-field">
                     <label for="customerPhone">
                         Phone
@@ -328,6 +342,7 @@ require dirname(__DIR__) . '/includes/header.php';
                         id="customerPhone"
                         name="phone"
                         value="<?= h((string)($profile['phone'] ?? '')) ?>"
+                        placeholder="+91..."
                     >
                 </div>
 
@@ -336,11 +351,29 @@ require dirname(__DIR__) . '/includes/header.php';
                         City
                     </label>
 
-                    <input
+                    <select
                         id="customerCity"
                         name="city"
-                        value="<?= h((string)($profile['city'] ?? '')) ?>"
                     >
+                        <option value="">
+                            Choose city
+                        </option>
+
+                        <?php foreach ($cities as $city): ?>
+                            <option
+                                value="<?= h((string)$city) ?>"
+                                <?= (string)($profile['city'] ?? '') === (string)$city ? 'selected' : '' ?>
+                            >
+                                <?= h((string)$city) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="crm-field full">
+                    <span class="crm-eyebrow">
+                        EVENT DETAILS
+                    </span>
                 </div>
 
                 <div class="crm-field">
@@ -348,11 +381,27 @@ require dirname(__DIR__) . '/includes/header.php';
                         Event type
                     </label>
 
-                    <input
+                    <select
                         id="customerEvent"
                         name="event_type"
-                        value="<?= h((string)($profile['event_type'] ?? '')) ?>"
                     >
+                        <option value="">
+                            Choose event
+                        </option>
+
+                        <?php foreach ($eventTypes as $event): ?>
+                            <?php
+                            $eventName = (string)($event['name'] ?? '');
+                            ?>
+
+                            <option
+                                value="<?= h($eventName) ?>"
+                                <?= (string)($profile['event_type'] ?? '') === $eventName ? 'selected' : '' ?>
+                            >
+                                <?= h($eventName) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
 
                 <div class="crm-field">
@@ -376,9 +425,10 @@ require dirname(__DIR__) . '/includes/header.php';
                     <input
                         id="customerGuests"
                         type="number"
-                        min="0"
+                        min="1"
                         name="guest_count"
                         value="<?= h((string)($profile['guest_count'] ?? '')) ?>"
+                        placeholder="Example: 250"
                     >
                 </div>
 
@@ -387,11 +437,23 @@ require dirname(__DIR__) . '/includes/header.php';
                         Budget
                     </label>
 
-                    <input
+                    <select
                         id="customerBudget"
                         name="budget"
-                        value="<?= h((string)($profile['budget'] ?? '')) ?>"
                     >
+                        <option value="">
+                            Choose budget
+                        </option>
+
+                        <?php foreach ($budgetOptions as $budgetOption): ?>
+                            <option
+                                value="<?= h($budgetOption) ?>"
+                                <?= (string)($profile['budget'] ?? '') === $budgetOption ? 'selected' : '' ?>
+                            >
+                                <?= h($budgetOption) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
 
                 <div class="crm-field full">
@@ -402,6 +464,7 @@ require dirname(__DIR__) . '/includes/header.php';
                     <textarea
                         id="customerNotes"
                         name="notes"
+                        placeholder="Tell us anything useful about the event."
                     ><?= h((string)($profile['notes'] ?? '')) ?></textarea>
                 </div>
             <?php elseif ($crmRole === 'vendor'): ?>

@@ -171,6 +171,62 @@ $venueId = $makeUser(
     'venue'
 );
 
+
+$customerProfileResult = wz_crm_update_customer_profile(
+    $customerId,
+    [
+        'name' => 'QA Customer Updated',
+        'phone' => '+91 99999 11111',
+        'city' => 'Jaipur',
+        'event_type' => 'Wedding',
+        'event_date' => '2027-02-20',
+        'guest_count' => '250',
+        'budget' => '₹15–30 lakh',
+        'notes' => 'QA planning notes',
+    ]
+);
+
+if (!$customerProfileResult['ok']) {
+    throw new RuntimeException(
+        'Customer CRM profile update failed.'
+    );
+}
+
+$customerProfile = wz_crm_customer_profile(
+    $customerId
+);
+
+$customerAccountCheck = $pdo->prepare(
+    'SELECT name, email
+     FROM users
+     WHERE id = :id
+     LIMIT 1'
+);
+
+$customerAccountCheck->execute([
+    'id' => $customerId,
+]);
+
+$customerAccount = $customerAccountCheck->fetch();
+
+if (
+    !$customerProfile
+    || !$customerAccount
+    || $customerAccount['name'] !== 'QA Customer Updated'
+    || $customerAccount['email'] !== $emails[0]
+    || $customerProfile['phone'] !== '+91 99999 11111'
+    || $customerProfile['city'] !== 'Jaipur'
+    || $customerProfile['event_type'] !== 'Wedding'
+    || $customerProfile['event_date'] !== '2027-02-20'
+    || (int)$customerProfile['guest_count'] !== 250
+    || $customerProfile['budget'] !== '₹15–30 lakh'
+    || $customerProfile['notes'] !== 'QA planning notes'
+) {
+    throw new RuntimeException(
+        'Customer CRM profile field mapping is incorrect.'
+    );
+}
+
 $pdo->prepare(
     'INSERT INTO vendor_profiles (
         user_id,
