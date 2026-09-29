@@ -803,7 +803,46 @@ function wz_crm_allowed_contacts(
         ]);
     }
 
-    return $statement->fetchAll();
+    $contacts = $statement->fetchAll();
+
+    $messageContacts = $pdo->prepare(
+        'SELECT DISTINCT
+            u.id,
+            u.name,
+            u.email,
+            u.role
+         FROM users u
+         INNER JOIN crm_messages cm
+            ON (
+                cm.sender_user_id = u.id
+                AND cm.recipient_user_id = :user_id
+            )
+            OR (
+                cm.recipient_user_id = u.id
+                AND cm.sender_user_id = :user_id
+            )
+         WHERE u.id <> :user_id
+         ORDER BY u.name'
+    );
+
+    $messageContacts->execute([
+        'user_id' => $userId,
+    ]);
+
+    $merged = [];
+
+    foreach (
+        array_merge(
+            $contacts,
+            $messageContacts->fetchAll()
+        ) as $contact
+    ) {
+        $merged[
+            (int)$contact['id']
+        ] = $contact;
+    }
+
+    return array_values($merged);
 }
 
 function wz_crm_can_message(
