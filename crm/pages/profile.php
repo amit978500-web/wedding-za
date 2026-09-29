@@ -668,7 +668,7 @@ require dirname(__DIR__) . '/includes/header.php';
     </form>
 </section>
 
-<?php if (in_array($crmRole, ['vendor', 'venue'], true)): ?>
+<?php if (in_array($crmRole, ['vendor', 'venue'], true) && !empty($profile)): ?>
     <?php
     $gallery = json_decode(
         (string)($profile['gallery_json'] ?? '[]'),
