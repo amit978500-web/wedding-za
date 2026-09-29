@@ -27,7 +27,7 @@ if (
     !wz_is_logged_in()
     || !in_array(
         wz_role(),
-        ['vendor', 'admin'],
+        ['vendor', 'venue', 'admin'],
         true
     )
 ) {
@@ -65,14 +65,20 @@ if (!$result['ok']) {
     exit;
 }
 
-if (
-    wz_role() === 'vendor'
-    && !empty(wz_user()['id'])
-) {
-    wz_vendor_append_media(
-        (int)wz_user()['id'],
-        (string)$result['path']
-    );
+if (!empty(wz_user()['id'])) {
+    if (wz_role() === 'vendor') {
+        wz_vendor_append_media(
+            (int)wz_user()['id'],
+            (string)$result['path']
+        );
+    }
+
+    if (wz_role() === 'venue') {
+        wz_venue_append_media(
+            (int)wz_user()['id'],
+            (string)$result['path']
+        );
+    }
 }
 
 echo json_encode($result);
