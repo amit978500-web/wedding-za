@@ -13,10 +13,15 @@ $pdo = wz_db();
 
 $counts = [
     'users' => 0,
+    'customers' => 0,
     'vendors' => 0,
-    'pending_vendors' => 0,
+    'venues' => 0,
+    'pending_businesses' => 0,
+    'crm_enquiries' => 0,
+    'crm_bookings' => 0,
+    'open_tasks' => 0,
+    'unread_messages' => 0,
     'leads' => 0,
-    'new_leads' => 0,
     'content' => 0,
     'media' => 0,
 ];
@@ -28,28 +33,65 @@ if ($pdo) {
         ->query('SELECT COUNT(*) FROM users')
         ->fetchColumn();
 
+    $counts['customers'] = (int)$pdo
+        ->query(
+            "SELECT COUNT(*)
+             FROM users
+             WHERE role = 'host'"
+        )
+        ->fetchColumn();
+
     $counts['vendors'] = (int)$pdo
         ->query('SELECT COUNT(*) FROM vendor_profiles')
         ->fetchColumn();
 
-    $counts['pending_vendors'] = (int)$pdo
+    $counts['venues'] = (int)$pdo
+        ->query('SELECT COUNT(*) FROM venue_profiles')
+        ->fetchColumn();
+
+    $counts['pending_businesses'] = (int)$pdo
+        ->query(
+            "SELECT
+                (
+                    SELECT COUNT(*)
+                    FROM vendor_profiles
+                    WHERE approval_status = 'pending'
+                )
+                +
+                (
+                    SELECT COUNT(*)
+                    FROM venue_profiles
+                    WHERE approval_status = 'pending'
+                )"
+        )
+        ->fetchColumn();
+
+    $counts['crm_enquiries'] = (int)$pdo
+        ->query('SELECT COUNT(*) FROM crm_enquiries')
+        ->fetchColumn();
+
+    $counts['crm_bookings'] = (int)$pdo
+        ->query('SELECT COUNT(*) FROM crm_bookings')
+        ->fetchColumn();
+
+    $counts['open_tasks'] = (int)$pdo
         ->query(
             "SELECT COUNT(*)
-             FROM vendor_profiles
-             WHERE approval_status = 'pending'"
+             FROM crm_tasks
+             WHERE status = 'open'"
+        )
+        ->fetchColumn();
+
+    $counts['unread_messages'] = (int)$pdo
+        ->query(
+            "SELECT COUNT(*)
+             FROM crm_messages
+             WHERE read_at IS NULL"
         )
         ->fetchColumn();
 
     $counts['leads'] = (int)$pdo
         ->query('SELECT COUNT(*) FROM leads')
-        ->fetchColumn();
-
-    $counts['new_leads'] = (int)$pdo
-        ->query(
-            "SELECT COUNT(*)
-             FROM leads
-             WHERE status = 'new'"
-        )
         ->fetchColumn();
 
     $counts['content'] = (int)$pdo
@@ -101,23 +143,23 @@ require __DIR__ . '/includes/header.php';
 
 <div class="admin-grid">
     <article class="admin-stat">
-        <span>Users</span>
-        <strong><?= h((string)$counts['users']) ?></strong>
+        <span>CRM enquiries</span>
+        <strong><?= h((string)$counts['crm_enquiries']) ?></strong>
     </article>
 
     <article class="admin-stat">
-        <span>Vendors</span>
-        <strong><?= h((string)$counts['vendors']) ?></strong>
+        <span>Bookings</span>
+        <strong><?= h((string)$counts['crm_bookings']) ?></strong>
     </article>
 
     <article class="admin-stat">
-        <span>Pending vendors</span>
-        <strong><?= h((string)$counts['pending_vendors']) ?></strong>
+        <span>Open tasks</span>
+        <strong><?= h((string)$counts['open_tasks']) ?></strong>
     </article>
 
     <article class="admin-stat">
-        <span>New leads</span>
-        <strong><?= h((string)$counts['new_leads']) ?></strong>
+        <span>Pending businesses</span>
+        <strong><?= h((string)$counts['pending_businesses']) ?></strong>
     </article>
 </div>
 
@@ -181,23 +223,23 @@ require __DIR__ . '/includes/header.php';
 
     <div class="admin-grid" style="margin: 0;">
         <article class="admin-stat">
-            <span>Total leads</span>
-            <strong><?= h((string)$counts['leads']) ?></strong>
+            <span>Customers</span>
+            <strong><?= h((string)$counts['customers']) ?></strong>
         </article>
 
         <article class="admin-stat">
-            <span>Content entries</span>
-            <strong><?= h((string)$counts['content']) ?></strong>
+            <span>Vendors</span>
+            <strong><?= h((string)$counts['vendors']) ?></strong>
         </article>
 
         <article class="admin-stat">
-            <span>Media assets</span>
-            <strong><?= h((string)$counts['media']) ?></strong>
+            <span>Venues</span>
+            <strong><?= h((string)$counts['venues']) ?></strong>
         </article>
 
         <article class="admin-stat">
-            <span>Vendor approval queue</span>
-            <strong><?= h((string)$counts['pending_vendors']) ?></strong>
+            <span>Unread messages</span>
+            <strong><?= h((string)$counts['unread_messages']) ?></strong>
         </article>
     </div>
 </section>
