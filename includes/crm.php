@@ -872,3 +872,176 @@ function wz_crm_can_message(
 
     return false;
 }
+
+
+function wz_crm_update_customer_profile(
+    int $userId,
+    array $input
+): array {
+    $pdo = wz_db();
+
+    if (!$pdo) {
+        return [
+            'ok' => false,
+            'message' => 'Database is not available.',
+        ];
+    }
+
+    $name = trim(
+        (string)($input['name'] ?? '')
+    );
+
+    if ($name === '') {
+        return [
+            'ok' => false,
+            'message' => 'Please enter your name.',
+        ];
+    }
+
+    $eventDate = trim(
+        (string)($input['event_date'] ?? '')
+    );
+
+    if ($eventDate !== '') {
+        $date = DateTime::createFromFormat(
+            'Y-m-d',
+            $eventDate
+        );
+
+        $isValidDate = $date
+            && $date->format('Y-m-d') === $eventDate;
+
+        if (!$isValidDate) {
+            return [
+                'ok' => false,
+                'message' => 'Please enter a valid event date.',
+            ];
+        }
+    }
+
+    $guestCount = null;
+
+    if (
+        isset($input['guest_count'])
+        && trim((string)$input['guest_count']) !== ''
+    ) {
+        $guestCount = max(
+            1,
+            (int)$input['guest_count']
+        );
+    }
+
+    try {
+        $pdo->beginTransaction();
+
+        $userUpdate = $pdo->prepare(
+            'UPDATE users
+             SET name = :name
+             WHERE id = :id
+             AND role = :role'
+        );
+
+        $userUpdate->execute([
+            'name' => $name,
+            'id' => $userId,
+            'role' => 'host',
+        ]);
+
+        $roleCheck = $pdo->prepare(
+            'SELECT id
+             FROM users
+             WHERE id = :id
+             AND role = :role
+             LIMIT 1'
+        );
+
+        $roleCheck->execute([
+            'id' => $userId,
+            'role' => 'host',
+        ]);
+
+        if (!$roleCheck->fetchColumn()) {
+            $pdo->rollBack();
+
+            return [
+                'ok' => false,
+                'message' => 'Customer account was not found.',
+            ];
+        }
+
+        $profileUpdate = $pdo->prepare(
+            'INSERT INTO customer_profiles (
+                user_id,
+                phone,
+                city,
+                event_type,
+                event_date,
+                guest_count,
+                budget,
+                notes
+            ) VALUES (
+                :user_id,
+                :phone,
+                :city,
+                :event_type,
+                :event_date,
+                :guest_count,
+                :budget,
+                :notes
+            )
+            ON DUPLICATE KEY UPDATE
+                phone = VALUES(phone),
+                city = VALUES(city),
+                event_type = VALUES(event_type),
+                event_date = VALUES(event_date),
+                guest_count = VALUES(guest_count),
+                budget = VALUES(budget),
+                notes = VALUES(notes)'
+        );
+
+        $profileUpdate->execute([
+            'user_id' => $userId,
+            'phone' => trim(
+                (string)($input['phone'] ?? '')
+            ),
+            'city' => trim(
+                (string)($input['city'] ?? '')
+            ),
+            'event_type' => trim(
+                (string)($input['event_type'] ?? '')
+            ),
+            'event_date' => $eventDate !== ''
+                ? $eventDate
+                : null,
+            'guest_count' => $guestCount,
+            'budget' => trim(
+                (string)($input['budget'] ?? '')
+            ),
+            'notes' => trim(
+                (string)($input['notes'] ?? '')
+            ),
+        ]);
+
+        $pdo->commit();
+
+        return [
+            'ok' => true,
+            'message' => 'Customer profile updated.',
+            'name' => $name,
+        ];
+    } catch (Throwable $exception) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+
+        error_log(
+            'Wedding Za customer profile update failed: '
+            . $exception->getMessage()
+        );
+
+        return [
+            'ok' => false,
+            'message' => 'Customer profile could not be saved.',
+        ];
+    }
+}
