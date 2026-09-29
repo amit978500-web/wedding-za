@@ -102,6 +102,7 @@ function wz_login_demo(
     $allowedRoles = [
         'host',
         'vendor',
+        'venue',
     ];
 
     wz_set_user_session([
@@ -312,6 +313,7 @@ function wz_register_account(
         [
             'host',
             'vendor',
+            'venue',
         ],
         true
     )
