@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once dirname(__DIR__, 2) . '/includes/crm.php';
+require_once dirname(__DIR__, 2) . '/includes/media.php';
 
 $crmRole = $crmRole ?? 'host';
 $crmPage = 'profile';
@@ -11,6 +12,7 @@ $userId = (int)($crmUser['id'] ?? 0);
 $message = '';
 $isSuccess = false;
 $pdo = wz_db();
+$action = (string)($_POST['action'] ?? 'profile');
 
 if (
     $pdo
@@ -18,6 +20,37 @@ if (
 ) {
     if (!wz_csrf_valid($_POST['csrf'] ?? null)) {
         $message = 'Session expired. Refresh and try again.';
+    } elseif (
+        $action === 'media-upload'
+        && in_array(
+            $crmRole,
+            ['vendor', 'venue'],
+            true
+        )
+    ) {
+        $upload = wz_media_upload(
+            $_FILES['image'] ?? [],
+            (string)($_POST['alt_text'] ?? '')
+        );
+
+        if ($upload['ok']) {
+            if ($crmRole === 'vendor') {
+                wz_vendor_append_media(
+                    $userId,
+                    (string)$upload['path']
+                );
+            } else {
+                wz_venue_append_media(
+                    $userId,
+                    (string)$upload['path']
+                );
+            }
+
+            $message = 'Portfolio image uploaded.';
+            $isSuccess = true;
+        } else {
+            $message = (string)$upload['message'];
+        }
     } elseif ($crmRole === 'host') {
         $statement = $pdo->prepare(
             'INSERT INTO customer_profiles (
@@ -276,6 +309,12 @@ require dirname(__DIR__) . '/includes/header.php';
             type="hidden"
             name="csrf"
             value="<?= h(wz_csrf_token()) ?>"
+        >
+
+        <input
+            type="hidden"
+            name="action"
+            value="profile"
         >
 
         <div class="crm-form-grid">
@@ -628,5 +667,100 @@ require dirname(__DIR__) . '/includes/header.php';
         </button>
     </form>
 </section>
+
+<?php if (in_array($crmRole, ['vendor', 'venue'], true)): ?>
+    <?php
+    $gallery = json_decode(
+        (string)($profile['gallery_json'] ?? '[]'),
+        true
+    );
+
+    if (!is_array($gallery)) {
+        $gallery = [];
+    }
+    ?>
+
+    <section class="crm-panel">
+        <div class="crm-panel-head">
+            <div>
+                <h2>
+                    Portfolio media
+                </h2>
+
+                <p>
+                    Upload real work for your public Wedding Za profile.
+                </p>
+            </div>
+        </div>
+
+        <form
+            method="post"
+            enctype="multipart/form-data"
+            class="crm-form"
+        >
+            <input
+                type="hidden"
+                name="csrf"
+                value="<?= h(wz_csrf_token()) ?>"
+            >
+
+            <input
+                type="hidden"
+                name="action"
+                value="media-upload"
+            >
+
+            <div class="crm-form-grid">
+                <div class="crm-field">
+                    <label for="crmProfileImage">
+                        Image
+                    </label>
+
+                    <input
+                        id="crmProfileImage"
+                        type="file"
+                        name="image"
+                        accept="image/jpeg,image/png,image/webp"
+                        required
+                    >
+                </div>
+
+                <div class="crm-field">
+                    <label for="crmProfileAlt">
+                        Alt text
+                    </label>
+
+                    <input
+                        id="crmProfileAlt"
+                        name="alt_text"
+                        maxlength="255"
+                        placeholder="Describe the image"
+                    >
+                </div>
+            </div>
+
+            <button
+                class="crm-button"
+                type="submit"
+            >
+                Upload image
+            </button>
+        </form>
+
+        <?php if ($gallery): ?>
+            <div class="crm-calendar-grid">
+                <?php foreach ($gallery as $imagePath): ?>
+                    <article class="crm-day">
+                        <img
+                            src="<?= h(wz_app_url((string)$imagePath)) ?>"
+                            alt="Portfolio"
+                            style="width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 10px;"
+                        >
+                    </article>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </section>
+<?php endif; ?>
 
 <?php require dirname(__DIR__) . '/includes/footer.php'; ?>
