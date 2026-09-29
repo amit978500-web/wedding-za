@@ -5,7 +5,7 @@ require __DIR__ . '/includes/auth.php';
 
 $role = (string)($_GET['role'] ?? $_POST['role'] ?? 'host');
 
-if (!in_array($role, ['host', 'vendor'], true)) {
+if (!in_array($role, ['host', 'vendor', 'venue'], true)) {
     $role = 'host';
 }
 
@@ -34,9 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             );
 
             if ($result['ok']) {
-                $destination = $role === 'vendor'
-                    ? 'register-vendor.php?account=created'
-                    : 'account.php';
+                $destination = match ($role) {
+                    'vendor' => 'crm/vendor/profile.php',
+                    'venue' => 'crm/venue/profile.php',
+                    default => 'crm/customer/profile.php',
+                };
 
                 header('Location: ' . $destination);
                 exit;
@@ -47,9 +49,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageTitle = $role === 'vendor'
-    ? 'Create Business Account'
-    : 'Create Account';
+$pageTitle = match ($role) {
+    'vendor' => 'Create Vendor Account',
+    'venue' => 'Create Venue Account',
+    default => 'Create Customer Account',
+};
 
 $pageDescription = 'Create your Wedding Za account.';
 $pageKey = 'register';
@@ -86,7 +90,11 @@ require __DIR__ . '/includes/header.php';
         <div class="auth-v2-panel">
             <div class="auth-v2-card">
                 <span class="eyebrow">
-                    <?= $role === 'vendor' ? 'BUSINESS ACCOUNT' : 'HOST ACCOUNT' ?>
+                    <?= match ($role) {
+                        'vendor' => 'VENDOR CRM ACCOUNT',
+                        'venue' => 'VENUE CRM ACCOUNT',
+                        default => 'CUSTOMER CRM ACCOUNT',
+                    } ?>
                 </span>
 
                 <h1>
@@ -190,15 +198,17 @@ require __DIR__ . '/includes/header.php';
                         Already have an account?
                     </a>
 
-                    <?php if ($role === 'vendor'): ?>
-                        <a href="register.php?role=host">
-                            Create host account
-                        </a>
-                    <?php else: ?>
-                        <a href="register.php?role=vendor">
-                            Create business account
-                        </a>
-                    <?php endif; ?>
+                    <a href="register.php?role=host">
+                        Customer
+                    </a>
+
+                    <a href="register.php?role=vendor">
+                        Vendor
+                    </a>
+
+                    <a href="register.php?role=venue">
+                        Venue
+                    </a>
                 </div>
             </div>
         </div>
