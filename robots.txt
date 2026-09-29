@@ -3,6 +3,7 @@ Disallow: /storage/
 Disallow: /api/
 Disallow: /database/
 Disallow: /admin/
+Disallow: /crm/
 Disallow: /config.local.php
 
 Sitemap: /sitemap.php
