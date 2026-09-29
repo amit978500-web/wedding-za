@@ -108,6 +108,43 @@ if (
                 ]
             );
 
+            if (
+                $crmRole === 'venue'
+                && !empty($booking['event_date'])
+                && in_array(
+                    $status,
+                    [
+                        'confirmed',
+                        'completed',
+                    ],
+                    true
+                )
+            ) {
+                $availability = $pdo->prepare(
+                    'INSERT INTO venue_availability (
+                        venue_user_id,
+                        availability_date,
+                        status,
+                        note
+                    ) VALUES (
+                        :venue_user_id,
+                        :availability_date,
+                        :status,
+                        :note
+                    )
+                    ON DUPLICATE KEY UPDATE
+                        status = VALUES(status),
+                        note = VALUES(note)'
+                );
+
+                $availability->execute([
+                    'venue_user_id' => $userId,
+                    'availability_date' => $booking['event_date'],
+                    'status' => 'booked',
+                    'note' => 'CRM booking #' . $bookingId,
+                ]);
+            }
+
             $message = 'Booking updated.';
             $isSuccess = true;
         }
