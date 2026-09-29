@@ -130,7 +130,11 @@ jobs:
       - name: Show PHP server log on failure
         if: failure()
         run: |
-          cat /tmp/wedding-za-php.log
+          if [ -f /tmp/wedding-za-php.log ]; then
+            cat /tmp/wedding-za-php.log
+          else
+            echo "PHP server had not started before the failure."
+          fi
 
 
   browser:
