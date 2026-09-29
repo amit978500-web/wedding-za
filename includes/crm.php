@@ -470,14 +470,15 @@ function wz_crm_messages_for_user(int $userId): array
             ON su.id = cm.sender_user_id
          INNER JOIN users ru
             ON ru.id = cm.recipient_user_id
-         WHERE cm.sender_user_id = :user_id
-         OR cm.recipient_user_id = :user_id
+         WHERE cm.sender_user_id = :sender_user_id
+         OR cm.recipient_user_id = :recipient_user_id
          ORDER BY cm.created_at DESC
          LIMIT 200'
     );
 
     $statement->execute([
-        'user_id' => $userId,
+        'sender_user_id' => $userId,
+        'recipient_user_id' => $userId,
     ]);
 
     return $statement->fetchAll();
@@ -748,7 +749,7 @@ function wz_crm_allowed_contacts(
              FROM users u
              INNER JOIN crm_enquiries ce
                 ON ce.business_user_id = u.id
-             WHERE ce.customer_user_id = :user_id
+             WHERE ce.customer_user_id = :enquiry_customer_user_id
 
              UNION
 
@@ -760,13 +761,14 @@ function wz_crm_allowed_contacts(
              FROM users u
              INNER JOIN crm_bookings cb
                 ON cb.business_user_id = u.id
-             WHERE cb.customer_user_id = :user_id
+             WHERE cb.customer_user_id = :booking_customer_user_id
 
              ORDER BY name'
         );
 
         $statement->execute([
-            'user_id' => $userId,
+            'enquiry_customer_user_id' => $userId,
+            'booking_customer_user_id' => $userId,
         ]);
     } else {
         $statement = $pdo->prepare(
@@ -778,8 +780,8 @@ function wz_crm_allowed_contacts(
              FROM users u
              INNER JOIN crm_enquiries ce
                 ON ce.customer_user_id = u.id
-             WHERE ce.business_user_id = :user_id
-             AND ce.business_type = :business_type
+             WHERE ce.business_user_id = :enquiry_business_user_id
+             AND ce.business_type = :enquiry_business_type
 
              UNION
 
@@ -791,15 +793,17 @@ function wz_crm_allowed_contacts(
              FROM users u
              INNER JOIN crm_bookings cb
                 ON cb.customer_user_id = u.id
-             WHERE cb.business_user_id = :user_id
-             AND cb.business_type = :business_type
+             WHERE cb.business_user_id = :booking_business_user_id
+             AND cb.business_type = :booking_business_type
 
              ORDER BY name'
         );
 
         $statement->execute([
-            'user_id' => $userId,
-            'business_type' => $role,
+            'enquiry_business_user_id' => $userId,
+            'enquiry_business_type' => $role,
+            'booking_business_user_id' => $userId,
+            'booking_business_type' => $role,
         ]);
     }
 
@@ -815,18 +819,20 @@ function wz_crm_allowed_contacts(
          INNER JOIN crm_messages cm
             ON (
                 cm.sender_user_id = u.id
-                AND cm.recipient_user_id = :user_id
+                AND cm.recipient_user_id = :received_by_user_id
             )
             OR (
                 cm.recipient_user_id = u.id
-                AND cm.sender_user_id = :user_id
+                AND cm.sender_user_id = :sent_by_user_id
             )
-         WHERE u.id <> :user_id
+         WHERE u.id <> :excluded_user_id
          ORDER BY u.name'
     );
 
     $messageContacts->execute([
-        'user_id' => $userId,
+        'received_by_user_id' => $userId,
+        'sent_by_user_id' => $userId,
+        'excluded_user_id' => $userId,
     ]);
 
     $merged = [];
