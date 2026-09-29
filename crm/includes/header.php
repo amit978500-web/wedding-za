@@ -34,6 +34,14 @@ $crmNavigation = match ($crmRole) {
             'label' => 'Messages',
             'path' => 'crm/customer/messages.php',
         ],
+        'planning' => [
+            'label' => 'Planning Studio',
+            'path' => 'planner.php',
+        ],
+        'shortlist' => [
+            'label' => 'Shortlist',
+            'path' => 'shortlist.php',
+        ],
         'profile' => [
             'label' => 'Profile',
             'path' => 'crm/customer/profile.php',
