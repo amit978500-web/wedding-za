@@ -50,13 +50,19 @@ $accountUrl = 'login.php?role=host';
 $accountLabel = 'Log in';
 
 if (wz_is_logged_in()) {
-    if (wz_role() === 'vendor') {
-        $accountUrl = 'vendor-dashboard.php';
-        $accountLabel = 'Business workspace';
-    } else {
-        $accountUrl = 'account.php';
-        $accountLabel = 'My account';
-    }
+    $accountUrl = match (wz_role()) {
+        'vendor' => 'crm/vendor/index.php',
+        'venue' => 'crm/venue/index.php',
+        'admin' => 'admin/index.php',
+        default => 'crm/customer/index.php',
+    };
+
+    $accountLabel = match (wz_role()) {
+        'vendor' => 'Vendor CRM',
+        'venue' => 'Venue CRM',
+        'admin' => 'Admin',
+        default => 'My CRM',
+    };
 }
 ?>
 <!doctype html>
