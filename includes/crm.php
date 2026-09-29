@@ -587,3 +587,243 @@ function wz_crm_create_booking_from_enquiry(
 
     return $bookingId;
 }
+
+
+function wz_crm_enquiry_for_user(
+    int $enquiryId,
+    int $userId,
+    string $role
+): ?array {
+    $pdo = wz_db();
+
+    if (!$pdo) {
+        return null;
+    }
+
+    if ($role === 'host') {
+        $statement = $pdo->prepare(
+            'SELECT ce.*,
+                    bu.name AS business_contact,
+                    bu.email AS business_email
+             FROM crm_enquiries ce
+             LEFT JOIN users bu
+                ON bu.id = ce.business_user_id
+             WHERE ce.id = :id
+             AND ce.customer_user_id = :user_id
+             LIMIT 1'
+        );
+
+        $statement->execute([
+            'id' => $enquiryId,
+            'user_id' => $userId,
+        ]);
+    } else {
+        $statement = $pdo->prepare(
+            'SELECT ce.*,
+                    cu.name AS customer_name,
+                    cu.email AS customer_email
+             FROM crm_enquiries ce
+             LEFT JOIN users cu
+                ON cu.id = ce.customer_user_id
+             WHERE ce.id = :id
+             AND ce.business_user_id = :user_id
+             AND ce.business_type = :business_type
+             LIMIT 1'
+        );
+
+        $statement->execute([
+            'id' => $enquiryId,
+            'user_id' => $userId,
+            'business_type' => $role,
+        ]);
+    }
+
+    return $statement->fetch() ?: null;
+}
+
+function wz_crm_booking_for_user(
+    int $bookingId,
+    int $userId,
+    string $role
+): ?array {
+    $pdo = wz_db();
+
+    if (!$pdo) {
+        return null;
+    }
+
+    if ($role === 'host') {
+        $statement = $pdo->prepare(
+            'SELECT cb.*,
+                    bu.name AS business_contact,
+                    bu.email AS business_email
+             FROM crm_bookings cb
+             LEFT JOIN users bu
+                ON bu.id = cb.business_user_id
+             WHERE cb.id = :id
+             AND cb.customer_user_id = :user_id
+             LIMIT 1'
+        );
+
+        $statement->execute([
+            'id' => $bookingId,
+            'user_id' => $userId,
+        ]);
+    } else {
+        $statement = $pdo->prepare(
+            'SELECT cb.*,
+                    cu.name AS customer_name,
+                    cu.email AS customer_email
+             FROM crm_bookings cb
+             LEFT JOIN users cu
+                ON cu.id = cb.customer_user_id
+             WHERE cb.id = :id
+             AND cb.business_user_id = :user_id
+             AND cb.business_type = :business_type
+             LIMIT 1'
+        );
+
+        $statement->execute([
+            'id' => $bookingId,
+            'user_id' => $userId,
+            'business_type' => $role,
+        ]);
+    }
+
+    return $statement->fetch() ?: null;
+}
+
+function wz_crm_notes(
+    string $relatedType,
+    int $relatedId,
+    bool $includeInternal
+): array {
+    $pdo = wz_db();
+
+    if (!$pdo) {
+        return [];
+    }
+
+    $sql = 'SELECT cn.*,
+                   u.name AS author_name
+            FROM crm_notes cn
+            LEFT JOIN users u
+                ON u.id = cn.user_id
+            WHERE cn.related_type = :related_type
+            AND cn.related_id = :related_id';
+
+    if (!$includeInternal) {
+        $sql .= ' AND cn.visibility = "shared"';
+    }
+
+    $sql .= ' ORDER BY cn.created_at DESC';
+
+    $statement = $pdo->prepare($sql);
+
+    $statement->execute([
+        'related_type' => $relatedType,
+        'related_id' => $relatedId,
+    ]);
+
+    return $statement->fetchAll();
+}
+
+function wz_crm_allowed_contacts(
+    int $userId,
+    string $role
+): array {
+    $pdo = wz_db();
+
+    if (!$pdo) {
+        return [];
+    }
+
+    if ($role === 'host') {
+        $statement = $pdo->prepare(
+            'SELECT DISTINCT
+                u.id,
+                u.name,
+                u.email,
+                u.role
+             FROM users u
+             INNER JOIN crm_enquiries ce
+                ON ce.business_user_id = u.id
+             WHERE ce.customer_user_id = :user_id
+
+             UNION
+
+             SELECT DISTINCT
+                u.id,
+                u.name,
+                u.email,
+                u.role
+             FROM users u
+             INNER JOIN crm_bookings cb
+                ON cb.business_user_id = u.id
+             WHERE cb.customer_user_id = :user_id
+
+             ORDER BY name'
+        );
+
+        $statement->execute([
+            'user_id' => $userId,
+        ]);
+    } else {
+        $statement = $pdo->prepare(
+            'SELECT DISTINCT
+                u.id,
+                u.name,
+                u.email,
+                u.role
+             FROM users u
+             INNER JOIN crm_enquiries ce
+                ON ce.customer_user_id = u.id
+             WHERE ce.business_user_id = :user_id
+             AND ce.business_type = :business_type
+
+             UNION
+
+             SELECT DISTINCT
+                u.id,
+                u.name,
+                u.email,
+                u.role
+             FROM users u
+             INNER JOIN crm_bookings cb
+                ON cb.customer_user_id = u.id
+             WHERE cb.business_user_id = :user_id
+             AND cb.business_type = :business_type
+
+             ORDER BY name'
+        );
+
+        $statement->execute([
+            'user_id' => $userId,
+            'business_type' => $role,
+        ]);
+    }
+
+    return $statement->fetchAll();
+}
+
+function wz_crm_can_message(
+    int $userId,
+    string $role,
+    int $recipientId
+): bool {
+    foreach (
+        wz_crm_allowed_contacts(
+            $userId,
+            $role
+        ) as $contact
+    ) {
+        if (
+            (int)$contact['id']
+            === $recipientId
+        ) {
+            return true;
+        }
+    }
+
+    return false;
+}
