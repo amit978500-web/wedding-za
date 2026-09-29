@@ -335,7 +335,8 @@ textarea {
 }
 
 .crm-badge.negotiation,
-.crm-badge.confirmed {
+.crm-badge.confirmed,
+.crm-badge.held {
   background: #eee5ef;
   color: #6d4274;
 }
@@ -343,14 +344,16 @@ textarea {
 .crm-badge.won,
 .crm-badge.completed,
 .crm-badge.paid,
-.crm-badge.done {
+.crm-badge.done,
+.crm-badge.booked {
   background: #e5f0e8;
   color: var(--crm-green);
 }
 
 .crm-badge.lost,
 .crm-badge.cancelled,
-.crm-badge.refunded {
+.crm-badge.refunded,
+.crm-badge.blocked {
   background: #f4e4e5;
   color: var(--crm-red);
 }
