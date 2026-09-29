@@ -273,3 +273,70 @@ Use only owned or properly licensed media.
 Set `analytics.measurement_id` in `config.local.php` when your production analytics/privacy setup is ready.
 
 Analytics remains disabled when the value is blank.
+
+
+## CRM portals
+
+Wedding Za now has four connected CRM portals.
+
+### Customer CRM
+
+```text
+/crm/customer/
+```
+
+Includes enquiries, bookings, planning links, shortlist access, tasks, messages and customer profile.
+
+### Vendor CRM
+
+```text
+/crm/vendor/
+```
+
+Includes sales pipeline, enquiry stages, follow-ups, opportunity value, bookings, payment state, tasks, notes, messages, business profile and portfolio media.
+
+### Venue CRM
+
+```text
+/crm/venue/
+```
+
+Includes the Vendor CRM workflow plus venue capacity, rooms, locality/address and availability management.
+
+### Admin CRM
+
+```text
+/admin/
+```
+
+Includes CRM enquiry assignment, bookings, customers, venues, vendors, tasks, messages, raw leads, accounts, CMS, media and audit logs.
+
+### CRM pipeline
+
+```text
+New
+→ Qualified
+→ Proposal
+→ Negotiation
+→ Won / Lost
+```
+
+Moving an enquiry to Won creates a tentative booking automatically.
+
+For existing installations apply:
+
+```text
+database/migrations/004-full-crm.sql
+```
+
+Then synchronize historical enquiries:
+
+```bash
+php scripts/sync-crm-leads.php
+```
+
+Full CRM documentation:
+
+```text
+docs/CRM.md
+```

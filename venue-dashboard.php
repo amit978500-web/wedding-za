@@ -6,10 +6,10 @@ require __DIR__ . '/includes/crm.php';
 
 if (
     !wz_is_logged_in()
-    || wz_role() !== 'vendor'
+    || wz_role() !== 'venue'
 ) {
     header(
-        'Location: login.php?role=vendor'
+        'Location: login.php?role=venue'
     );
 
     exit;
@@ -17,7 +17,7 @@ if (
 
 header(
     'Location: ' .
-    wz_app_url('crm/vendor/index.php')
+    wz_app_url('crm/venue/index.php')
 );
 
 exit;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once dirname(__DIR__) . '/includes/auth.php';
+require_once dirname(__DIR__) . '/includes/crm.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
@@ -174,6 +174,20 @@ if ($pdo) {
         'message' => $payload['message'],
         'ip' => $payload['ip'],
     ]);
+
+    $leadId = (int)$pdo->lastInsertId();
+
+    if (
+        $type === 'vendor-enquiry'
+        || (
+            $payload['vendor'] !== ''
+            && $type !== 'vendor-registration'
+        )
+    ) {
+        wz_crm_sync_lead(
+            $leadId
+        );
+    }
 
     if (
         $type === 'vendor-registration'
