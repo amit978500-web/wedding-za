@@ -392,14 +392,26 @@ if (wz_is_logged_in()) {
                         <?= h($accountLabel) ?>
                     </a>
 
-                    <?php if (wz_role() !== 'vendor'): ?>
+                    <?php if (!wz_is_logged_in()): ?>
+                        <a href="login.php?role=host">
+                            Customer CRM
+                        </a>
+
                         <a href="login.php?role=vendor">
-                            Business login
+                            Vendor CRM
+                        </a>
+
+                        <a href="login.php?role=venue">
+                            Venue CRM
                         </a>
                     <?php endif; ?>
 
-                    <a href="register-vendor.php">
-                        For event businesses ↗
+                    <a href="register.php?role=vendor">
+                        Join as vendor ↗
+                    </a>
+
+                    <a href="register.php?role=venue">
+                        Join as venue ↗
                     </a>
                 </div>
             </aside>
