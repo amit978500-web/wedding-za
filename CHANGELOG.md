@@ -2,6 +2,56 @@
 
 All notable Wedding Za changes are recorded here.
 
+## [1.2.0] - 2026-09-29
+
+### Added
+
+- Connected Admin CRM portal.
+- Connected Customer CRM portal.
+- Connected Vendor CRM portal.
+- Connected Venue CRM portal.
+- Shared CRM enquiry pipeline.
+- CRM enquiry detail with notes and follow-up tasks.
+- Opportunity value and next-follow-up tracking.
+- Won-enquiry to booking conversion.
+- Booking status and payment-state management.
+- Customer, Vendor and Venue CRM messaging.
+- Role-specific CRM profiles.
+- Venue capacity, rooms, type, locality and address management.
+- Venue availability calendar.
+- Confirmed venue booking to availability synchronization.
+- Vendor and venue CRM portfolio uploads.
+- Admin customer CRM overview.
+- Admin venue moderation.
+- Admin CRM enquiry assignment.
+- Admin booking operations.
+- Admin task assignment.
+- Admin message oversight.
+- Public enquiry to CRM synchronization.
+- Approved venue profiles in the public marketplace.
+- Historical lead-to-CRM migration command.
+- CRM integration QA.
+- CRM browser and HTTP route coverage.
+
+### Changed
+
+- Customer accounts now route into Customer CRM.
+- Vendor accounts now route into Vendor CRM.
+- Venue accounts are now a first-class account role.
+- Legacy account and vendor dashboard URLs redirect to the new CRM portals.
+- Website account menu exposes Customer, Vendor and Venue CRM entry points.
+- Admin dashboard now prioritizes CRM operations.
+
+### Database
+
+Apply:
+
+```text
+database/migrations/004-full-crm.sql
+```
+
+for existing Wedding Za databases.
+
 ## [1.1.0] - 2026-09-25
 
 ### Added
