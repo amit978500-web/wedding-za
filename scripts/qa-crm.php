@@ -389,12 +389,15 @@ if (!in_array(
 
 $pdo->prepare(
     'DELETE FROM crm_messages
-     WHERE sender_user_id IN (:customer_id, :vendor_id, :venue_id)
-     OR recipient_user_id IN (:customer_id, :vendor_id, :venue_id)'
+     WHERE sender_user_id IN (?, ?, ?)
+     OR recipient_user_id IN (?, ?, ?)'
 )->execute([
-    'customer_id' => $customerId,
-    'vendor_id' => $vendorId,
-    'venue_id' => $venueId,
+    $customerId,
+    $vendorId,
+    $venueId,
+    $customerId,
+    $vendorId,
+    $venueId,
 ]);
 
 $pdo->prepare(
