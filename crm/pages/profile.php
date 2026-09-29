@@ -63,89 +63,20 @@ if (
             $message = (string)$upload['message'];
         }
     } elseif ($crmRole === 'host') {
-        $customerName = trim(
-            (string)($_POST['name'] ?? '')
+        $result = wz_crm_update_customer_profile(
+            $userId,
+            $_POST
         );
 
-        if ($customerName === '') {
-            $message = 'Please enter your name.';
-        } else {
-            $updateUser = $pdo->prepare(
-                'UPDATE users
-                 SET name = :name
-                 WHERE id = :id
-                 AND role = :role'
-            );
+        $message = (string)$result['message'];
+        $isSuccess = (bool)$result['ok'];
 
-            $updateUser->execute([
-                'name' => $customerName,
-                'id' => $userId,
-                'role' => 'host',
-            ]);
-
-            $statement = $pdo->prepare(
-                'INSERT INTO customer_profiles (
-                    user_id,
-                    phone,
-                    city,
-                    event_type,
-                    event_date,
-                    guest_count,
-                    budget,
-                    notes
-                ) VALUES (
-                    :user_id,
-                    :phone,
-                    :city,
-                    :event_type,
-                    :event_date,
-                    :guest_count,
-                    :budget,
-                    :notes
-                )
-                ON DUPLICATE KEY UPDATE
-                    phone = VALUES(phone),
-                    city = VALUES(city),
-                    event_type = VALUES(event_type),
-                    event_date = VALUES(event_date),
-                    guest_count = VALUES(guest_count),
-                    budget = VALUES(budget),
-                    notes = VALUES(notes)'
-            );
-
-            $statement->execute([
-                'user_id' => $userId,
-                'phone' => trim(
-                    (string)($_POST['phone'] ?? '')
-                ),
-                'city' => trim(
-                    (string)($_POST['city'] ?? '')
-                ),
-                'event_type' => trim(
-                    (string)($_POST['event_type'] ?? '')
-                ),
-                'event_date' => !empty($_POST['event_date'])
-                    ? (string)$_POST['event_date']
-                    : null,
-                'guest_count' => !empty($_POST['guest_count'])
-                    ? max(
-                        0,
-                        (int)$_POST['guest_count']
-                    )
-                    : null,
-                'budget' => trim(
-                    (string)($_POST['budget'] ?? '')
-                ),
-                'notes' => trim(
-                    (string)($_POST['notes'] ?? '')
-                ),
-            ]);
-
-            $crmUser['name'] = $customerName;
+        if ($isSuccess) {
+            $crmUser['name'] = (string)$result['name'];
 
             wz_set_user_session([
                 'id' => $userId,
-                'name' => $customerName,
+                'name' => (string)$result['name'],
                 'email' => (string)$crmUser['email'],
                 'role' => 'host',
             ]);
@@ -155,9 +86,6 @@ if (
                 'customer_profile',
                 $userId
             );
-
-            $message = 'Customer profile updated.';
-            $isSuccess = true;
         }
     } elseif ($crmRole === 'vendor') {
         $events = array_values(
