@@ -113,6 +113,10 @@ jobs:
           ];
           PHP
 
+      - name: Run CRM integration QA
+        run: |
+          php scripts/qa-crm.php
+
       - name: Start PHP server
         run: |
           php -S 127.0.0.1:8088 > /tmp/wedding-za-php.log 2>&1 &
