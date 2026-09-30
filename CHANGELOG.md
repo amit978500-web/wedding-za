@@ -2,6 +2,38 @@
 
 All notable Wedding Za changes are recorded here.
 
+## [1.3.0] - 2026-09-30
+
+### Added
+
+- Venue CRM operations dashboard.
+- Venue Leads hierarchy: All Leads, New Leads, Follow-ups, Site Visits and Lost Leads.
+- Site-visit scheduling and status tracking.
+- Venue Functions hierarchy: All Functions, Upcoming and Calendar.
+- Venue-specific booking management.
+- Venue payment ledger.
+- Payment method, reference and refund tracking.
+- Automatic booking payment-status synchronization.
+- Venue outstanding-balance calculations.
+- Venue reports for leads, conversion, bookings, functions, collections and balance due.
+- Dedicated Venue CRM operations QA.
+- HTTP and browser coverage for every new Venue CRM route.
+
+### Changed
+
+- Venue CRM navigation now follows venue operations rather than the generic Vendor CRM structure.
+- Legacy Venue enquiry route now redirects to Venue Leads.
+- Payment management is separated from booking management.
+- Venue profile and messages remain accessible as utility links.
+
+### Database
+
+Existing CRM installations should apply:
+
+```text
+database/migrations/005-venue-crm-operations.sql
+```
+
 ## [1.2.0] - 2026-09-29
 
 ### Added

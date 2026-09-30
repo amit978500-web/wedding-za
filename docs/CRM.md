@@ -69,14 +69,50 @@ Vendors can manage:
 /crm/venue/
 ```
 
-Venues receive the Vendor CRM capabilities plus:
+Venue CRM is organized around venue operations:
+
+```text
+Dashboard
+
+Leads
+├── All Leads
+├── New Leads
+├── Follow-ups
+├── Site Visits
+└── Lost Leads
+
+Functions
+├── All Functions
+├── Upcoming
+└── Calendar
+
+Bookings
+
+Payments
+
+Reports
+```
+
+Venue CRM includes:
 
 - venue-specific profile fields
-- capacity
+- lead stage tracking
+- follow-up scheduling
+- site-visit scheduling and status
+- function/event schedule
+- upcoming function view
+- function calendar
+- booking confirmation and value
+- payment ledger
+- payment method and reference tracking
+- received/refunded payment status
+- outstanding balance calculation
+- lead conversion reporting
+- booking/function reporting
+- venue capacity
 - rooms
 - venue type
 - address/locality
-- availability calendar
 - confirmed booking → booked availability sync
 
 ## Sales pipeline
@@ -111,11 +147,14 @@ This converts historical vendor/venue leads into CRM enquiries without duplicati
 
 ## Database migration
 
-Existing Wedding Za installations should apply:
+Existing Wedding Za installations should apply the CRM migrations in order:
 
 ```text
 database/migrations/004-full-crm.sql
+database/migrations/005-venue-crm-operations.sql
 ```
+
+If migration 004 is already installed, apply only migration 005.
 
 The migration adds:
 
@@ -147,3 +186,14 @@ Run:
 ```bash
 php scripts/qa-crm.php
 ```
+
+
+## Venue CRM operations QA
+
+Run:
+
+```bash
+php scripts/qa-venue-crm.php
+```
+
+This validates Venue lead assignment, New Leads, Follow-ups, Site Visits, Functions, Payments and Reports.
