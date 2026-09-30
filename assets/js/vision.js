@@ -215,11 +215,11 @@
     // This preserves the fixed layout while restoring a premium cinematic feel.
     const exp=$('#visionExperience'), track=$('#visionCategoryTrack');
     if(exp&&track) {
-      $('.vision-category-panel').forEach((panel,index)=> {
+      $$('.vision-category-panel').forEach((panel,index)=> {
         const image=$('.vision-category-image',panel);
         const photo=$('.vision-category-image img',panel);
         const number=$('.vision-category-number',panel);
-        const copyItems=$('.vision-category-copy > *',panel);
+        const copyItems=$$('.vision-category-copy > *',panel);
 
         if(image) {
           gsap.fromTo(
@@ -298,7 +298,7 @@
     // WZ / 03 keeps every city card aligned and animates its inner layers.
     const cities=$('.vision-cities'), rail=$('#visionCityRail');
     if(cities&&rail) {
-      $('.vision-city-card').forEach((card,index)=> {
+      $$('.vision-city-card').forEach((card,index)=> {
         const figure=$('figure',card);
         const photo=$('figure img',card);
         const number=$('span',card);
