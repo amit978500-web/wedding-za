@@ -196,7 +196,7 @@ if (wz_is_logged_in()) {
 
     <link
         rel="stylesheet"
-        href="assets/css/vision.css?v=4.0.3"
+        href="assets/css/vision.css?v=4.0.4"
     >
 
     <link
