@@ -1,6 +1,59 @@
         </main>
     </div>
 
+
+    <?php if (!empty($wzMemberCard)): ?>
+        <div
+            class="wz-member-modal"
+            data-wz-member-modal
+            data-auto-open="<?= !empty($wzMemberCardAutoOpen) ? '1' : '0' ?>"
+            aria-hidden="true"
+        >
+            <div
+                class="wz-member-dialog"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="wzMemberDialogTitle"
+            >
+                <div class="wz-member-dialog-head">
+                    <div>
+                        <span>WEDDING ZA OPERATIONS</span>
+                        <strong id="wzMemberDialogTitle">
+                            Your Wedding Za card
+                        </strong>
+                    </div>
+
+                    <button
+                        class="wz-member-close"
+                        type="button"
+                        data-wz-card-close
+                        aria-label="Close Wedding Za card"
+                    >
+                        ×
+                    </button>
+                </div>
+
+                <?= wz_crm_member_card_html(
+                    $wzMemberCard,
+                    'modal'
+                ) ?>
+
+                <div class="wz-member-dialog-actions">
+                    <a href="index.php">
+                        Admin dashboard ↗
+                    </a>
+
+                    <button
+                        type="button"
+                        data-wz-card-close
+                    >
+                        Enter workspace
+                    </button>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <script
         src="../assets/js/crm-ui.js?v=1.1.0"
         defer
