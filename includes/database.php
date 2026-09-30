@@ -25,6 +25,11 @@ function wz_config(): array
         'analytics' => [
             'measurement_id' => getenv('WZ_ANALYTICS_ID') ?: '',
         ],
+        'payments' => [
+            'razorpay_key_id' => getenv('WZ_RAZORPAY_KEY_ID') ?: '',
+            'razorpay_key_secret' => getenv('WZ_RAZORPAY_KEY_SECRET') ?: '',
+            'razorpay_webhook_secret' => getenv('WZ_RAZORPAY_WEBHOOK_SECRET') ?: '',
+        ],
         'seo' => [
             'organization_name' => 'Wedding Za',
             'default_og_image' => getenv('WZ_DEFAULT_OG_IMAGE') ?: '',
