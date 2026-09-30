@@ -723,6 +723,8 @@ CREATE TABLE business_analytics_events (
 CREATE TABLE wedding_submissions (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     submitter_user_id BIGINT UNSIGNED DEFAULT NULL,
+    submitter_name VARCHAR(140) DEFAULT NULL,
+    submitter_email VARCHAR(190) DEFAULT NULL,
     couple_names VARCHAR(180) NOT NULL,
     city VARCHAR(100) DEFAULT NULL,
     event_date DATE DEFAULT NULL,
