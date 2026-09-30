@@ -157,5 +157,14 @@ window.WZ_BOOT = <?= json_encode([
 <script src="assets/js/app.js?v=4.0.0"></script>
 <script src="assets/js/vision.js?v=4.0.1"></script>
 <script src="assets/js/marketplace.js?v=1.0.0"></script>
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {
+            // Public site continues normally without offline support.
+        });
+    });
+}
+</script>
 </body>
 </html>
