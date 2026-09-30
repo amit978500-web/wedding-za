@@ -209,7 +209,7 @@ $adminNavigation = [
 
     <link
         rel="stylesheet"
-        href="../assets/css/admin-premium.css?v=1.0.0"
+        href="../assets/css/admin-premium.css?v=1.1.0"
     >
 </head>
 
