@@ -61,7 +61,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <link
         rel="stylesheet"
-        href="../assets/css/admin.css?v=1.0.0"
+        href="../assets/css/admin.css?v=1.2.0"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/admin-premium.css?v=1.0.0"
     >
 </head>
 
