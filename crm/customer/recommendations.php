@@ -39,19 +39,19 @@ require dirname(__DIR__) . '/includes/header.php';
     <article class="crm-stat">
         <span>City</span>
         <strong style="font-size:28px;">
-            <?= h((string)($profile['city'] ?: 'Not set')) ?>
+            <?= h((string)(($profile['city'] ?? '') ?: 'Not set')) ?>
         </strong>
     </article>
 
     <article class="crm-stat">
         <span>Guests</span>
-        <strong><?= h((string)($profile['guest_count'] ?: '—')) ?></strong>
+        <strong><?= h((string)(($profile['guest_count'] ?? '') ?: '—')) ?></strong>
     </article>
 
     <article class="crm-stat">
         <span>Event type</span>
         <strong style="font-size:28px;">
-            <?= h((string)($profile['event_type'] ?: 'Not set')) ?>
+            <?= h((string)(($profile['event_type'] ?? '') ?: 'Not set')) ?>
         </strong>
     </article>
 
