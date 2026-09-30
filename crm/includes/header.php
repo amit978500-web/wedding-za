@@ -204,10 +204,29 @@ $crmNavigation = match ($crmRole) {
         rel="stylesheet"
         href="<?= h(wz_app_url('assets/css/crm.css?v=1.2.0')) ?>"
     >
+
+    <link
+        rel="stylesheet"
+        href="<?= h(wz_app_url('assets/css/crm-premium.css?v=1.0.0')) ?>"
+    >
 </head>
 
-<body>
+<body class="crm-role-<?= h($crmRole) ?>">
     <div class="crm-shell">
+        <button
+            class="crm-mobile-toggle"
+            type="button"
+            aria-label="Open CRM navigation"
+            aria-expanded="false"
+        >
+            ☰
+        </button>
+
+        <div
+            class="crm-sidebar-backdrop"
+            aria-hidden="true"
+        ></div>
+
         <aside class="crm-sidebar">
             <a
                 class="crm-brand"
