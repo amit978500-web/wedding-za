@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once dirname(__DIR__, 2) . '/includes/crm.php';
+require_once dirname(__DIR__, 2) . '/includes/marketplace.php';
 
 $crmRole = $crmRole ?? 'host';
 $crmPage = $crmPage ?? 'bookings';
@@ -107,6 +108,37 @@ if (
                     'payment_status' => $paymentStatus,
                 ]
             );
+
+            if (
+                in_array(
+                    $status,
+                    ['confirmed', 'completed'],
+                    true
+                )
+            ) {
+                wz_marketplace_record_business_event(
+                    $userId,
+                    $crmRole,
+                    'booking',
+                    !empty($booking['customer_user_id'])
+                        ? (int)$booking['customer_user_id']
+                        : null,
+                    $bookingId
+                );
+
+                if (!empty($booking['customer_user_id'])) {
+                    wz_marketplace_notify(
+                        (int)$booking['customer_user_id'],
+                        'booking',
+                        'Booking updated',
+                        (string)$booking['title']
+                            .' is now '
+                            .$status
+                            .'.',
+                        'crm/customer/bookings.php'
+                    );
+                }
+            }
 
             if (
                 $crmRole === 'venue'
