@@ -448,3 +448,89 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+
+
+.admin-sidebar {
+  overflow-y: auto;
+}
+
+.admin-nav-item {
+  display: grid;
+}
+
+.admin-nav-item > a {
+  display: block;
+}
+
+.admin-subnav {
+  display: none;
+  padding: 4px 0 10px 14px;
+  border-left: 1px solid rgba(255,255,255,.12);
+}
+
+.admin-nav-item.has-children:hover .admin-subnav,
+.admin-nav-item.has-children:has(> a.active) .admin-subnav {
+  display: grid;
+}
+
+.admin-subnav a {
+  padding: 8px 10px;
+  border-bottom: 0;
+  color: rgba(255,255,255,.46);
+  font-size: 10px;
+}
+
+.admin-subnav a:hover,
+.admin-subnav a.active {
+  color: #fff;
+  background: rgba(255,255,255,.06);
+  border-radius: 7px;
+}
+
+.admin-money-positive {
+  color: var(--admin-success);
+}
+
+.admin-money-due {
+  color: var(--admin-wine);
+}
+
+.admin-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--admin-line);
+}
+
+.admin-calendar-card {
+  min-height: 130px;
+  padding: 16px;
+  background: var(--admin-paper);
+}
+
+.admin-calendar-card strong,
+.admin-calendar-card span,
+.admin-calendar-card small {
+  display: block;
+}
+
+.admin-calendar-card span {
+  margin-top: 10px;
+}
+
+.admin-calendar-card small {
+  margin-top: 6px;
+  color: var(--admin-muted);
+}
+
+.admin-section-note {
+  color: var(--admin-muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .admin-calendar-grid {
+    grid-template-columns: 1fr;
+  }
+}

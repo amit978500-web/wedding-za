@@ -340,3 +340,24 @@ Full CRM documentation:
 ```text
 docs/CRM.md
 ```
+
+
+### Admin CRM operations
+
+```text
+/admin/
+```
+
+The Admin CRM now covers Leads, Functions, Bookings, Payments, Invoices, Refunds, Commission, Customers, Venues, Vendors, Reports, Website content inventory and Team.
+
+Existing CRM databases should apply:
+
+```text
+database/migrations/006-admin-crm-operations.sql
+```
+
+Run Admin CRM integration QA with:
+
+```bash
+php scripts/qa-admin-crm.php
+```

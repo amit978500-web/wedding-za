@@ -249,3 +249,48 @@ test('venue registration route is available', async ({ page }) => {
     page.getByText('VENUE CRM ACCOUNT')
   ).toBeVisible();
 });
+
+
+test('Admin CRM operation routes require Admin login', async ({ page }) => {
+  const routes = [
+    '/admin/index.php',
+    '/admin/leads.php',
+    '/admin/leads-new.php',
+    '/admin/leads-followups.php',
+    '/admin/leads-site-visits.php',
+    '/admin/leads-lost.php',
+    '/admin/functions.php',
+    '/admin/functions-upcoming.php',
+    '/admin/functions-calendar.php',
+    '/admin/bookings.php',
+    '/admin/payments.php',
+    '/admin/invoices.php',
+    '/admin/refunds.php',
+    '/admin/commission.php',
+    '/admin/customers.php',
+    '/admin/venues.php',
+    '/admin/venues-active.php',
+    '/admin/venues-inactive.php',
+    '/admin/vendors.php',
+    '/admin/vendors-active.php',
+    '/admin/reports.php',
+    '/admin/website-cities.php',
+    '/admin/website-categories.php',
+    '/admin/website-venues.php',
+    '/admin/website-blogs.php',
+    '/admin/team.php',
+  ];
+
+  for (const route of routes) {
+    await page.goto(
+      route,
+      {
+        waitUntil: 'domcontentloaded',
+      }
+    );
+
+    expect(page.url()).toContain(
+      '/admin/login.php'
+    );
+  }
+});
