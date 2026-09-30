@@ -52,6 +52,14 @@
         )
         :[];
 
+    $availability=$businessUserId>0
+        ?wz_marketplace_availability(
+            $businessUserId,
+            $businessType,
+            12
+        )
+        :[];
+
     if (wz_is_logged_in()) {
         $viewerId=(int)(wz_user()['id']??0);
 
@@ -85,6 +93,16 @@
                 'vendor.php?id='.
                 urlencode((string)$v['id'])
             ),
+            'aggregateRating'=>
+                (int)($v['reviews']??0)>0
+                    ?[
+                        '@type'=>'AggregateRating',
+                        'ratingValue'=>(float)($v['rating']??0),
+                        'reviewCount'=>(int)($v['reviews']??0),
+                        'bestRating'=>5,
+                        'worstRating'=>1,
+                    ]
+                    :null,
         ],
     ];
 
@@ -193,6 +211,11 @@
                     <a href="#portfolio">
                     Portfolio
                     </a>
+                    <?php if($businessUserId>0): ?>
+                        <a href="#availability">
+                        Availability
+                        </a>
+                    <?php endif; ?>
                     <a href="#reviews">
                     Reviews
                     </a>
@@ -341,10 +364,88 @@
                             </div>
                         </div>
 
+                        <?php if (!empty($v['spaces'])): ?>
+                            <div class="profile-block-head" style="margin-top:28px;">
+                                <span class="eyebrow">EVENT SPACES</span>
+                                <h2>Spaces at this venue</h2>
+                            </div>
+
+                            <div class="marketplace-chip-list">
+                                <?php foreach ($v['spaces'] as $space): ?>
+                                    <span><?= h((string)$space) ?></span>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+
                         <?php if (!empty($v['amenities'])): ?>
+                            <div class="profile-block-head" style="margin-top:28px;">
+                                <span class="eyebrow">AMENITIES</span>
+                                <h2>What is available</h2>
+                            </div>
+
                             <div class="marketplace-chip-list">
                                 <?php foreach ($v['amenities'] as $amenity): ?>
                                     <span><?= h((string)$amenity) ?></span>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (!empty(array_filter($v['policies']??[]))): ?>
+                            <div class="profile-block-head" style="margin-top:28px;">
+                                <span class="eyebrow">POLICIES</span>
+                                <h2>Before you book</h2>
+                            </div>
+
+                            <div class="vendor-facts-v2">
+                                <?php foreach(($v['policies']??[]) as $policyName=>$policyValue): ?>
+                                    <?php if(trim((string)$policyValue)!==''): ?>
+                                        <div>
+                                            <span><?= h(ucfirst((string)$policyName)) ?></span>
+                                            <strong><?= h((string)$policyValue) ?></strong>
+                                        </div>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (!empty($v['video_url'])): ?>
+                            <p style="margin-top:22px;">
+                                <a
+                                    class="text-link"
+                                    href="<?=h((string)$v['video_url'])?>"
+                                    target="_blank"
+                                    rel="noopener"
+                                >
+                                    Watch venue video ↗
+                                </a>
+                            </p>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        <?php if (!empty($v['service_areas'])): ?>
+                            <div class="profile-block-head" style="margin-top:28px;">
+                                <span class="eyebrow">SERVICE AREAS</span>
+                                <h2>Where this team works</h2>
+                            </div>
+
+                            <div class="marketplace-chip-list">
+                                <?php foreach($v['service_areas'] as $area): ?>
+                                    <span><?=h((string)$area)?></span>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (!empty($v['packages'])): ?>
+                            <div class="profile-block-head" style="margin-top:28px;">
+                                <span class="eyebrow">PACKAGES</span>
+                                <h2>Starting package options</h2>
+                            </div>
+
+                            <div class="service-grid-v2">
+                                <?php foreach($v['packages'] as $i=>$package): ?>
+                                    <div>
+                                        <span><?=str_pad((string)($i+1),2,'0',STR_PAD_LEFT)?></span>
+                                        <strong><?=h((string)$package)?></strong>
+                                    </div>
                                 <?php endforeach; ?>
                             </div>
                         <?php endif; ?>
@@ -374,6 +475,37 @@
                         ?>
                     </div>
                 </section>
+
+                <?php if($businessUserId>0): ?>
+                    <section class="profile-block" id="availability">
+                        <div class="profile-block-head">
+                            <span class="eyebrow">AVAILABILITY</span>
+                            <h2>Upcoming calendar status</h2>
+                        </div>
+
+                        <?php if($availability): ?>
+                            <div class="marketplace-availability-grid">
+                                <?php foreach($availability as $slot): ?>
+                                    <div class="marketplace-availability-card">
+                                        <strong>
+                                            <?=h(date('d M Y',strtotime((string)$slot['availability_date'])))?>
+                                        </strong>
+                                        <span class="crm-badge <?=h((string)$slot['status'])?>">
+                                            <?=h(ucfirst((string)$slot['status']))?>
+                                        </span>
+                                        <?php if(!empty($slot['note'])): ?>
+                                            <small><?=h((string)$slot['note'])?></small>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else: ?>
+                            <p class="profile-lead">
+                                No public availability dates have been added yet. Send an enquiry to confirm your date.
+                            </p>
+                        <?php endif; ?>
+                    </section>
+                <?php endif; ?>
 
                 <section class="profile-block marketplace-reviews" id="reviews">
                     <div class="profile-block-head">
