@@ -5,6 +5,8 @@ ErrorDocument 404 /404.php
 
 RewriteEngine On
 RewriteRule ^sitemap\.xml$ sitemap.php [L]
+RewriteRule ^wedding-venues/([a-z0-9-]+)/?$ seo-landing.php?type=venues&city=$1 [L,QSA]
+RewriteRule ^wedding-vendors/([a-z0-9-]+)/([a-z0-9-]+)/?$ seo-landing.php?type=vendors&city=$1&category=$2 [L,QSA]
 
 <FilesMatch "^(config\.local\.php|\.env.*)$">
     Require all denied
