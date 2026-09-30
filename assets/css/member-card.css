@@ -116,9 +116,6 @@
 }
 
 .wz-member-card {
-  --member-accent: #8b2f4d;
-  --member-accent-rgb: 139,47,77;
-  --member-accent-2: #d5a1b2;
   position: relative;
   isolation: isolate;
   overflow: hidden;
