@@ -3,6 +3,7 @@
     require __DIR__.'/includes/components.php';
     require __DIR__.'/includes/vendors.php';
     require __DIR__.'/includes/marketplace.php';
+    require __DIR__.'/includes/media.php';
     $id=(string)($_GET['id']??'amber-courtyard');
     $v=wz_public_vendor($id)??(wz_public_vendors()[0]??null);
     if(!$v) {
@@ -32,6 +33,25 @@
         } elseif ($businessUserId<=0) {
             $reviewMessage='Reviews are not available for this profile yet.';
         } else {
+            $reviewPhotos=[];
+
+            if (
+                isset($_FILES['review_photo'])
+                && (int)($_FILES['review_photo']['error']??UPLOAD_ERR_NO_FILE)===UPLOAD_ERR_OK
+            ) {
+                $upload=wz_media_upload(
+                    $_FILES['review_photo'],
+                    'Customer review photo for '.(string)$v['name']
+                );
+
+                if(empty($upload['ok'])){
+                    $reviewMessage=(string)$upload['message'];
+                }else{
+                    $reviewPhotos[]=(string)$upload['path'];
+                }
+            }
+
+            if($reviewMessage===''){
             $result=wz_marketplace_create_review([
                 'reviewer_user_id'=>(int)(wz_user()['id']??0),
                 'business_user_id'=>$businessUserId,
@@ -39,9 +59,11 @@
                 'rating'=>(int)($_POST['rating']??0),
                 'title'=>(string)($_POST['title']??''),
                 'body'=>(string)($_POST['body']??''),
+                'photos'=>$reviewPhotos,
             ]);
             $reviewMessage=(string)$result['message'];
             $reviewSuccess=!empty($result['ok']);
+            }
         }
     }
 
@@ -523,7 +545,7 @@
                     <?php endif; ?>
 
                     <?php if ($businessUserId>0 && wz_is_logged_in() && wz_role()==='host'): ?>
-                        <form method="post" class="marketplace-review-form">
+                        <form method="post" enctype="multipart/form-data" class="marketplace-review-form">
                             <input type="hidden" name="action" value="review">
                             <input type="hidden" name="csrf" value="<?=h(wz_csrf_token())?>">
 
@@ -547,6 +569,15 @@
                             <label class="full">
                                 <span>Your experience</span>
                                 <textarea name="body" required placeholder="Share useful details about communication, quality, value and the event experience."></textarea>
+                            </label>
+
+                            <label class="full">
+                                <span>Review photo (optional)</span>
+                                <input
+                                    type="file"
+                                    name="review_photo"
+                                    accept="image/jpeg,image/png,image/webp"
+                                >
                             </label>
 
                             <button class="pill-btn wine" type="submit">
@@ -576,6 +607,30 @@
                                     <h3><?= h((string)$review['title']) ?></h3>
                                 <?php endif; ?>
                                 <p><?= h((string)$review['body']) ?></p>
+
+                                <?php
+                                $reviewPhotos=json_decode(
+                                    (string)($review['photos_json']??'[]'),
+                                    true
+                                )?:[];
+                                ?>
+
+                                <?php if($reviewPhotos): ?>
+                                    <div class="marketplace-review-photos">
+                                        <?php foreach($reviewPhotos as $photo): ?>
+                                            <img
+                                                src="<?=h(
+                                                    str_starts_with((string)$photo,'http')
+                                                        ?(string)$photo
+                                                        :wz_app_url((string)$photo)
+                                                )?>"
+                                                alt="Customer review photo"
+                                                loading="lazy"
+                                            >
+                                        <?php endforeach; ?>
+                                    </div>
+                                <?php endif; ?>
+
                                 <small>
                                     <?= h((string)$review['reviewer_name']) ?>
                                     · <?= h(date('d M Y',strtotime((string)$review['created_at']))) ?>
