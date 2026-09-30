@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once dirname(__DIR__, 2) . '/includes/crm.php';
 
 $crmRole = $crmRole ?? 'host';
-$crmPage = 'bookings';
+$crmPage = $crmPage ?? 'bookings';
 $crmUser = wz_crm_require_role($crmRole);
 $userId = (int)($crmUser['id'] ?? 0);
 $message = '';
@@ -156,7 +156,43 @@ $bookings = wz_crm_bookings_for_user(
     $crmRole
 );
 
-$crmTitle = 'Bookings';
+$bookingFilter = $bookingFilter ?? 'all';
+
+if ($crmRole === 'host' && $bookingFilter === 'upcoming') {
+    $today = date('Y-m-d');
+
+    $bookings = array_values(
+        array_filter(
+            $bookings,
+            fn (array $booking): bool =>
+                !in_array(
+                    (string)($booking['status'] ?? ''),
+                    ['completed', 'cancelled'],
+                    true
+                )
+                && (
+                    empty($booking['event_date'])
+                    || (string)$booking['event_date'] >= $today
+                )
+        )
+    );
+}
+
+if ($crmRole === 'host' && $bookingFilter === 'completed') {
+    $bookings = array_values(
+        array_filter(
+            $bookings,
+            fn (array $booking): bool =>
+                (string)($booking['status'] ?? '') === 'completed'
+        )
+    );
+}
+
+$crmTitle = $bookingFilter === 'completed'
+    ? 'Completed Bookings'
+    : ($bookingFilter === 'upcoming'
+        ? 'Upcoming Bookings'
+        : 'Bookings');
 
 require dirname(__DIR__) . '/includes/header.php';
 ?>
@@ -168,7 +204,11 @@ require dirname(__DIR__) . '/includes/header.php';
         </span>
 
         <h1>
-            Event bookings
+            <?= $bookingFilter === 'completed'
+                ? 'Completed bookings'
+                : ($bookingFilter === 'upcoming'
+                    ? 'Upcoming bookings'
+                    : 'Event bookings') ?>
         </h1>
 
         <p>
