@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once dirname(__DIR__, 2) . '/includes/crm.php';
+require_once dirname(__DIR__, 2) . '/includes/marketplace.php';
 
 $crmRole = $crmRole ?? 'host';
 $crmPage = $crmPage ?? 'dashboard';
@@ -11,6 +12,17 @@ $crmTitle = $crmTitle ?? 'CRM';
 $crmUser = wz_crm_require_role(
     $crmRole
 );
+
+$crmUnreadNotifications = wz_marketplace_unread_notification_count(
+    (int)($crmUser['id'] ?? 0)
+);
+
+$crmNotificationLabel = 'Notifications'
+    . (
+        $crmUnreadNotifications > 0
+            ? ' (' . $crmUnreadNotifications . ')'
+            : ''
+    );
 
 $crmNavigation = match ($crmRole) {
     'host' => [
@@ -32,6 +44,10 @@ $crmNavigation = match ($crmRole) {
                 ],
             ],
         ],
+        'recommendations' => [
+            'label' => 'For You',
+            'path' => 'crm/customer/recommendations.php',
+        ],
         'find-venues' => [
             'label' => 'Find Venues',
             'path' => 'crm/customer/find-venues.php',
@@ -44,6 +60,10 @@ $crmNavigation = match ($crmRole) {
                     'label' => 'Saved Venues',
                     'path' => 'crm/customer/shortlist.php',
                 ],
+                'recent' => [
+                    'label' => 'Recently Viewed',
+                    'path' => 'crm/customer/recent.php',
+                ],
             ],
         ],
         'enquiries' => [
@@ -53,6 +73,10 @@ $crmNavigation = match ($crmRole) {
                 'enquiries-all' => [
                     'label' => 'All Enquiries',
                     'path' => 'crm/customer/enquiries.php',
+                ],
+                'messages' => [
+                    'label' => 'Messages',
+                    'path' => 'crm/customer/messages.php',
                 ],
             ],
         ],
@@ -82,15 +106,41 @@ $crmNavigation = match ($crmRole) {
                     'label' => 'Completed',
                     'path' => 'crm/customer/bookings-completed.php',
                 ],
+                'finances' => [
+                    'label' => 'Quotes & Payments',
+                    'path' => 'crm/customer/finances.php',
+                ],
             ],
+        ],
+        'planning' => [
+            'label' => 'Planning Tools',
+            'path' => 'crm/customer/timeline.php',
+            'children' => [
+                'planning-timeline' => [
+                    'label' => 'Wedding Timeline',
+                    'path' => 'crm/customer/timeline.php',
+                ],
+                'budget-planner' => [
+                    'label' => 'Budget Planner',
+                    'path' => 'crm/customer/budget-planner.php',
+                ],
+                'planning-moodboards' => [
+                    'label' => 'Moodboards',
+                    'path' => 'crm/customer/moodboards.php',
+                ],
+                'planning-collaborators' => [
+                    'label' => 'Collaborators',
+                    'path' => 'crm/customer/collaborators.php',
+                ],
+            ],
+        ],
+        'notifications' => [
+            'label' => $crmNotificationLabel,
+            'path' => 'crm/customer/notifications.php',
         ],
         'profile' => [
             'label' => 'Profile',
             'path' => 'crm/customer/profile.php',
-        ],
-        'budget-planner' => [
-            'label' => 'Budget Planner',
-            'path' => 'crm/customer/budget-planner.php',
         ],
     ],
     'venue' => [
@@ -146,13 +196,45 @@ $crmNavigation = match ($crmRole) {
             'label' => 'Bookings',
             'path' => 'crm/venue/bookings.php',
         ],
+        'availability' => [
+            'label' => 'Availability',
+            'path' => 'crm/venue/availability.php',
+        ],
+        'quotes' => [
+            'label' => 'Quotes',
+            'path' => 'crm/venue/quotes.php',
+        ],
         'payments' => [
             'label' => 'Payments',
             'path' => 'crm/venue/payments.php',
         ],
+        'messages' => [
+            'label' => 'Messages',
+            'path' => 'crm/venue/messages.php',
+        ],
+        'reviews' => [
+            'label' => 'Reviews',
+            'path' => 'crm/venue/reviews.php',
+        ],
+        'analytics' => [
+            'label' => 'Analytics',
+            'path' => 'crm/venue/analytics.php',
+        ],
         'reports' => [
             'label' => 'Reports',
             'path' => 'crm/venue/reports.php',
+        ],
+        'subscription' => [
+            'label' => 'Business Plan',
+            'path' => 'crm/venue/subscription.php',
+        ],
+        'notifications' => [
+            'label' => $crmNotificationLabel,
+            'path' => 'crm/venue/notifications.php',
+        ],
+        'profile' => [
+            'label' => 'Venue Profile',
+            'path' => 'crm/venue/profile.php',
         ],
     ],
     default => [
@@ -161,23 +243,47 @@ $crmNavigation = match ($crmRole) {
             'path' => 'crm/vendor/index.php',
         ],
         'enquiries' => [
-            'label' => 'Sales pipeline',
+            'label' => 'Sales Pipeline',
             'path' => 'crm/vendor/enquiries.php',
         ],
         'bookings' => [
             'label' => 'Bookings',
             'path' => 'crm/vendor/bookings.php',
         ],
-        'tasks' => [
-            'label' => 'Tasks',
-            'path' => 'crm/vendor/tasks.php',
+        'availability' => [
+            'label' => 'Availability',
+            'path' => 'crm/vendor/availability.php',
+        ],
+        'quotes' => [
+            'label' => 'Quotes',
+            'path' => 'crm/vendor/quotes.php',
         ],
         'messages' => [
             'label' => 'Messages',
             'path' => 'crm/vendor/messages.php',
         ],
+        'tasks' => [
+            'label' => 'Tasks',
+            'path' => 'crm/vendor/tasks.php',
+        ],
+        'reviews' => [
+            'label' => 'Reviews',
+            'path' => 'crm/vendor/reviews.php',
+        ],
+        'analytics' => [
+            'label' => 'Analytics',
+            'path' => 'crm/vendor/analytics.php',
+        ],
+        'subscription' => [
+            'label' => 'Business Plan',
+            'path' => 'crm/vendor/subscription.php',
+        ],
+        'notifications' => [
+            'label' => $crmNotificationLabel,
+            'path' => 'crm/vendor/notifications.php',
+        ],
         'profile' => [
-            'label' => 'Business profile',
+            'label' => 'Business Profile',
             'path' => 'crm/vendor/profile.php',
         ],
     ],
