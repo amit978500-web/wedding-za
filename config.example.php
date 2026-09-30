@@ -16,6 +16,12 @@ return [
         'measurement_id' => '',
     ],
 
+    'payments' => [
+        'razorpay_key_id' => '',
+        'razorpay_key_secret' => '',
+        'razorpay_webhook_secret' => '',
+    ],
+
     'seo' => [
         'organization_name' => 'Wedding Za',
         'default_og_image' => '',
