@@ -179,6 +179,11 @@ if (wz_is_logged_in()) {
         rel="stylesheet"
         href="assets/css/vision.css?v=4.0.1"
     >
+
+    <link
+        rel="stylesheet"
+        href="assets/css/marketplace.css?v=1.0.0"
+    >
 </head>
 
 <body
@@ -236,6 +241,10 @@ if (wz_is_logged_in()) {
                 class="vision-nav-links"
                 aria-label="Primary navigation"
             >
+                <a<?= wz_active('venues.php') ?> href="venues.php">
+                    Venues
+                </a>
+
                 <a<?= wz_active('vendors.php') ?> href="vendors.php">
                     Vendors
                 </a>
@@ -254,6 +263,14 @@ if (wz_is_logged_in()) {
             </nav>
 
             <div class="vision-nav-actions">
+                <a
+                    class="vision-heart"
+                    href="search.php"
+                    aria-label="Search Wedding Za"
+                >
+                    ⌕
+                </a>
+
                 <button
                     class="vision-discover"
                     type="button"
