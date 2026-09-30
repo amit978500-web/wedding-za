@@ -567,6 +567,45 @@ function wz_marketplace_wedding_timeline(
     return $timeline;
 }
 
+function wz_marketplace_availability(
+    int $businessUserId,
+    string $businessType,
+    int $limit = 16
+): array {
+    $pdo = wz_db();
+
+    if (
+        !$pdo
+        || $businessUserId <= 0
+        || !in_array($businessType, ['vendor', 'venue'], true)
+    ) {
+        return [];
+    }
+
+    $table = $businessType === 'venue'
+        ? 'venue_availability'
+        : 'vendor_availability';
+
+    $column = $businessType === 'venue'
+        ? 'venue_user_id'
+        : 'vendor_user_id';
+
+    $statement = $pdo->prepare(
+        'SELECT availability_date, status, note
+         FROM ' . $table . '
+         WHERE ' . $column . ' = :business_user_id
+         AND availability_date >= CURDATE()
+         ORDER BY availability_date ASC
+         LIMIT ' . max(1, min($limit, 60))
+    );
+
+    $statement->execute([
+        'business_user_id' => $businessUserId,
+    ]);
+
+    return $statement->fetchAll();
+}
+
 function wz_marketplace_customer_quotes(
     int $customerUserId
 ): array {
