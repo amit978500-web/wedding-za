@@ -13,6 +13,14 @@ $crmUser = wz_crm_require_role(
     $crmRole
 );
 
+$wzMemberCard = wz_crm_member_card_data(
+    $crmUser,
+    $crmRole
+);
+
+$wzMemberCardAutoOpen =
+    wz_crm_member_card_popup_pending();
+
 $crmUnreadNotifications = wz_marketplace_unread_notification_count(
     (int)($crmUser['id'] ?? 0)
 );
@@ -315,6 +323,11 @@ $crmNavigation = match ($crmRole) {
         rel="stylesheet"
         href="<?= h(wz_app_url('assets/css/crm-premium.css?v=1.1.0')) ?>"
     >
+
+    <link
+        rel="stylesheet"
+        href="<?= h(wz_app_url('assets/css/member-card.css?v=1.0.0')) ?>"
+    >
 </head>
 
 <body class="crm-role-<?= h($crmRole) ?>">
@@ -422,6 +435,16 @@ $crmNavigation = match ($crmRole) {
 
                     <br>
                 <?php endif; ?>
+
+                <button
+                    class="crm-user-card-link"
+                    type="button"
+                    data-wz-card-open
+                >
+                    My WZ Card ↗
+                </button>
+
+                <br>
 
                 <a href="<?= h(wz_app_url('index.php')) ?>">
                     Public site ↗
