@@ -53,7 +53,9 @@
     <?= h((string)wz_money_number((string)($v['price']??'0'))) ?>
     " data-search="
     <?= h(($v['name']??'').' '.($v['city']??'').' '.($v['category']??'').' '.($v['locality']??'')) ?>
-    ">
+    " data-business-user-id="<?= h((string)($v['database_user_id']??0)) ?>"
+    data-business-type="<?= h((string)($v['business_type']??'')) ?>"
+    >
     <a class="vendor-media" href="vendor.php?id=<?=urlencode((string)$v['id'])?>
     " aria-label="Open
     <?= h($v['name']) ?>
@@ -71,7 +73,9 @@
     </span>
     </a>
     <button class="heart-btn" type="button" data-shortlist="<?=h($v['id'])?>
-    " aria-label="Save
+    " data-business-user-id="<?= h((string)($v['database_user_id']??0)) ?>"
+    data-business-type="<?= h((string)($v['business_type']??'')) ?>"
+    aria-label="Save
     <?= h($v['name']) ?>
     ">♡
     </button>
