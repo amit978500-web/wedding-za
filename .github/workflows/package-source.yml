@@ -18,15 +18,19 @@ jobs:
 
       - name: Build source ZIP
         run: |
-          cd ..
-          zip -r wedding-za.zip wedding-za \
-            -x "wedding-za/.git/*" \
-            -x "wedding-za/.github/workflows/package-source.yml"
+          mkdir -p package/wedding-za
+          rsync -a \
+            --exclude=".git" \
+            --exclude="package" \
+            --exclude=".github/workflows/package-source.yml" \
+            ./ package/wedding-za/
+          cd package
+          zip -r ../wedding-za.zip wedding-za
 
       - name: Upload source ZIP
         uses: actions/upload-artifact@v4
         with:
           name: wedding-za-full-source
-          path: ../wedding-za.zip
+          path: wedding-za.zip
           if-no-files-found: error
           retention-days: 1
