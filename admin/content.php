@@ -229,8 +229,8 @@ if ($pdo) {
         ->fetchAll();
 }
 
-$adminPage = 'content';
-$adminTitle = 'Content';
+$adminPage = $adminPage ?? 'website-blogs';
+$adminTitle = $adminTitle ?? 'Blogs';
 
 require __DIR__ . '/includes/header.php';
 ?>

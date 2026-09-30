@@ -10,21 +10,72 @@ Wedding Za uses one shared CRM data model with four role-specific portals.
 /admin/
 ```
 
-Admin can manage:
+Admin CRM is organized around platform operations:
 
-- CRM enquiries
-- business assignment
-- booking status
-- customers
-- venues
-- vendors
-- tasks
-- messages
-- raw leads
-- users
-- CMS content
-- media
-- audit logs
+```text
+Dashboard
+
+Leads
+├── All Leads
+├── New Leads
+├── Follow-ups
+├── Site Visits
+└── Lost Leads
+
+Functions
+├── All Functions
+├── Upcoming
+└── Calendar
+
+Bookings
+
+Payments
+├── Payments
+├── Invoices
+├── Refunds
+└── Commission
+
+Customers
+
+Venues
+├── All Venues
+├── Active
+└── Inactive
+
+Vendors
+├── All Vendors
+└── Active
+
+Reports
+
+Website
+├── Cities
+├── Categories
+├── Venues
+└── Blogs
+
+Team
+```
+
+Admin CRM includes:
+
+- cross-platform lead assignment
+- follow-up scheduling
+- site-visit tracking
+- function/event schedule
+- booking operations
+- payment transaction ledger
+- invoice register
+- refund view
+- Wedding Za commission tracking
+- customer directory
+- venue approval and active/inactive views
+- vendor approval and active view
+- platform performance reports
+- website discovery inventory
+- blog CMS
+- admin team profiles
+- media library and audit log utility access
 
 ### Customer CRM
 
@@ -152,9 +203,10 @@ Existing Wedding Za installations should apply the CRM migrations in order:
 ```text
 database/migrations/004-full-crm.sql
 database/migrations/005-venue-crm-operations.sql
+database/migrations/006-admin-crm-operations.sql
 ```
 
-If migration 004 is already installed, apply only migration 005.
+Apply only the migrations that are not already installed.
 
 The migration adds:
 
@@ -197,3 +249,14 @@ php scripts/qa-venue-crm.php
 ```
 
 This validates Venue lead assignment, New Leads, Follow-ups, Site Visits, Functions, Payments and Reports.
+
+
+## Admin CRM operations QA
+
+Run:
+
+```bash
+php scripts/qa-admin-crm.php
+```
+
+This validates Admin Leads, Follow-ups, Site Visits, Functions, Payments, Invoices, Commission, Reports and Team data.

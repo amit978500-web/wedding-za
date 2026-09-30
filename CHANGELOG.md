@@ -2,6 +2,43 @@
 
 All notable Wedding Za changes are recorded here.
 
+## [1.4.0] - 2026-09-30
+
+### Added
+
+- Admin CRM operations dashboard.
+- Admin Leads hierarchy: All Leads, New Leads, Follow-ups, Site Visits and Lost Leads.
+- Cross-platform lead assignment and lead operational updates.
+- Admin Functions hierarchy: All Functions, Upcoming and Calendar.
+- Admin payment transaction ledger.
+- Invoice register linked to bookings.
+- Refund ledger.
+- Wedding Za commission register and calculation.
+- Customer directory retained as a first-class CRM section.
+- Venue hierarchy: All Venues, Active and Inactive.
+- Vendor hierarchy: All Vendors and Active.
+- Platform-wide Admin reports.
+- Website operations group: Cities, Categories, Venues and Blogs.
+- Admin Team management for existing Admin accounts.
+- Dedicated Admin CRM operations QA.
+- HTTP and browser coverage for all new Admin CRM routes.
+
+### Changed
+
+- Admin navigation is now operations-first instead of a flat utility menu.
+- Legacy CRM Enquiries route redirects to Admin Leads.
+- Existing Media and Audit Log remain available as Admin utility links.
+- Blog CMS is grouped under Website.
+- Venue and Vendor moderation use shared filtered views.
+
+### Database
+
+Existing CRM installations should apply:
+
+```text
+database/migrations/006-admin-crm-operations.sql
+```
+
 ## [1.3.0] - 2026-09-30
 
 ### Added
