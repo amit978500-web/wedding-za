@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/includes/crm.php';
+require_once dirname(__DIR__) . '/includes/marketplace.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
@@ -184,9 +185,37 @@ if ($pdo) {
             && $type !== 'vendor-registration'
         )
     ) {
-        wz_crm_sync_lead(
+        $enquiryId = wz_crm_sync_lead(
             $leadId
         );
+
+        $business = wz_crm_find_business_by_name(
+            (string)$payload['vendor']
+        );
+
+        if ($business) {
+            wz_marketplace_record_business_event(
+                (int)$business['user_id'],
+                (string)$business['business_type'],
+                'enquiry',
+                !empty($payload['user_id'])
+                    ? (int)$payload['user_id']
+                    : null,
+                $enquiryId
+            );
+
+            wz_marketplace_notify(
+                (int)$business['user_id'],
+                'enquiry',
+                'New marketplace enquiry',
+                $payload['name'] !== ''
+                    ? $payload['name'].' requested pricing / availability.'
+                    : 'A customer requested pricing / availability.',
+                (string)$business['business_type'] === 'venue'
+                    ? 'crm/venue/leads.php'
+                    : 'crm/vendor/enquiries.php'
+            );
+        }
     }
 
     if (
