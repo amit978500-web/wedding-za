@@ -2,6 +2,7 @@
 
 require __DIR__ . '/includes/bootstrap.php';
 require __DIR__ . '/includes/components.php';
+require __DIR__ . '/includes/vendors.php';
 
 $id = (int)($_GET['id'] ?? 0);
 $pdo = wz_db();
@@ -48,6 +49,30 @@ $vendors = json_decode(
     (string)($story['vendors_json'] ?? '[]'),
     true
 ) ?: [];
+
+$publicBusinesses = wz_public_vendors();
+$vendorCredits = [];
+
+foreach ($vendors as $vendorName) {
+    $match = null;
+
+    foreach ($publicBusinesses as $business) {
+        if (
+            strcasecmp(
+                trim((string)$business['name']),
+                trim((string)$vendorName)
+            ) === 0
+        ) {
+            $match = $business;
+            break;
+        }
+    }
+
+    $vendorCredits[] = [
+        'name' => (string)$vendorName,
+        'business' => $match,
+    ];
+}
 
 require __DIR__ . '/includes/header.php';
 ?>
@@ -124,11 +149,27 @@ require __DIR__ . '/includes/header.php';
                 </div>
 
                 <div class="marketplace-chip-list">
-                    <?php foreach ($vendors as $vendor): ?>
-                        <span><?= h((string)$vendor) ?></span>
+                    <?php foreach ($vendorCredits as $credit): ?>
+                        <?php if (!empty($credit['business'])): ?>
+                            <a
+                                class="pill-btn outline"
+                                href="<?= h(
+                                    wz_app_url(
+                                        'vendor.php?id='
+                                        . urlencode(
+                                            (string)$credit['business']['id']
+                                        )
+                                    )
+                                ) ?>"
+                            >
+                                <?= h((string)$credit['name']) ?> ↗
+                            </a>
+                        <?php else: ?>
+                            <span><?= h((string)$credit['name']) ?></span>
+                        <?php endif; ?>
                     <?php endforeach; ?>
 
-                    <?php if (!$vendors): ?>
+                    <?php if (!$vendorCredits): ?>
                         <span>Credits not supplied</span>
                     <?php endif; ?>
                 </div>
