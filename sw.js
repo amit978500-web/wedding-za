@@ -1,4 +1,4 @@
-const WZ_CACHE = 'wedding-za-shell-v4';
+const WZ_CACHE = 'wedding-za-shell-v5';
 
 const SHELL = [
   './offline.html',
@@ -6,7 +6,7 @@ const SHELL = [
   './assets/css/vision.css?v=4.0.4',
   './assets/css/marketplace.css?v=1.0.0',
   './assets/js/app.js?v=4.0.0',
-  './assets/js/vision.js?v=4.0.3',
+  './assets/js/vision.js?v=4.0.4',
   './assets/js/marketplace.js?v=1.0.0',
   './assets/images/favicon.svg',
 ];
