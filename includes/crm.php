@@ -26,6 +26,349 @@ function wz_crm_portal_path(string $role): string
     };
 }
 
+
+function wz_crm_member_card_data(
+    array $user,
+    string $role
+): array {
+    $userId = (int)($user['id'] ?? 0);
+    $name = trim((string)($user['name'] ?? 'Wedding Za Member'));
+    $email = trim((string)($user['email'] ?? ''));
+    $profile = [];
+
+    if ($userId > 0) {
+        if ($role === 'host') {
+            $profile = wz_crm_customer_profile($userId) ?? [];
+        } elseif (in_array($role, ['vendor', 'venue'], true)) {
+            $profile = wz_crm_business_profile(
+                $userId,
+                $role
+            ) ?? [];
+        }
+    }
+
+    $displayName = $name;
+    $headline = 'Wedding Za Member';
+    $location = '';
+    $details = [];
+    $profilePath = wz_crm_portal_path($role);
+    $completionValues = [];
+
+    if ($role === 'host') {
+        $displayName = $name;
+        $headline = !empty($profile['event_type'])
+            ? (string)$profile['event_type'] . ' planning profile'
+            : 'Celebration planning profile';
+        $location = trim((string)($profile['city'] ?? ''));
+        $profilePath = 'crm/customer/profile.php';
+
+        $eventDate = trim((string)($profile['event_date'] ?? ''));
+        $formattedDate = '';
+
+        if ($eventDate !== '') {
+            try {
+                $formattedDate = (new DateTimeImmutable($eventDate))
+                    ->format('d M Y');
+            } catch (Throwable $exception) {
+                $formattedDate = $eventDate;
+            }
+        }
+
+        $details = [
+            ['label' => 'Event', 'value' => trim((string)($profile['event_type'] ?? ''))],
+            ['label' => 'Guests', 'value' => !empty($profile['guest_count'])
+                ? (string)$profile['guest_count'] . ' guests'
+                : ''],
+            ['label' => 'Date', 'value' => $formattedDate],
+            ['label' => 'Budget', 'value' => trim((string)($profile['budget'] ?? ''))],
+        ];
+
+        $completionValues = [
+            $name,
+            $profile['phone'] ?? '',
+            $profile['city'] ?? '',
+            $profile['event_type'] ?? '',
+            $profile['event_date'] ?? '',
+            $profile['guest_count'] ?? '',
+            $profile['budget'] ?? '',
+        ];
+    } elseif ($role === 'vendor') {
+        $displayName = trim((string)($profile['business_name'] ?? ''))
+            ?: $name;
+        $category = trim((string)($profile['category'] ?? ''));
+        $headline = $category !== ''
+            ? $category . ' · Wedding Za Vendor'
+            : 'Wedding Za Vendor';
+        $location = trim((string)($profile['city'] ?? ''));
+        $profilePath = 'crm/vendor/profile.php';
+
+        $serviceAreas = json_decode(
+            (string)($profile['service_areas_json'] ?? '[]'),
+            true
+        );
+
+        $details = [
+            ['label' => 'Category', 'value' => $category],
+            ['label' => 'City', 'value' => $location],
+            ['label' => 'From', 'value' => trim((string)($profile['starting_price'] ?? ''))],
+            ['label' => 'Service', 'value' => is_array($serviceAreas) && $serviceAreas
+                ? implode(', ', array_slice($serviceAreas, 0, 2))
+                : ''],
+        ];
+
+        $completionValues = [
+            $profile['business_name'] ?? '',
+            $profile['category'] ?? '',
+            $profile['city'] ?? '',
+            $profile['starting_price'] ?? '',
+            $profile['portfolio_url'] ?? '',
+            $profile['about'] ?? '',
+        ];
+    } elseif ($role === 'venue') {
+        $displayName = trim((string)($profile['venue_name'] ?? ''))
+            ?: $name;
+        $venueType = trim((string)($profile['venue_type'] ?? ''));
+        $headline = $venueType !== ''
+            ? $venueType . ' · Wedding Za Venue'
+            : 'Wedding Za Venue';
+
+        $city = trim((string)($profile['city'] ?? ''));
+        $locality = trim((string)($profile['locality'] ?? ''));
+        $location = implode(
+            ' · ',
+            array_values(
+                array_filter([$locality, $city])
+            )
+        );
+        $profilePath = 'crm/venue/profile.php';
+
+        $details = [
+            ['label' => 'Location', 'value' => $location],
+            ['label' => 'Capacity', 'value' => !empty($profile['capacity_max'])
+                ? 'Up to ' . (string)$profile['capacity_max']
+                : ''],
+            ['label' => 'Rooms', 'value' => !empty($profile['rooms'])
+                ? (string)$profile['rooms']
+                : ''],
+            ['label' => 'From', 'value' => trim((string)($profile['starting_price'] ?? ''))],
+        ];
+
+        $completionValues = [
+            $profile['venue_name'] ?? '',
+            $profile['venue_type'] ?? '',
+            $profile['city'] ?? '',
+            $profile['locality'] ?? '',
+            $profile['capacity_max'] ?? '',
+            $profile['starting_price'] ?? '',
+            $profile['about'] ?? '',
+        ];
+    } else {
+        $displayName = $name;
+        $headline = 'Wedding Za Operations';
+        $location = 'Admin workspace';
+        $profilePath = 'admin/index.php';
+        $details = [
+            ['label' => 'Role', 'value' => 'Administrator'],
+            ['label' => 'Workspace', 'value' => 'Operations CRM'],
+            ['label' => 'Email', 'value' => $email],
+        ];
+        $completionValues = [$name, $email, 'admin'];
+    }
+
+    $details = array_values(
+        array_filter(
+            $details,
+            fn (array $item): bool =>
+                trim((string)($item['value'] ?? '')) !== ''
+        )
+    );
+
+    if (!$details) {
+        $details[] = [
+            'label' => 'Email',
+            'value' => $email !== '' ? $email : 'Profile ready to complete',
+        ];
+    }
+
+    $filled = count(
+        array_filter(
+            $completionValues,
+            fn ($value): bool =>
+                trim((string)$value) !== ''
+        )
+    );
+
+    $completion = $completionValues
+        ? (int)round(
+            ($filled / count($completionValues)) * 100
+        )
+        : 100;
+
+    $words = preg_split(
+        '/\s+/',
+        trim($displayName)
+    ) ?: [];
+
+    $initials = '';
+
+    foreach (array_slice($words, 0, 2) as $word) {
+        $initials .= strtoupper(
+            substr((string)$word, 0, 1)
+        );
+    }
+
+    if ($initials === '') {
+        $initials = 'WZ';
+    }
+
+    $prefix = match ($role) {
+        'host' => 'C',
+        'vendor' => 'V',
+        'venue' => 'VN',
+        'admin' => 'A',
+        default => 'M',
+    };
+
+    return [
+        'role' => $role,
+        'role_label' => wz_crm_role_label($role),
+        'name' => $displayName,
+        'headline' => $headline,
+        'location' => $location,
+        'email' => $email,
+        'initials' => $initials,
+        'member_id' => 'WZ-' . $prefix . '-' . str_pad(
+            (string)max($userId, 0),
+            5,
+            '0',
+            STR_PAD_LEFT
+        ),
+        'completion' => max(0, min(100, $completion)),
+        'details' => array_slice($details, 0, 4),
+        'profile_path' => $profilePath,
+    ];
+}
+
+function wz_crm_member_card_popup_pending(): bool
+{
+    $show = !empty(
+        $_SESSION['wz_show_member_card']
+    );
+
+    unset(
+        $_SESSION['wz_show_member_card']
+    );
+
+    return $show;
+}
+
+function wz_crm_member_card_html(
+    array $card,
+    string $context = 'modal'
+): string {
+    $escape = static fn ($value): string =>
+        htmlspecialchars(
+            (string)$value,
+            ENT_QUOTES,
+            'UTF-8'
+        );
+
+    $role = preg_replace(
+        '/[^a-z0-9_-]/i',
+        '',
+        (string)($card['role'] ?? 'host')
+    );
+
+    $details = is_array($card['details'] ?? null)
+        ? $card['details']
+        : [];
+
+    ob_start();
+    ?>
+    <article
+        class="wz-member-card wz-member-role-<?= $escape($role) ?> wz-member-card-<?= $escape($context) ?>"
+        data-wz-member-card
+    >
+        <div class="wz-member-card-noise" aria-hidden="true"></div>
+        <div class="wz-member-card-orbit wz-member-card-orbit-a" aria-hidden="true"></div>
+        <div class="wz-member-card-orbit wz-member-card-orbit-b" aria-hidden="true"></div>
+
+        <div class="wz-member-card-top">
+            <div class="wz-member-brand">
+                <span>WZ</span>
+                <div>
+                    <strong>Wedding Za</strong>
+                    <small>Digital CRM identity</small>
+                </div>
+            </div>
+
+            <span class="wz-member-role">
+                <?= $escape($card['role_label'] ?? 'Member') ?>
+            </span>
+        </div>
+
+        <div class="wz-member-card-person">
+            <div class="wz-member-avatar">
+                <?= $escape($card['initials'] ?? 'WZ') ?>
+            </div>
+
+            <div class="wz-member-card-copy">
+                <small>
+                    <?= $escape($card['headline'] ?? 'Wedding Za Member') ?>
+                </small>
+
+                <h2>
+                    <?= $escape($card['name'] ?? 'Wedding Za Member') ?>
+                </h2>
+
+                <?php if (!empty($card['location'])): ?>
+                    <p>
+                        <?= $escape($card['location']) ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <div class="wz-member-details">
+            <?php foreach ($details as $detail): ?>
+                <div>
+                    <span>
+                        <?= $escape($detail['label'] ?? '') ?>
+                    </span>
+                    <strong>
+                        <?= $escape($detail['value'] ?? '') ?>
+                    </strong>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <div class="wz-member-card-foot">
+            <div>
+                <span>Member ID</span>
+                <strong>
+                    <?= $escape($card['member_id'] ?? 'WZ-M-00000') ?>
+                </strong>
+            </div>
+
+            <div class="wz-member-completion">
+                <span>
+                    Profile <?= $escape($card['completion'] ?? 0) ?>%
+                </span>
+                <i>
+                    <b style="width: <?= $escape($card['completion'] ?? 0) ?>%;"></b>
+                </i>
+            </div>
+
+            <div class="wz-member-mark" aria-hidden="true">
+                W
+            </div>
+        </div>
+    </article>
+    <?php
+
+    return (string)ob_get_clean();
+}
+
 function wz_crm_require_role(string $role): array
 {
     if (
