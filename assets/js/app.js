@@ -550,6 +550,68 @@
   function initIdeaSaves() {
     const key = 'wz_ideas';
 
+    const syncRemote = async (
+      button,
+      action
+    ) => {
+      const boot = window.WZ_BOOT || {};
+
+      if (
+        !boot.loggedIn ||
+        boot.role !== 'host' ||
+        !boot.databaseReady
+      ) {
+        return;
+      }
+
+      const form = new FormData();
+
+      form.append(
+        'csrf',
+        boot.csrf || ''
+      );
+
+      form.append(
+        'action',
+        action
+      );
+
+      form.append(
+        'source_key',
+        button.dataset.saveIdea || ''
+      );
+
+      form.append(
+        'title',
+        button.dataset.ideaTitle || 'Saved idea'
+      );
+
+      form.append(
+        'image_url',
+        button.dataset.ideaImage || ''
+      );
+
+      form.append(
+        'source_url',
+        button.dataset.ideaUrl || ''
+      );
+
+      try {
+        await fetch(
+          'api/save-idea.php',
+          {
+            method: 'POST',
+            body: form,
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest',
+            },
+          }
+        );
+      } catch {
+        // Local browser storage remains the fallback.
+      }
+    };
+
     const sync = () => {
       const ids = storage.get(
         key,
@@ -590,7 +652,9 @@
         []
       );
 
-      const next = ids.includes(id)
+      const wasSaved = ids.includes(id);
+
+      const next = wasSaved
         ? ids.filter((item) => item !== id)
         : [...ids, id];
 
@@ -599,9 +663,14 @@
         next
       );
 
+      syncRemote(
+        button,
+        wasSaved ? 'remove' : 'save'
+      );
+
       toast(
         next.includes(id)
-          ? 'Idea saved to your board'
+          ? 'Idea saved to your moodboard'
           : 'Idea removed'
       );
 
