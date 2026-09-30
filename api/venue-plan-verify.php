@@ -99,7 +99,7 @@ foreach ($admins as $admin) {
         'Paid venue assistance plan',
         (string)(wz_user()['name'] ?? 'Customer')
             .' paid ₹1,000 for One Wedding venue assistance.',
-        null
+        'admin/venue-plans.php'
     );
 }
 
