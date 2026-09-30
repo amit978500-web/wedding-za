@@ -75,6 +75,20 @@
     <?= h($v['name']) ?>
     ">♡
     </button>
+    <?php if (
+        ($v['business_type']??'')==='venue'
+        || ($v['category']??'')==='Venues'
+    ): ?>
+        <button
+            class="vendor-compare-btn"
+            type="button"
+            data-compare-venue="<?=h($v['id'])?>"
+            data-compare-name="<?=h($v['name'])?>"
+            aria-label="Compare <?=h($v['name'])?>"
+        >
+            Compare
+        </button>
+    <?php endif; ?>
     <div class="vendor-card-body">
         <div class="vendor-meta">
             <span>
