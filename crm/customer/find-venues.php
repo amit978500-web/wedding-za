@@ -100,6 +100,51 @@ require dirname(__DIR__) . '/includes/header.php';
     </div>
 <?php endif; ?>
 
+<section class="crm-plan-wrap" aria-labelledby="venuePlanTitle">
+    <article class="crm-plan-card">
+        <div class="crm-plan-card-top">
+            <span class="crm-plan-kicker">WEDDINGZA VENUE ASSIST</span>
+
+            <h2 id="venuePlanTitle">
+                Find Your Perfect Wedding Venue
+            </h2>
+
+            <div class="crm-plan-rule" aria-hidden="true"></div>
+
+            <span class="crm-plan-name">ONE WEDDING</span>
+
+            <strong class="crm-plan-price">
+                ₹1,000
+            </strong>
+        </div>
+
+        <ul class="crm-plan-features">
+            <li>Venue search assistance</li>
+            <li>Curated venue recommendations</li>
+            <li>Shortlisted venues</li>
+            <li>Venue enquiry support</li>
+            <li>Site-visit assistance</li>
+            <li>Dedicated Weddingza support</li>
+        </ul>
+
+        <a
+            class="crm-plan-cta"
+            href="<?= h(
+                wz_app_url(
+                    'crm/customer/venue-plan-payment.php'
+                )
+            ) ?>"
+        >
+            Continue to Payment
+            <span aria-hidden="true">→</span>
+        </a>
+
+        <small class="crm-plan-note">
+            One-time service fee for one wedding.
+        </small>
+    </article>
+</section>
+
 <section class="crm-panel">
     <form method="get" class="crm-form">
         <div class="crm-form-grid">
