@@ -1,0 +1,352 @@
+/* Wedding Za marketplace expansion */
+
+.marketplace-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.marketplace-chip-list span {
+  padding: 9px 12px;
+  border: 1px solid rgba(25,20,17,.1);
+  border-radius: 999px;
+  background: #fff;
+  font-size: 11px;
+}
+
+.marketplace-venue-facts {
+  margin-top: 18px;
+}
+
+.marketplace-review-notice {
+  margin: 18px 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #f6e9ed;
+  color: #7b2942;
+  font-size: 12px;
+}
+
+.marketplace-review-notice.success {
+  background: #eaf3ec;
+  color: #2f6248;
+}
+
+.marketplace-review-form {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 14px;
+  margin: 24px 0 30px;
+  padding: 22px;
+  border: 1px solid rgba(25,20,17,.1);
+  border-radius: 20px;
+  background: #fff;
+}
+
+.marketplace-review-form label {
+  display: grid;
+  gap: 7px;
+}
+
+.marketplace-review-form label.full {
+  grid-column: 1/-1;
+}
+
+.marketplace-review-form label span {
+  color: #716861;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.marketplace-review-form input,
+.marketplace-review-form select,
+.marketplace-review-form textarea {
+  width: 100%;
+  padding: 12px 13px;
+  border: 1px solid #ddd5cc;
+  border-radius: 11px;
+  background: #fff;
+  font: inherit;
+}
+
+.marketplace-review-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.marketplace-review-list {
+  display: grid;
+  gap: 14px;
+}
+
+.marketplace-review-card {
+  padding: 20px;
+  border: 1px solid rgba(25,20,17,.09);
+  border-radius: 18px;
+  background: #fff;
+}
+
+.marketplace-review-card > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.marketplace-review-card > div:first-child strong {
+  color: #9d6d23;
+  letter-spacing: .08em;
+}
+
+.marketplace-review-card > div:first-child span {
+  color: #2f6248;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.marketplace-review-card h3 {
+  margin: 14px 0 8px;
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: 28px;
+  font-weight: 400;
+}
+
+.marketplace-review-card p {
+  color: #625a54;
+  line-height: 1.7;
+}
+
+.marketplace-review-card small {
+  color: #8a817a;
+}
+
+.marketplace-business-reply {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #f7f3ed;
+}
+
+.marketplace-business-reply strong {
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.marketplace-compare-dock {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 90;
+  display: none;
+  width: min(420px,calc(100vw - 32px));
+  padding: 16px;
+  border: 1px solid rgba(25,20,17,.12);
+  border-radius: 20px;
+  background: rgba(255,253,249,.93);
+  box-shadow: 0 20px 65px rgba(25,20,17,.18);
+  backdrop-filter: blur(18px);
+}
+
+.marketplace-compare-dock.active {
+  display: block;
+  animation: marketplaceDockIn .28s cubic-bezier(.22,1,.36,1);
+}
+
+.marketplace-compare-dock-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.marketplace-compare-dock-head strong {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.marketplace-compare-dock-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 12px 0;
+}
+
+.marketplace-compare-dock-list span {
+  padding: 7px 9px;
+  border-radius: 999px;
+  background: #f1ebe5;
+  font-size: 10px;
+}
+
+.marketplace-compare-dock-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.marketplace-compare-dock-actions a,
+.marketplace-compare-dock-actions button {
+  flex: 1;
+}
+
+.marketplace-filter-shell {
+  margin-top: -30px;
+  position: relative;
+  z-index: 3;
+}
+
+.marketplace-filter-card {
+  padding: 22px;
+  border: 1px solid rgba(25,20,17,.10);
+  border-radius: 22px;
+  background: rgba(255,253,249,.96);
+  box-shadow: 0 18px 60px rgba(25,20,17,.09);
+}
+
+.marketplace-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(6,minmax(0,1fr));
+  gap: 12px;
+}
+
+.marketplace-filter-grid label {
+  display: grid;
+  gap: 7px;
+}
+
+.marketplace-filter-grid span {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: #716861;
+}
+
+.marketplace-filter-grid input,
+.marketplace-filter-grid select {
+  min-height: 45px;
+  width: 100%;
+  padding: 0 11px;
+  border: 1px solid #ddd5cc;
+  border-radius: 11px;
+  background: #fff;
+}
+
+.marketplace-compare-table {
+  overflow-x: auto;
+  border: 1px solid rgba(25,20,17,.09);
+  border-radius: 20px;
+  background: #fff;
+}
+
+.marketplace-compare-table table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+}
+
+.marketplace-compare-table th,
+.marketplace-compare-table td {
+  padding: 16px;
+  border-right: 1px solid #eee7e1;
+  border-bottom: 1px solid #eee7e1;
+  text-align: left;
+  vertical-align: top;
+}
+
+.marketplace-compare-table th:first-child {
+  width: 170px;
+  color: #716861;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.marketplace-compare-table img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+.marketplace-search-layout {
+  display: grid;
+  gap: 28px;
+}
+
+.marketplace-search-group h2 {
+  margin-bottom: 16px;
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: 38px;
+  font-weight: 400;
+}
+
+.marketplace-search-result {
+  display: grid;
+  grid-template-columns: 110px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid rgba(25,20,17,.09);
+  border-radius: 16px;
+  background: #fff;
+}
+
+.marketplace-search-result + .marketplace-search-result {
+  margin-top: 10px;
+}
+
+.marketplace-search-result img {
+  width: 110px;
+  height: 80px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+@keyframes marketplaceDockIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 1000px) {
+  .marketplace-filter-grid {
+    grid-template-columns: repeat(3,minmax(0,1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .marketplace-review-form {
+    grid-template-columns: 1fr;
+  }
+
+  .marketplace-review-form label.full {
+    grid-column: auto;
+  }
+
+  .marketplace-filter-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .marketplace-search-result {
+    grid-template-columns: 82px 1fr;
+  }
+
+  .marketplace-search-result img {
+    width: 82px;
+    height: 72px;
+  }
+
+  .marketplace-search-result > a:last-child {
+    grid-column: 1/-1;
+  }
+}
