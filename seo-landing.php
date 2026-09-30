@@ -64,6 +64,8 @@ $pageKey = $isVenueLanding
     ? 'venues'
     : 'vendors';
 
+$useBaseHref = true;
+
 $businesses = array_values(
     array_filter(
         wz_public_vendors(),
