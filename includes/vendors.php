@@ -68,6 +68,24 @@ function wz_database_vendor_to_card(array $profile): array
         'vendor'
     );
 
+    $serviceAreas = json_decode(
+        (string)($profile['service_areas_json'] ?? '[]'),
+        true
+    );
+
+    if (!is_array($serviceAreas)) {
+        $serviceAreas = [];
+    }
+
+    $packages = json_decode(
+        (string)($profile['packages_json'] ?? '[]'),
+        true
+    );
+
+    if (!is_array($packages)) {
+        $packages = [];
+    }
+
     return [
         'id' => 'db-vendor-' . (string)$profile['id'],
         'name' => (string)$profile['business_name'],
@@ -106,6 +124,10 @@ function wz_database_vendor_to_card(array $profile): array
         'database_profile_id' => (int)$profile['id'],
         'database_user_id' => (int)$profile['user_id'],
         'business_type' => 'vendor',
+        'service_areas' => array_values($serviceAreas),
+        'packages' => array_values($packages),
+        'availability_enabled' => !isset($profile['availability_enabled'])
+            || !empty($profile['availability_enabled']),
     ];
 }
 
@@ -246,6 +268,12 @@ function wz_database_venue_to_card(array $profile): array
         'rental_price' => (float)($profile['rental_price'] ?? 0),
         'parking_capacity' => (int)($profile['parking_capacity'] ?? 0),
         'video_url' => (string)($profile['video_url'] ?? ''),
+        'spaces' => array_values(
+            json_decode(
+                (string)($profile['spaces_json'] ?? '[]'),
+                true
+            ) ?: []
+        ),
         'amenities' => array_values($amenities),
         'policies' => $policies,
     ];
