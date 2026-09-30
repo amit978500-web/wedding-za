@@ -44,9 +44,18 @@
                             <?= h($item['title']) ?>
                             </h3>
                         </div>
-                        <button class="save-idea" type="button" data-save-idea="<?=h((string)$item['id'])?>
-                        " aria-label="Save idea">♡
-                        </button>
+                        <button
+                            class="save-idea"
+                            type="button"
+                            data-save-idea="<?=h((string)$item['id'])?>"
+                            data-idea-title="<?=h((string)$item['title'])?>"
+                            data-idea-image="<?=h((string)$item['image'])?>"
+                            data-idea-url="<?=h(
+                                'inspiration.php#idea-'
+                                . (string)$item['id']
+                            )?>"
+                            aria-label="Save idea"
+                        >♡</button>
                     </div>
                 <?php
                     endforeach;
