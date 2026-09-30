@@ -20,8 +20,16 @@ The website includes:
 - Multi-event cinematic homepage
 - Dynamic event landing pages
 - Dynamic city landing pages
-- Vendor discovery and filtering
-- Vendor profile pages
+- Advanced venue and vendor discovery
+- Venue comparison and global marketplace search
+- Vendor and venue profile pages with ratings, reviews and availability
+- Customer review moderation and verified-booking review signals
+- Moodboards, collaborators and personalized recommendations
+- Wedding timeline, quotes, invoices and payment history
+- Business analytics, availability calendars and subscription plans
+- Community wedding submissions with Admin editorial moderation
+- PWA install/offline shell
+- SEO city/category marketplace landing pages
 - Shortlist
 - Event brief
 - Planning checklist
@@ -361,3 +369,54 @@ Run Admin CRM integration QA with:
 ```bash
 php scripts/qa-admin-crm.php
 ```
+
+
+## Marketplace expansion upgrade
+
+The advanced marketplace features use:
+
+```text
+database/migrations/007-marketplace-expansion.sql
+```
+
+For an existing Wedding Za MySQL database, run:
+
+```bash
+php scripts/apply-marketplace-expansion.php
+```
+
+A fresh database imported from `database/schema.sql` already includes the marketplace expansion.
+
+The expansion includes reviews, collaborators, moodboards, notifications, vendor availability, quotes, venue-assistance purchases, recently viewed history, business analytics, richer venue/vendor fields and wedding submissions.
+
+## Razorpay — One Wedding Venue Assist
+
+The ₹1,000 One Wedding venue-assistance checkout is Razorpay-ready.
+
+Add these values to `config.local.php` under the `payments` key:
+
+```php
+'payments' => [
+    'razorpay_key_id' => 'rzp_test_...',
+    'razorpay_key_secret' => '...',
+    'razorpay_webhook_secret' => '...',
+],
+```
+
+Or use environment variables:
+
+```text
+WZ_RAZORPAY_KEY_ID
+WZ_RAZORPAY_KEY_SECRET
+WZ_RAZORPAY_WEBHOOK_SECRET
+```
+
+Configure the Razorpay webhook endpoint as:
+
+```text
+https://YOUR-DOMAIN/api/razorpay-webhook.php
+```
+
+The browser only receives the public Razorpay key ID. Order creation, payment signature verification and webhook verification remain server-side.
+
+Use Razorpay Test Mode credentials before enabling live payments.
