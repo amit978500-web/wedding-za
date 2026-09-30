@@ -5,6 +5,7 @@ declare(strict_types=1);
 require_once dirname(__DIR__, 2) . '/includes/crm.php';
 require_once dirname(__DIR__, 2) . '/includes/marketplace.php';
 require_once dirname(__DIR__, 2) . '/includes/vendors.php';
+require_once dirname(__DIR__, 2) . '/includes/content.php';
 
 $crmRole = 'host';
 $crmPage = 'recent';
@@ -14,9 +15,19 @@ $userId = (int)$crmUser['id'];
 $rows = wz_marketplace_recently_viewed($userId, 20);
 
 $businessMap = [];
+$articleMap = [];
+$weddingMap = [];
 
 foreach (wz_public_vendors() as $business) {
     $businessMap[(string)$business['id']] = $business;
+}
+
+foreach (wz_published_articles() as $article) {
+    $articleMap[(string)$article['id']] = $article;
+}
+
+foreach (wz_data('weddings') as $wedding) {
+    $weddingMap[(string)$wedding['id']] = $wedding;
 }
 
 require dirname(__DIR__) . '/includes/header.php';
@@ -51,6 +62,51 @@ require dirname(__DIR__) . '/includes/header.php';
                         <?= h((string)$business['category']) ?>
                         · <?= h((string)$business['city']) ?>
                         · <?= h((string)$business['price']) ?>
+                    </p>
+                    <small>
+                        Viewed <?= h((string)$row['viewed_at']) ?>
+                    </small>
+                </a>
+            <?php elseif ($type === 'article' && isset($articleMap[$key])): ?>
+                <?php $article = $articleMap[$key]; ?>
+
+                <a
+                    class="crm-list-item"
+                    href="<?= h(
+                        wz_app_url(
+                            'article.php?id='
+                            . urlencode($key)
+                        )
+                    ) ?>"
+                >
+                    <strong><?= h((string)$article['title']) ?></strong>
+                    <p>
+                        Planning guide
+                        <?php if (!empty($article['category'])): ?>
+                            · <?= h((string)$article['category']) ?>
+                        <?php endif; ?>
+                    </p>
+                    <small>
+                        Viewed <?= h((string)$row['viewed_at']) ?>
+                    </small>
+                </a>
+            <?php elseif ($type === 'wedding' && isset($weddingMap[$key])): ?>
+                <?php $wedding = $weddingMap[$key]; ?>
+
+                <a
+                    class="crm-list-item"
+                    href="<?= h(
+                        wz_app_url(
+                            'wedding-story.php?id='
+                            . urlencode($key)
+                        )
+                    ) ?>"
+                >
+                    <strong><?= h((string)$wedding['couple']) ?></strong>
+                    <p>
+                        Real celebration
+                        · <?= h((string)($wedding['city'] ?? '')) ?>
+                        · <?= h((string)($wedding['theme'] ?? '')) ?>
                     </p>
                     <small>
                         Viewed <?= h((string)$row['viewed_at']) ?>
