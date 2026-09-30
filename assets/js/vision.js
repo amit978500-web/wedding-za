@@ -211,37 +211,200 @@
       );
     }
     );
-    // WZ / 02 uses a stable responsive grid.
-    // Keep card entrance animation, but do not pin or translate the section.
+    // WZ / 02 keeps a stable grid and animates INSIDE each card.
+    // This preserves the fixed layout while restoring a premium cinematic feel.
     const exp=$('#visionExperience'), track=$('#visionCategoryTrack');
     if(exp&&track) {
-      gsap.from('.vision-category-panel', {
-        y:34,
-        opacity:0,
-        duration:.72,
-        stagger:.07,
-        ease:'power3.out',
-        scrollTrigger: {
-          trigger:track,
-          start:'top 84%',
-          once:true
+      $('.vision-category-panel').forEach((panel,index)=> {
+        const image=$('.vision-category-image',panel);
+        const photo=$('.vision-category-image img',panel);
+        const number=$('.vision-category-number',panel);
+        const copyItems=$('.vision-category-copy > *',panel);
+
+        if(image) {
+          gsap.fromTo(
+            image,
+            {
+              clipPath:'inset(0 0 100% 0)'
+            },
+            {
+              clipPath:'inset(0 0 0% 0)',
+              duration:1.05,
+              ease:'power4.out',
+              delay:Math.min(index*.055,.22),
+              scrollTrigger: {
+                trigger:panel,
+                start:'top 88%',
+                once:true
+              }
+            }
+          );
+        }
+
+        if(number) {
+          gsap.from(number, {
+            scale:.72,
+            rotate:-10,
+            opacity:0,
+            duration:.62,
+            ease:'back.out(1.7)',
+            delay:Math.min(index*.045,.18),
+            scrollTrigger: {
+              trigger:panel,
+              start:'top 86%',
+              once:true
+            }
+          });
+        }
+
+        if(copyItems.length) {
+          gsap.from(copyItems, {
+            y:24,
+            opacity:0,
+            duration:.64,
+            stagger:.075,
+            ease:'power3.out',
+            delay:Math.min(index*.045,.18),
+            scrollTrigger: {
+              trigger:panel,
+              start:'top 86%',
+              once:true
+            }
+          });
+        }
+
+        if(photo) {
+          gsap.fromTo(
+            photo,
+            {
+              yPercent:-4,
+              scale:1.07
+            },
+            {
+              yPercent:4,
+              scale:1,
+              ease:'none',
+              scrollTrigger: {
+                trigger:panel,
+                start:'top bottom',
+                end:'bottom top',
+                scrub:.45
+              }
+            }
+          );
         }
       });
     }
-    // WZ / 03 uses a fixed equal-height city grid.
-    // No horizontal translation means every city title keeps the same baseline.
+    // WZ / 03 keeps every city card aligned and animates its inner layers.
     const cities=$('.vision-cities'), rail=$('#visionCityRail');
     if(cities&&rail) {
-      gsap.from('.vision-city-card', {
-        y:34,
-        opacity:0,
-        duration:.72,
-        stagger:.08,
-        ease:'power3.out',
-        scrollTrigger: {
-          trigger:rail,
-          start:'top 84%',
-          once:true
+      $('.vision-city-card').forEach((card,index)=> {
+        const figure=$('figure',card);
+        const photo=$('figure img',card);
+        const number=$('span',card);
+        const title=$('h3',card);
+        const description=$('p',card);
+        const link=$('b',card);
+
+        if(figure) {
+          gsap.fromTo(
+            figure,
+            {
+              clipPath:'inset(0 0 100% 0)'
+            },
+            {
+              clipPath:'inset(0 0 0% 0)',
+              duration:1.05,
+              ease:'power4.out',
+              delay:Math.min(index*.07,.21),
+              scrollTrigger: {
+                trigger:card,
+                start:'top 88%',
+                once:true
+              }
+            }
+          );
+        }
+
+        if(number) {
+          gsap.from(number, {
+            x:-18,
+            opacity:0,
+            duration:.55,
+            ease:'power3.out',
+            delay:Math.min(index*.05,.18),
+            scrollTrigger: {
+              trigger:card,
+              start:'top 86%',
+              once:true
+            }
+          });
+        }
+
+        if(title) {
+          gsap.from(title, {
+            y:28,
+            opacity:0,
+            duration:.7,
+            ease:'power4.out',
+            delay:.05+Math.min(index*.05,.18),
+            scrollTrigger: {
+              trigger:card,
+              start:'top 86%',
+              once:true
+            }
+          });
+        }
+
+        if(description) {
+          gsap.from(description, {
+            y:18,
+            opacity:0,
+            duration:.58,
+            ease:'power3.out',
+            delay:.12+Math.min(index*.05,.18),
+            scrollTrigger: {
+              trigger:card,
+              start:'top 86%',
+              once:true
+            }
+          });
+        }
+
+        if(link) {
+          gsap.from(link, {
+            y:14,
+            opacity:0,
+            duration:.52,
+            ease:'power3.out',
+            delay:.18+Math.min(index*.05,.18),
+            scrollTrigger: {
+              trigger:card,
+              start:'top 86%',
+              once:true
+            }
+          });
+        }
+
+        if(photo) {
+          gsap.fromTo(
+            photo,
+            {
+              yPercent:-4,
+              scale:1.06
+            },
+            {
+              yPercent:4,
+              scale:1,
+              ease:'none',
+              scrollTrigger: {
+                trigger:card,
+                start:'top bottom',
+                end:'bottom top',
+                scrub:.45
+              }
+            }
+          );
         }
       });
     }
