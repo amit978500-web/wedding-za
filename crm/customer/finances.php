@@ -68,6 +68,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $quotes = wz_marketplace_customer_quotes($userId);
 $invoices = wz_marketplace_customer_invoices($userId);
+$payments = wz_marketplace_customer_payments($userId);
 
 require dirname(__DIR__) . '/includes/header.php';
 ?>
@@ -170,6 +171,7 @@ require dirname(__DIR__) . '/includes/header.php';
                     <th>Total</th>
                     <th>Due</th>
                     <th>Status</th>
+                    <th>Invoice</th>
                 </tr>
             </thead>
             <tbody>
@@ -184,12 +186,74 @@ require dirname(__DIR__) . '/includes/header.php';
                                 <?= h(ucfirst((string)$invoice['status'])) ?>
                             </span>
                         </td>
+                        <td>
+                            <a
+                                class="crm-button secondary small"
+                                href="<?= h(
+                                    wz_app_url(
+                                        'crm/customer/invoice.php?id='
+                                        . urlencode((string)$invoice['id'])
+                                    )
+                                ) ?>"
+                            >
+                                View / Print
+                            </a>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
 
                 <?php if (!$invoices): ?>
                     <tr>
-                        <td colspan="5">No invoices yet.</td>
+                        <td colspan="6">No invoices yet.</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="crm-panel">
+    <div class="crm-panel-head">
+        <div>
+            <h2>Payment history</h2>
+            <p><?= h((string)count($payments)) ?> payment record(s)</p>
+        </div>
+    </div>
+
+    <div class="crm-table-wrap">
+        <table class="crm-table">
+            <thead>
+                <tr>
+                    <th>Booking</th>
+                    <th>Business</th>
+                    <th>Amount</th>
+                    <th>Method</th>
+                    <th>Reference</th>
+                    <th>Status</th>
+                    <th>Paid</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <?php foreach ($payments as $payment): ?>
+                    <tr>
+                        <td><?= h((string)($payment['booking_title'] ?: 'Booking')) ?></td>
+                        <td><?= h((string)($payment['business_contact'] ?: 'Business')) ?></td>
+                        <td>₹<?= h(number_format((float)$payment['amount'])) ?></td>
+                        <td><?= h(ucfirst(str_replace('_',' ',(string)$payment['method']))) ?></td>
+                        <td><?= h((string)($payment['reference'] ?: '—')) ?></td>
+                        <td>
+                            <span class="crm-badge <?= h((string)$payment['status']) ?>">
+                                <?= h(ucfirst((string)$payment['status'])) ?>
+                            </span>
+                        </td>
+                        <td><?= h((string)($payment['paid_at'] ?: $payment['created_at'])) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+
+                <?php if (!$payments): ?>
+                    <tr>
+                        <td colspan="7">No payment records yet.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
