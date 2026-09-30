@@ -4,6 +4,19 @@
     $pageTitle='Real Celebrations';
     $pageDescription='Explore real celebrations, locations, themes and the vendors behind them.';
     $pageKey='real-weddings';
+    $publishedSubmissions=[];
+    $pdo=wz_db();
+
+    if($pdo){
+        $publishedSubmissions=$pdo->query(
+            'SELECT *
+             FROM wedding_submissions
+             WHERE status = "published"
+             ORDER BY event_date DESC, created_at DESC
+             LIMIT 24'
+        )->fetchAll();
+    }
+
     require __DIR__.'/includes/header.php';
 ?>
 <main>
@@ -34,6 +47,66 @@
             </div>
         </div>
     </section>
+    <?php if($publishedSubmissions): ?>
+        <section class="section">
+            <div class="container">
+                <div class="section-head">
+                    <div>
+                        <span class="eyebrow">
+                            COMMUNITY STORIES
+                        </span>
+                        <h2>
+                            Celebrations submitted
+                            <br>
+                            <em>
+                            to Wedding Za.
+                            </em>
+                        </h2>
+                    </div>
+                    <a class="text-link" href="submit-wedding.php">
+                        Submit yours ↗
+                    </a>
+                </div>
+
+                <div class="story-grid-premium">
+                    <?php foreach($publishedSubmissions as $story): ?>
+                        <a
+                            class="story-card vision-story-card"
+                            href="submitted-wedding.php?id=<?=urlencode((string)$story['id'])?>"
+                        >
+                            <div class="story-media">
+                                <img
+                                    src="<?=h((string)($story['cover_image_url']?:'https://images.unsplash.com/photo-1744805624952-dab790f6b3bd?auto=format&fit=crop&w=1400&q=92'))?>"
+                                    alt="<?=h((string)$story['couple_names'])?>"
+                                    loading="lazy"
+                                    decoding="async"
+                                >
+                                <span class="story-open">
+                                    Open story ↗
+                                </span>
+                            </div>
+
+                            <div class="story-copy">
+                                <span>
+                                    REAL WEDDING
+                                    <?php if(!empty($story['city'])): ?>
+                                        · <?=h((string)$story['city'])?>
+                                    <?php endif; ?>
+                                </span>
+
+                                <h3><?=h((string)$story['couple_names'])?></h3>
+
+                                <p>
+                                    <?=h(mb_strimwidth((string)$story['story'],0,120,'…'))?>
+                                </p>
+                            </div>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </section>
+    <?php endif; ?>
+
     <section class="section paper-2">
         <div class="container">
             <div class="section-head">
