@@ -171,7 +171,7 @@ require dirname(__DIR__) . '/includes/header.php';
                     <th>Total</th>
                     <th>Due</th>
                     <th>Status</th>
-                    <th>Invoice</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
