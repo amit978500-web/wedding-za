@@ -70,6 +70,10 @@ if (wz_is_logged_in()) {
 <head>
     <meta charset="utf-8">
 
+    <?php if (!empty($useBaseHref)): ?>
+        <base href="<?= h(rtrim(wz_app_url(''), '/') . '/') ?>">
+    <?php endif; ?>
+
     <meta
         name="viewport"
         content="width=device-width,initial-scale=1,viewport-fit=cover"
