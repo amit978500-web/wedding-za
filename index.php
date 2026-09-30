@@ -1,6 +1,53 @@
 <?php
     require __DIR__.'/includes/bootstrap.php';
     require __DIR__.'/includes/components.php';
+    require __DIR__.'/includes/auth.php';
+    require __DIR__.'/includes/crm.php';
+    require __DIR__.'/includes/marketplace.php';
+
+    $homeCustomer=null;
+    $homeRecommendations=[];
+    $homeUnread=0;
+    $homeUpcomingBookings=0;
+    $homePlan=null;
+
+    if(
+        wz_is_logged_in()
+        && wz_role()==='host'
+        && !empty(wz_user()['id'])
+        && wz_database_ready()
+    ){
+        $homeUserId=(int)wz_user()['id'];
+        $homeCustomer=wz_crm_customer_profile($homeUserId)??[];
+        $homeRecommendations=wz_marketplace_recommendations(
+            $homeUserId,
+            6
+        );
+        $homeUnread=wz_marketplace_unread_notification_count(
+            $homeUserId
+        );
+        $homePlan=wz_marketplace_venue_plan_purchase(
+            $homeUserId
+        );
+
+        $homeBookings=wz_crm_bookings_for_user(
+            $homeUserId,
+            'host'
+        );
+
+        $homeUpcomingBookings=count(
+            array_filter(
+                $homeBookings,
+                fn(array $booking):bool=>
+                    !in_array(
+                        (string)($booking['status']??''),
+                        ['completed','cancelled'],
+                        true
+                    )
+            )
+        );
+    }
+
     $pageTitle='Celebrations, Reimagined';
     $pageDescription='Discover remarkable venues, vendors, ideas and planning tools for weddings, birthdays, engagements, corporate events and every celebration across India.';
     $pageKey='home';
@@ -197,6 +244,66 @@
             </span>
         </div>
     </section>
+
+    <?php if($homeCustomer!==null): ?>
+        <section class="marketplace-home-personal">
+            <div class="container">
+                <div class="marketplace-home-personal-card">
+                    <div class="marketplace-home-personal-main">
+                        <span>YOUR WEDDING ZA</span>
+                        <h2>
+                            Continue planning,
+                            <?=h(explode(' ',(string)(wz_user()['name']??'there'))[0])?>.
+                        </h2>
+
+                        <p>
+                            <?=!empty($homeCustomer['event_date'])
+                                ?'Your main event is set for '.h(date('d M Y',strtotime((string)$homeCustomer['event_date']))).'.'
+                                :'Add your wedding date and requirements to make Wedding Za recommendations more precise.'?>
+                        </p>
+
+                        <div class="marketplace-home-personal-actions">
+                            <a
+                                class="pill-btn wine"
+                                href="<?=h(wz_app_url('crm/customer/'))?>"
+                            >
+                                Open my CRM ↗
+                            </a>
+
+                            <a
+                                class="pill-btn outline"
+                                href="<?=h(wz_app_url('crm/customer/recommendations.php'))?>"
+                            >
+                                <?=count($homeRecommendations)?> recommendations
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="marketplace-home-personal-stat">
+                        <span>Upcoming bookings</span>
+                        <strong><?=h((string)$homeUpcomingBookings)?></strong>
+                    </div>
+
+                    <div class="marketplace-home-personal-stat">
+                        <span>Notifications</span>
+                        <strong><?=h((string)$homeUnread)?></strong>
+                    </div>
+
+                    <div class="marketplace-home-personal-stat">
+                        <span>Venue Assist</span>
+                        <strong style="font-size:28px;">
+                            <?=h(
+                                !empty($homePlan['status'])
+                                    ?ucfirst((string)$homePlan['status'])
+                                    :'Not started'
+                            )?>
+                        </strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+    <?php endif; ?>
+
     <section class="vision-statement section-bleed">
         <div class="container vision-statement-grid">
             <div class="vision-statement-index">
