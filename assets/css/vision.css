@@ -6448,3 +6448,320 @@ body.menu-open .vision-header {
   }
 
 }
+
+
+/* ==========================================================================
+   FINAL HOME FIX — WZ / 02 + WZ / 03
+   Stable editorial grids replace the fragile horizontal-scroll rails.
+   ========================================================================== */
+
+/* WZ / 02 — occasion cards */
+.vision-experience-sticky {
+  min-height: auto;
+  padding-bottom: 100px;
+  overflow: visible;
+}
+
+.vision-category-track {
+  width: min(1380px, calc(100% - 72px));
+  margin: 0 auto;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+  transform: none !important;
+  will-change: auto;
+}
+
+.vision-category-panel {
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: 245px auto;
+  overflow: hidden;
+  background: #211916;
+  border: 1px solid rgba(255,255,255,.10);
+  color: #fff;
+  transform: none !important;
+  box-shadow: 0 18px 50px rgba(0,0,0,.12);
+  transition:
+    transform .35s var(--v-ease),
+    box-shadow .35s var(--v-ease),
+    border-color .35s ease;
+}
+
+.vision-category-panel:hover {
+  transform: translateY(-6px) !important;
+  border-color: rgba(255,255,255,.24);
+  box-shadow: 0 28px 70px rgba(0,0,0,.20);
+}
+
+.vision-category-image {
+  position: relative;
+  inset: auto;
+  z-index: 0;
+  width: 100%;
+  height: 245px;
+  overflow: hidden;
+  clip-path: none !important;
+}
+
+.vision-category-image::after {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(14,10,8,0) 55%,
+      rgba(14,10,8,.24) 100%
+    );
+}
+
+.vision-category-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.vision-category-number {
+  top: 14px;
+  left: 14px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(20,14,12,.70);
+  border: 1px solid rgba(255,255,255,.34);
+  backdrop-filter: blur(8px);
+  font-size: 14px;
+}
+
+.vision-category-copy {
+  position: relative;
+  inset: auto;
+  z-index: 2;
+  min-height: 190px;
+  padding: 22px 22px 24px;
+  background:
+    linear-gradient(
+      145deg,
+      #2a1e1b 0%,
+      #1d1614 100%
+    );
+}
+
+.vision-category-copy span {
+  display: block;
+  color: var(--v-blush);
+  font-size: 8px;
+  letter-spacing: .18em;
+}
+
+.vision-category-copy h3 {
+  display: block;
+  min-height: 48px;
+  margin: 8px 0 10px;
+  color: #fff;
+  font-size: clamp(30px, 2.5vw, 42px);
+  line-height: 1;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
+.vision-category-copy p {
+  min-height: 36px;
+  margin: 0;
+  color: rgba(255,255,255,.68);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.vision-category-copy b {
+  margin-top: 16px;
+  color: #fff;
+}
+
+/* WZ / 03 — city cards */
+.vision-city-rail-wrap {
+  width: min(1380px, calc(100% - 72px));
+  margin: 0 auto;
+  overflow: visible;
+  touch-action: auto;
+}
+
+.vision-city-rail {
+  width: 100%;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  transform: none !important;
+  will-change: auto;
+}
+
+.vision-city-card {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 300px auto;
+  overflow: hidden;
+  background: var(--v-cream);
+  border: 1px solid var(--v-line);
+  box-shadow: 0 16px 44px rgba(23,18,15,.07);
+  transform: none !important;
+  transition:
+    transform .35s var(--v-ease),
+    box-shadow .35s var(--v-ease);
+}
+
+.vision-city-card:hover {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 26px 68px rgba(23,18,15,.12);
+}
+
+.vision-city-card figure {
+  height: 300px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: none !important;
+}
+
+.vision-city-card figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vision-city-card>div {
+  min-height: 230px;
+  padding: 26px 28px 28px;
+  display: grid;
+  grid-template-rows: auto 78px 48px auto;
+  align-items: start;
+}
+
+.vision-city-card span {
+  display: block;
+  color: var(--v-wine);
+  font-size: 9px;
+  letter-spacing: .18em;
+}
+
+.vision-city-card h3 {
+  align-self: end;
+  display: flex;
+  align-items: flex-end;
+  min-height: 78px;
+  margin: 0 0 10px;
+  color: var(--v-ink);
+  font-size: clamp(44px, 4vw, 64px);
+  line-height: .92;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
+.vision-city-card p {
+  min-height: 48px;
+  margin: 0;
+  color: var(--v-muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.vision-city-card b {
+  align-self: end;
+  margin-top: 16px;
+}
+
+@media (max-width: 1100px) {
+  .vision-category-track {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .vision-category-panel {
+    grid-template-rows: 230px auto;
+  }
+
+  .vision-category-image {
+    height: 230px;
+  }
+}
+
+@media (max-width: 720px) {
+  .vision-category-track,
+  .vision-city-rail-wrap {
+    width: calc(100% - 34px);
+  }
+
+  .vision-category-track {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+
+  .vision-category-panel {
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 0;
+    grid-template-rows: 210px auto;
+    scroll-snap-align: none;
+  }
+
+  .vision-category-image {
+    height: 210px;
+  }
+
+  .vision-category-copy {
+    min-height: 170px;
+    padding: 19px 18px 22px;
+  }
+
+  .vision-category-copy h3 {
+    min-height: 42px;
+    font-size: 36px;
+  }
+
+  .vision-city-rail {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+
+  .vision-city-card {
+    width: 100%;
+    min-width: 0;
+    grid-template-rows: 230px auto;
+    scroll-snap-align: none;
+  }
+
+  .vision-city-card figure {
+    height: 230px;
+  }
+
+  .vision-city-card>div {
+    min-height: 210px;
+    padding: 22px;
+    grid-template-rows: auto 68px 48px auto;
+  }
+
+  .vision-city-card h3 {
+    min-height: 68px;
+    font-size: 46px;
+    margin: 0 0 8px;
+  }
+}
