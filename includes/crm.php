@@ -1045,3 +1045,529 @@ function wz_crm_update_customer_profile(
         ];
     }
 }
+
+
+function wz_venue_leads(
+    int $userId,
+    string $filter = 'all'
+): array {
+    $pdo = wz_db();
+
+    if (!$pdo) {
+        return [];
+    }
+
+    $sql = 'SELECT
+                ce.*,
+                cu.name AS customer_name,
+                cu.email AS customer_email,
+                cp.phone AS customer_phone
+            FROM crm_enquiries ce
+            LEFT JOIN users cu
+                ON cu.id = ce.customer_user_id
+            LEFT JOIN customer_profiles cp
+                ON cp.user_id = ce.customer_user_id
+            WHERE ce.business_user_id = :user_id
+            AND ce.business_type = "venue"';
+
+    if ($filter === 'new') {
+        $sql .= ' AND ce.stage = "new"';
+    }
+
+    if ($filter === 'followups') {
+        $sql .= ' AND ce.next_follow_up IS NOT NULL
+                  AND ce.stage NOT IN ("won", "lost")';
+    }
+
+    if ($filter === 'site-visits') {
+        $sql .= ' AND ce.site_visit_at IS NOT NULL
+                  AND ce.site_visit_status <> "cancelled"';
+    }
+
+    if ($filter === 'lost') {
+        $sql .= ' AND ce.stage = "lost"';
+    }
+
+    if ($filter === 'site-visits') {
+        $sql .= ' ORDER BY ce.site_visit_at ASC';
+    } elseif ($filter === 'followups') {
+        $sql .= ' ORDER BY ce.next_follow_up ASC';
+    } else {
+        $sql .= ' ORDER BY ce.updated_at DESC';
+    }
+
+    $statement = $pdo->prepare($sql);
+
+    $statement->execute([
+        'user_id' => $userId,
+    ]);
+
+    return $statement->fetchAll();
+}
+
+function wz_venue_functions(
+    int $userId,
+    string $filter = 'all'
+): array {
+    $pdo = wz_db();
+
+    if (!$pdo) {
+        return [];
+    }
+
+    $sql = 'SELECT
+                cb.*,
+                cu.name AS customer_name,
+                cu.email AS customer_email
+            FROM crm_bookings cb
+            LEFT JOIN users cu
+                ON cu.id = cb.customer_user_id
+            WHERE cb.business_user_id = :user_id
+            AND cb.business_type = "venue"';
+
+    if ($filter === 'upcoming') {
+        $sql .= ' AND cb.event_date >= CURDATE()
+                  AND cb.status IN ("tentative", "confirmed")';
+    }
+
+    if ($filter === 'calendar') {
+        $sql .= ' AND cb.event_date IS NOT NULL
+                  AND cb.event_date >= DATE_SUB(
+                      CURDATE(),
+                      INTERVAL 30 DAY
+                  )';
+    }
+
+    $sql .= ' ORDER BY
+                cb.event_date IS NULL,
+                cb.event_date ASC,
+                cb.updated_at DESC';
+
+    $statement = $pdo->prepare($sql);
+
+    $statement->execute([
+        'user_id' => $userId,
+    ]);
+
+    return $statement->fetchAll();
+}
+
+function wz_venue_payments(int $userId): array
+{
+    $pdo = wz_db();
+
+    if (!$pdo) {
+        return [];
+    }
+
+    $statement = $pdo->prepare(
+        'SELECT
+            cp.*,
+            cb.title AS booking_title,
+            cb.event_date,
+            cb.amount AS booking_amount,
+            cb.payment_status AS booking_payment_status,
+            cu.name AS customer_name,
+            cu.email AS customer_email
+         FROM crm_payments cp
+         INNER JOIN crm_bookings cb
+            ON cb.id = cp.booking_id
+         LEFT JOIN users cu
+            ON cu.id = cp.customer_user_id
+         WHERE cp.business_user_id = :user_id
+         AND cp.business_type = "venue"
+         ORDER BY
+            cp.paid_at IS NULL,
+            cp.paid_at DESC,
+            cp.created_at DESC'
+    );
+
+    $statement->execute([
+        'user_id' => $userId,
+    ]);
+
+    return $statement->fetchAll();
+}
+
+function wz_venue_payment_totals(int $userId): array
+{
+    $pdo = wz_db();
+
+    if (!$pdo) {
+        return [
+            'booked_value' => 0.0,
+            'received' => 0.0,
+            'refunded' => 0.0,
+            'balance' => 0.0,
+        ];
+    }
+
+    $bookingStatement = $pdo->prepare(
+        'SELECT COALESCE(SUM(amount), 0)
+         FROM crm_bookings
+         WHERE business_user_id = :user_id
+         AND business_type = "venue"
+         AND status <> "cancelled"'
+    );
+
+    $bookingStatement->execute([
+        'user_id' => $userId,
+    ]);
+
+    $bookedValue = (float)$bookingStatement->fetchColumn();
+
+    $paymentStatement = $pdo->prepare(
+        'SELECT
+            COALESCE(
+                SUM(
+                    CASE
+                        WHEN status = "received"
+                        THEN amount
+                        ELSE 0
+                    END
+                ),
+                0
+            ) AS received,
+            COALESCE(
+                SUM(
+                    CASE
+                        WHEN status = "refunded"
+                        THEN amount
+                        ELSE 0
+                    END
+                ),
+                0
+            ) AS refunded
+         FROM crm_payments
+         WHERE business_user_id = :user_id
+         AND business_type = "venue"'
+    );
+
+    $paymentStatement->execute([
+        'user_id' => $userId,
+    ]);
+
+    $paymentTotals = $paymentStatement->fetch() ?: [];
+
+    $received = (float)($paymentTotals['received'] ?? 0);
+    $refunded = (float)($paymentTotals['refunded'] ?? 0);
+    $netReceived = max(
+        0,
+        $received - $refunded
+    );
+
+    return [
+        'booked_value' => $bookedValue,
+        'received' => $netReceived,
+        'refunded' => $refunded,
+        'balance' => max(
+            0,
+            $bookedValue - $netReceived
+        ),
+    ];
+}
+
+function wz_crm_sync_booking_payment_status(
+    int $bookingId
+): void {
+    $pdo = wz_db();
+
+    if (!$pdo) {
+        return;
+    }
+
+    $bookingStatement = $pdo->prepare(
+        'SELECT amount
+         FROM crm_bookings
+         WHERE id = :id
+         LIMIT 1'
+    );
+
+    $bookingStatement->execute([
+        'id' => $bookingId,
+    ]);
+
+    $bookingAmount = $bookingStatement->fetchColumn();
+
+    if ($bookingAmount === false) {
+        return;
+    }
+
+    $paymentStatement = $pdo->prepare(
+        'SELECT
+            COALESCE(
+                SUM(
+                    CASE
+                        WHEN status = "received"
+                        THEN amount
+                        ELSE 0
+                    END
+                ),
+                0
+            )
+            -
+            COALESCE(
+                SUM(
+                    CASE
+                        WHEN status = "refunded"
+                        THEN amount
+                        ELSE 0
+                    END
+                ),
+                0
+            )
+         FROM crm_payments
+         WHERE booking_id = :booking_id'
+    );
+
+    $paymentStatement->execute([
+        'booking_id' => $bookingId,
+    ]);
+
+    $paidAmount = max(
+        0,
+        (float)$paymentStatement->fetchColumn()
+    );
+
+    $bookingAmount = max(
+        0,
+        (float)$bookingAmount
+    );
+
+    $paymentStatus = 'pending';
+
+    if ($paidAmount > 0) {
+        $paymentStatus = 'partial';
+    }
+
+    if (
+        $bookingAmount > 0
+        && $paidAmount >= $bookingAmount
+    ) {
+        $paymentStatus = 'paid';
+    }
+
+    $update = $pdo->prepare(
+        'UPDATE crm_bookings
+         SET deposit_amount = :deposit_amount,
+             payment_status = :payment_status
+         WHERE id = :id'
+    );
+
+    $update->execute([
+        'deposit_amount' => $paidAmount,
+        'payment_status' => $paymentStatus,
+        'id' => $bookingId,
+    ]);
+}
+
+function wz_venue_add_payment(
+    int $venueUserId,
+    int $bookingId,
+    array $input
+): array {
+    $pdo = wz_db();
+
+    if (!$pdo) {
+        return [
+            'ok' => false,
+            'message' => 'Database is not available.',
+        ];
+    }
+
+    $booking = wz_crm_booking_for_user(
+        $bookingId,
+        $venueUserId,
+        'venue'
+    );
+
+    if (!$booking) {
+        return [
+            'ok' => false,
+            'message' => 'Booking not found.',
+        ];
+    }
+
+    $amount = (float)($input['amount'] ?? 0);
+
+    if ($amount <= 0) {
+        return [
+            'ok' => false,
+            'message' => 'Enter a valid payment amount.',
+        ];
+    }
+
+    $method = (string)($input['method'] ?? 'bank_transfer');
+
+    if (!in_array(
+        $method,
+        [
+            'cash',
+            'bank_transfer',
+            'upi',
+            'card',
+            'cheque',
+            'other',
+        ],
+        true
+    )) {
+        $method = 'other';
+    }
+
+    $status = (string)($input['status'] ?? 'received');
+
+    if (!in_array(
+        $status,
+        [
+            'pending',
+            'received',
+            'refunded',
+            'failed',
+        ],
+        true
+    )) {
+        $status = 'received';
+    }
+
+    $paidAt = trim(
+        (string)($input['paid_at'] ?? '')
+    );
+
+    if ($paidAt === '') {
+        $paidAt = date('Y-m-d H:i:s');
+    }
+
+    $statement = $pdo->prepare(
+        'INSERT INTO crm_payments (
+            booking_id,
+            customer_user_id,
+            business_user_id,
+            business_type,
+            amount,
+            method,
+            status,
+            reference,
+            paid_at,
+            notes,
+            created_by
+        ) VALUES (
+            :booking_id,
+            :customer_user_id,
+            :business_user_id,
+            :business_type,
+            :amount,
+            :method,
+            :status,
+            :reference,
+            :paid_at,
+            :notes,
+            :created_by
+        )'
+    );
+
+    $statement->execute([
+        'booking_id' => $bookingId,
+        'customer_user_id' => $booking['customer_user_id'],
+        'business_user_id' => $venueUserId,
+        'business_type' => 'venue',
+        'amount' => $amount,
+        'method' => $method,
+        'status' => $status,
+        'reference' => trim(
+            (string)($input['reference'] ?? '')
+        ),
+        'paid_at' => $paidAt,
+        'notes' => trim(
+            (string)($input['notes'] ?? '')
+        ),
+        'created_by' => wz_user()['id'] ?? null,
+    ]);
+
+    $paymentId = (int)$pdo->lastInsertId();
+
+    wz_crm_sync_booking_payment_status(
+        $bookingId
+    );
+
+    wz_audit(
+        'crm.venue_payment.created',
+        'crm_payment',
+        $paymentId,
+        [
+            'booking_id' => $bookingId,
+            'amount' => $amount,
+            'status' => $status,
+        ]
+    );
+
+    return [
+        'ok' => true,
+        'message' => 'Payment recorded.',
+        'payment_id' => $paymentId,
+    ];
+}
+
+function wz_venue_report_summary(int $userId): array
+{
+    $pdo = wz_db();
+
+    if (!$pdo) {
+        return [];
+    }
+
+    $leadStatement = $pdo->prepare(
+        'SELECT
+            COUNT(*) AS total_leads,
+            SUM(stage = "new") AS new_leads,
+            SUM(stage = "won") AS won_leads,
+            SUM(stage = "lost") AS lost_leads,
+            SUM(site_visit_status = "completed") AS completed_visits
+         FROM crm_enquiries
+         WHERE business_user_id = :user_id
+         AND business_type = "venue"'
+    );
+
+    $leadStatement->execute([
+        'user_id' => $userId,
+    ]);
+
+    $leadStats = $leadStatement->fetch() ?: [];
+
+    $bookingStatement = $pdo->prepare(
+        'SELECT
+            COUNT(*) AS total_bookings,
+            SUM(status = "confirmed") AS confirmed_bookings,
+            SUM(
+                event_date >= CURDATE()
+                AND status IN ("tentative", "confirmed")
+            ) AS upcoming_functions,
+            COALESCE(
+                SUM(
+                    CASE
+                        WHEN status <> "cancelled"
+                        THEN amount
+                        ELSE 0
+                    END
+                ),
+                0
+            ) AS booked_value
+         FROM crm_bookings
+         WHERE business_user_id = :user_id
+         AND business_type = "venue"'
+    );
+
+    $bookingStatement->execute([
+        'user_id' => $userId,
+    ]);
+
+    $bookingStats = $bookingStatement->fetch() ?: [];
+    $paymentTotals = wz_venue_payment_totals(
+        $userId
+    );
+
+    return array_merge(
+        $leadStats,
+        $bookingStats,
+        $paymentTotals
+    );
+}
