@@ -11,7 +11,7 @@ routes=(
   "/compare.php"
   "/search.php?q=Jaipur"
   "/seo-landing.php?type=venues&city=jaipur"
-  "/seo-landing.php?type=vendors&city=jaipur&category=photographers"
+  "/seo-landing.php?type=vendors&city=jaipur&category=photography-films"
   "/real-weddings.php"
   "/submit-wedding.php"
   "/event.php?type=Wedding"
