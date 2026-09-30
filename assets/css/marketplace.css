@@ -495,3 +495,48 @@
     grid-column: auto;
   }
 }
+
+
+.marketplace-availability-card .crm-badge {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  min-height: 23px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #eee9e4;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.marketplace-availability-card .crm-badge.open {
+  background: #e5f0e8;
+  color: #2f6248;
+}
+
+.marketplace-availability-card .crm-badge.held {
+  background: #f3e7d5;
+  color: #9d6d23;
+}
+
+.marketplace-availability-card .crm-badge.booked,
+.marketplace-availability-card .crm-badge.blocked {
+  background: #f4e4e5;
+  color: #963f45;
+}
+
+.marketplace-review-photos {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,160px));
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.marketplace-review-photos img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 12px;
+}
