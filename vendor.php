@@ -2,6 +2,7 @@
     require __DIR__.'/includes/bootstrap.php';
     require __DIR__.'/includes/components.php';
     require __DIR__.'/includes/vendors.php';
+    require __DIR__.'/includes/marketplace.php';
     $id=(string)($_GET['id']??'amber-courtyard');
     $v=wz_public_vendor($id)??(wz_public_vendors()[0]??null);
     if(!$v) {
@@ -13,6 +14,64 @@
     $pageDescription=$v['about'];
     $pageKey='vendor';
     $pageImage=(string)($v['image']??'');
+    $businessUserId=(int)($v['database_user_id']??0);
+    $businessType=(string)($v['business_type']??(
+        ($v['category']??'')==='Venues'?'venue':'vendor'
+    ));
+    $reviewMessage='';
+    $reviewSuccess=false;
+
+    if (
+        $_SERVER['REQUEST_METHOD']==='POST'
+        && ($_POST['action']??'')==='review'
+    ) {
+        if (!wz_is_logged_in() || wz_role()!=='host') {
+            $reviewMessage='Sign in as a customer to write a review.';
+        } elseif (!wz_csrf_valid($_POST['csrf']??null)) {
+            $reviewMessage='Session expired. Refresh and try again.';
+        } elseif ($businessUserId<=0) {
+            $reviewMessage='Reviews are not available for this profile yet.';
+        } else {
+            $result=wz_marketplace_create_review([
+                'reviewer_user_id'=>(int)(wz_user()['id']??0),
+                'business_user_id'=>$businessUserId,
+                'business_type'=>$businessType,
+                'rating'=>(int)($_POST['rating']??0),
+                'title'=>(string)($_POST['title']??''),
+                'body'=>(string)($_POST['body']??''),
+            ]);
+            $reviewMessage=(string)$result['message'];
+            $reviewSuccess=!empty($result['ok']);
+        }
+    }
+
+    $reviews=$businessUserId>0
+        ?wz_marketplace_reviews_for_business(
+            $businessUserId,
+            $businessType
+        )
+        :[];
+
+    if (wz_is_logged_in()) {
+        $viewerId=(int)(wz_user()['id']??0);
+
+        if ($viewerId>0) {
+            wz_marketplace_record_view(
+                $viewerId,
+                $businessType,
+                (string)$v['id']
+            );
+
+            if ($businessUserId>0) {
+                wz_marketplace_record_business_event(
+                    $businessUserId,
+                    $businessType,
+                    'profile_view',
+                    wz_role()==='host'?$viewerId:null
+                );
+            }
+        }
+    }
 
     $structuredData=[
         [
@@ -69,6 +128,16 @@
                     <button class="pill-btn outline heart-btn-static" type="button" data-shortlist="<?=h($v['id'])?>
                     ">♡ Save to shortlist
                     </button>
+                    <?php if ($businessType==='venue'): ?>
+                        <button
+                            class="pill-btn outline"
+                            type="button"
+                            data-compare-venue="<?=h($v['id'])?>"
+                            data-compare-name="<?=h($v['name'])?>"
+                        >
+                            + Compare venue
+                        </button>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="vendor-profile-gallery">
@@ -123,6 +192,9 @@
                     </a>
                     <a href="#portfolio">
                     Portfolio
+                    </a>
+                    <a href="#reviews">
+                    Reviews
                     </a>
                 </nav>
                 <section class="profile-block event-fit-block" id="fit">
@@ -224,6 +296,59 @@
                             </strong>
                         </div>
                     </div>
+
+                    <?php if ($businessType==='venue'): ?>
+                        <div class="vendor-facts-v2 marketplace-venue-facts">
+                            <div>
+                                <span>Rooms</span>
+                                <strong><?= h((string)($v['rooms']??0)) ?></strong>
+                            </div>
+                            <div>
+                                <span>Parking</span>
+                                <strong>
+                                    <?= !empty($v['parking_capacity'])
+                                        ? h((string)$v['parking_capacity']).' cars'
+                                        : 'Ask venue' ?>
+                                </strong>
+                            </div>
+                            <div>
+                                <span>Venue type</span>
+                                <strong><?= h((string)($v['venue_type']??'Venue')) ?></strong>
+                            </div>
+                            <div>
+                                <span>Veg price / plate</span>
+                                <strong>
+                                    <?= !empty($v['price_per_plate_veg'])
+                                        ? '₹'.number_format((float)$v['price_per_plate_veg'])
+                                        : 'Ask venue' ?>
+                                </strong>
+                            </div>
+                            <div>
+                                <span>Non-veg price / plate</span>
+                                <strong>
+                                    <?= !empty($v['price_per_plate_nonveg'])
+                                        ? '₹'.number_format((float)$v['price_per_plate_nonveg'])
+                                        : 'Ask venue' ?>
+                                </strong>
+                            </div>
+                            <div>
+                                <span>Rental</span>
+                                <strong>
+                                    <?= !empty($v['rental_price'])
+                                        ? '₹'.number_format((float)$v['rental_price'])
+                                        : 'Ask venue' ?>
+                                </strong>
+                            </div>
+                        </div>
+
+                        <?php if (!empty($v['amenities'])): ?>
+                            <div class="marketplace-chip-list">
+                                <?php foreach ($v['amenities'] as $amenity): ?>
+                                    <span><?= h((string)$amenity) ?></span>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
                 </section>
                 <section class="profile-block" id="portfolio">
                     <div class="profile-block-head">
@@ -247,6 +372,98 @@
                         <?php
                             endforeach;
                         ?>
+                    </div>
+                </section>
+
+                <section class="profile-block marketplace-reviews" id="reviews">
+                    <div class="profile-block-head">
+                        <span class="eyebrow">CUSTOMER REVIEWS</span>
+                        <h2>
+                            <?= h((string)$v['reviews']) ?> review<?= (int)$v['reviews']===1?'':'s' ?>
+                            · <?= h((string)$v['rating']) ?> ★
+                        </h2>
+                    </div>
+
+                    <?php if ($reviewMessage!==''): ?>
+                        <div class="marketplace-review-notice <?= $reviewSuccess?'success':'' ?>">
+                            <?= h($reviewMessage) ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ($businessUserId>0 && wz_is_logged_in() && wz_role()==='host'): ?>
+                        <form method="post" class="marketplace-review-form">
+                            <input type="hidden" name="action" value="review">
+                            <input type="hidden" name="csrf" value="<?=h(wz_csrf_token())?>">
+
+                            <label>
+                                <span>Rating</span>
+                                <select name="rating" required>
+                                    <option value="">Choose rating</option>
+                                    <option value="5">5 — Excellent</option>
+                                    <option value="4">4 — Very good</option>
+                                    <option value="3">3 — Good</option>
+                                    <option value="2">2 — Could be better</option>
+                                    <option value="1">1 — Poor</option>
+                                </select>
+                            </label>
+
+                            <label>
+                                <span>Review title</span>
+                                <input name="title" maxlength="180" placeholder="What stood out?">
+                            </label>
+
+                            <label class="full">
+                                <span>Your experience</span>
+                                <textarea name="body" required placeholder="Share useful details about communication, quality, value and the event experience."></textarea>
+                            </label>
+
+                            <button class="pill-btn wine" type="submit">
+                                Submit review ↗
+                            </button>
+                        </form>
+                    <?php elseif ($businessUserId>0 && !wz_is_logged_in()): ?>
+                        <p class="profile-lead">
+                            <a href="login.php?role=host">Sign in as a customer</a>
+                            to write a review.
+                        </p>
+                    <?php endif; ?>
+
+                    <div class="marketplace-review-list">
+                        <?php foreach ($reviews as $review): ?>
+                            <article class="marketplace-review-card">
+                                <div>
+                                    <strong>
+                                        <?= str_repeat('★',(int)$review['rating']) ?>
+                                        <?= str_repeat('☆',5-(int)$review['rating']) ?>
+                                    </strong>
+                                    <?php if (!empty($review['is_verified_booking'])): ?>
+                                        <span>✓ Verified booking</span>
+                                    <?php endif; ?>
+                                </div>
+                                <?php if (!empty($review['title'])): ?>
+                                    <h3><?= h((string)$review['title']) ?></h3>
+                                <?php endif; ?>
+                                <p><?= h((string)$review['body']) ?></p>
+                                <small>
+                                    <?= h((string)$review['reviewer_name']) ?>
+                                    · <?= h(date('d M Y',strtotime((string)$review['created_at']))) ?>
+                                </small>
+
+                                <?php if (!empty($review['business_reply'])): ?>
+                                    <div class="marketplace-business-reply">
+                                        <strong>Business reply</strong>
+                                        <p><?= h((string)$review['business_reply']) ?></p>
+                                    </div>
+                                <?php endif; ?>
+                            </article>
+                        <?php endforeach; ?>
+
+                        <?php if (!$reviews): ?>
+                            <div class="empty-state">
+                                <h3>No published reviews yet.</h3>
+                                <p class="muted">Be the first customer to share a useful experience.</p>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </section>
             </div>
