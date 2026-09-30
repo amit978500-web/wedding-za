@@ -29,3 +29,5 @@ jobs:
           path: wedding-za.zip
           if-no-files-found: error
           retention-days: 1
+
+# package rich CRM upgrade
