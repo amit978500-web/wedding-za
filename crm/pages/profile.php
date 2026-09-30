@@ -100,6 +100,30 @@ if (
             )
         );
 
+        $serviceAreas = array_values(
+            array_filter(
+                array_map(
+                    'trim',
+                    explode(
+                        ',',
+                        (string)($_POST['service_areas'] ?? '')
+                    )
+                )
+            )
+        );
+
+        $packages = array_values(
+            array_filter(
+                array_map(
+                    'trim',
+                    preg_split(
+                        '/[\r\n]+/',
+                        (string)($_POST['packages'] ?? '')
+                    ) ?: []
+                )
+            )
+        );
+
         $statement = $pdo->prepare(
             'INSERT INTO vendor_profiles (
                 user_id,
@@ -109,7 +133,10 @@ if (
                 events_json,
                 starting_price,
                 portfolio_url,
-                about
+                about,
+                service_areas_json,
+                packages_json,
+                availability_enabled
             ) VALUES (
                 :user_id,
                 :business_name,
@@ -118,7 +145,10 @@ if (
                 :events_json,
                 :starting_price,
                 :portfolio_url,
-                :about
+                :about,
+                :service_areas_json,
+                :packages_json,
+                :availability_enabled
             )
             ON DUPLICATE KEY UPDATE
                 business_name = VALUES(business_name),
@@ -127,7 +157,10 @@ if (
                 events_json = VALUES(events_json),
                 starting_price = VALUES(starting_price),
                 portfolio_url = VALUES(portfolio_url),
-                about = VALUES(about)'
+                about = VALUES(about),
+                service_areas_json = VALUES(service_areas_json),
+                packages_json = VALUES(packages_json),
+                availability_enabled = VALUES(availability_enabled)'
         );
 
         $statement->execute([
@@ -139,6 +172,9 @@ if (
             'starting_price' => trim((string)($_POST['starting_price'] ?? '')),
             'portfolio_url' => trim((string)($_POST['portfolio_url'] ?? '')),
             'about' => trim((string)($_POST['about'] ?? '')),
+            'service_areas_json' => json_encode($serviceAreas),
+            'packages_json' => json_encode($packages),
+            'availability_enabled' => !empty($_POST['availability_enabled']) ? 1 : 0,
         ]);
 
         wz_audit(
@@ -162,6 +198,36 @@ if (
             )
         );
 
+        $amenities = array_values(
+            array_filter(
+                array_map(
+                    'trim',
+                    explode(
+                        ',',
+                        (string)($_POST['amenities'] ?? '')
+                    )
+                )
+            )
+        );
+
+        $spaces = array_values(
+            array_filter(
+                array_map(
+                    'trim',
+                    explode(
+                        ',',
+                        (string)($_POST['spaces'] ?? '')
+                    )
+                )
+            )
+        );
+
+        $policies = [
+            'alcohol' => trim((string)($_POST['alcohol_policy'] ?? '')),
+            'decor' => trim((string)($_POST['decor_policy'] ?? '')),
+            'food' => trim((string)($_POST['food_policy'] ?? '')),
+        ];
+
         $statement = $pdo->prepare(
             'INSERT INTO venue_profiles (
                 user_id,
@@ -176,7 +242,15 @@ if (
                 starting_price,
                 portfolio_url,
                 about,
-                events_json
+                events_json,
+                price_per_plate_veg,
+                price_per_plate_nonveg,
+                rental_price,
+                parking_capacity,
+                video_url,
+                spaces_json,
+                amenities_json,
+                policies_json
             ) VALUES (
                 :user_id,
                 :venue_name,
@@ -190,7 +264,15 @@ if (
                 :starting_price,
                 :portfolio_url,
                 :about,
-                :events_json
+                :events_json,
+                :price_per_plate_veg,
+                :price_per_plate_nonveg,
+                :rental_price,
+                :parking_capacity,
+                :video_url,
+                :spaces_json,
+                :amenities_json,
+                :policies_json
             )
             ON DUPLICATE KEY UPDATE
                 venue_name = VALUES(venue_name),
@@ -204,7 +286,15 @@ if (
                 starting_price = VALUES(starting_price),
                 portfolio_url = VALUES(portfolio_url),
                 about = VALUES(about),
-                events_json = VALUES(events_json)'
+                events_json = VALUES(events_json),
+                price_per_plate_veg = VALUES(price_per_plate_veg),
+                price_per_plate_nonveg = VALUES(price_per_plate_nonveg),
+                rental_price = VALUES(rental_price),
+                parking_capacity = VALUES(parking_capacity),
+                video_url = VALUES(video_url),
+                spaces_json = VALUES(spaces_json),
+                amenities_json = VALUES(amenities_json),
+                policies_json = VALUES(policies_json)'
         );
 
         $statement->execute([
@@ -227,6 +317,22 @@ if (
             'portfolio_url' => trim((string)($_POST['portfolio_url'] ?? '')),
             'about' => trim((string)($_POST['about'] ?? '')),
             'events_json' => json_encode($events),
+            'price_per_plate_veg' => !empty($_POST['price_per_plate_veg'])
+                ? (float)$_POST['price_per_plate_veg']
+                : null,
+            'price_per_plate_nonveg' => !empty($_POST['price_per_plate_nonveg'])
+                ? (float)$_POST['price_per_plate_nonveg']
+                : null,
+            'rental_price' => !empty($_POST['rental_price'])
+                ? (float)$_POST['rental_price']
+                : null,
+            'parking_capacity' => !empty($_POST['parking_capacity'])
+                ? (int)$_POST['parking_capacity']
+                : null,
+            'video_url' => trim((string)($_POST['video_url'] ?? '')),
+            'spaces_json' => json_encode($spaces),
+            'amenities_json' => json_encode($amenities),
+            'policies_json' => json_encode($policies),
         ]);
 
         wz_audit(
@@ -560,6 +666,58 @@ require dirname(__DIR__) . '/includes/header.php';
                         name="about"
                     ><?= h((string)($profile['about'] ?? '')) ?></textarea>
                 </div>
+                <div class="crm-field full">
+                    <label for="vendorServiceAreas">
+                        Service areas
+                    </label>
+
+                    <input
+                        id="vendorServiceAreas"
+                        name="service_areas"
+                        value="<?= h(
+                            implode(
+                                ', ',
+                                json_decode(
+                                    (string)($profile['service_areas_json'] ?? '[]'),
+                                    true
+                                ) ?: []
+                            )
+                        ) ?>"
+                        placeholder="Jaipur, Udaipur, Delhi NCR"
+                    >
+                </div>
+
+                <div class="crm-field full">
+                    <label for="vendorPackages">
+                        Packages
+                    </label>
+
+                    <textarea
+                        id="vendorPackages"
+                        name="packages"
+                        placeholder="One package per line"
+                    ><?= h(
+                        implode(
+                            "\n",
+                            json_decode(
+                                (string)($profile['packages_json'] ?? '[]'),
+                                true
+                            ) ?: []
+                        )
+                    ) ?></textarea>
+                </div>
+
+                <div class="crm-field full">
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="availability_enabled"
+                            value="1"
+                            <?= !isset($profile['availability_enabled']) || !empty($profile['availability_enabled']) ? 'checked' : '' ?>
+                        >
+                        Show availability calendar in CRM
+                    </label>
+                </div>
             <?php else: ?>
                 <div class="crm-field">
                     <label for="venueName">
@@ -706,6 +864,133 @@ require dirname(__DIR__) . '/includes/header.php';
                         id="venuePortfolio"
                         name="portfolio_url"
                         value="<?= h((string)($profile['portfolio_url'] ?? '')) ?>"
+                    >
+                </div>
+
+                <div class="crm-field">
+                    <label for="venueVegPrice">Veg price / plate</label>
+                    <input
+                        id="venueVegPrice"
+                        type="number"
+                        min="0"
+                        step="1"
+                        name="price_per_plate_veg"
+                        value="<?= h((string)($profile['price_per_plate_veg'] ?? '')) ?>"
+                    >
+                </div>
+
+                <div class="crm-field">
+                    <label for="venueNonVegPrice">Non-veg price / plate</label>
+                    <input
+                        id="venueNonVegPrice"
+                        type="number"
+                        min="0"
+                        step="1"
+                        name="price_per_plate_nonveg"
+                        value="<?= h((string)($profile['price_per_plate_nonveg'] ?? '')) ?>"
+                    >
+                </div>
+
+                <div class="crm-field">
+                    <label for="venueRentalPrice">Venue rental</label>
+                    <input
+                        id="venueRentalPrice"
+                        type="number"
+                        min="0"
+                        step="1"
+                        name="rental_price"
+                        value="<?= h((string)($profile['rental_price'] ?? '')) ?>"
+                    >
+                </div>
+
+                <div class="crm-field">
+                    <label for="venueParking">Parking capacity</label>
+                    <input
+                        id="venueParking"
+                        type="number"
+                        min="0"
+                        name="parking_capacity"
+                        value="<?= h((string)($profile['parking_capacity'] ?? '')) ?>"
+                    >
+                </div>
+
+                <div class="crm-field full">
+                    <label for="venueSpaces">Event spaces</label>
+                    <input
+                        id="venueSpaces"
+                        name="spaces"
+                        value="<?= h(
+                            implode(
+                                ', ',
+                                json_decode(
+                                    (string)($profile['spaces_json'] ?? '[]'),
+                                    true
+                                ) ?: []
+                            )
+                        ) ?>"
+                        placeholder="Grand Ballroom, Pool Lawn, Rooftop"
+                    >
+                </div>
+
+                <div class="crm-field full">
+                    <label for="venueAmenities">Amenities</label>
+                    <input
+                        id="venueAmenities"
+                        name="amenities"
+                        value="<?= h(
+                            implode(
+                                ', ',
+                                json_decode(
+                                    (string)($profile['amenities_json'] ?? '[]'),
+                                    true
+                                ) ?: []
+                            )
+                        ) ?>"
+                        placeholder="Parking, Valet, Rooms, Pool, Bridal room"
+                    >
+                </div>
+
+                <?php
+                $venuePolicies = json_decode(
+                    (string)($profile['policies_json'] ?? '{}'),
+                    true
+                ) ?: [];
+                ?>
+
+                <div class="crm-field">
+                    <label for="venueAlcoholPolicy">Alcohol policy</label>
+                    <input
+                        id="venueAlcoholPolicy"
+                        name="alcohol_policy"
+                        value="<?= h((string)($venuePolicies['alcohol'] ?? '')) ?>"
+                    >
+                </div>
+
+                <div class="crm-field">
+                    <label for="venueDecorPolicy">Decor policy</label>
+                    <input
+                        id="venueDecorPolicy"
+                        name="decor_policy"
+                        value="<?= h((string)($venuePolicies['decor'] ?? '')) ?>"
+                    >
+                </div>
+
+                <div class="crm-field">
+                    <label for="venueFoodPolicy">Food policy</label>
+                    <input
+                        id="venueFoodPolicy"
+                        name="food_policy"
+                        value="<?= h((string)($venuePolicies['food'] ?? '')) ?>"
+                    >
+                </div>
+
+                <div class="crm-field">
+                    <label for="venueVideo">Video URL</label>
+                    <input
+                        id="venueVideo"
+                        type="url"
+                        name="video_url"
+                        value="<?= h((string)($profile['video_url'] ?? '')) ?>"
                     >
                 </div>
 
