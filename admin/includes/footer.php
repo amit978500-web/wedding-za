@@ -2,7 +2,7 @@
     </div>
 
     <script
-        src="../assets/js/crm-ui.js?v=1.0.0"
+        src="../assets/js/crm-ui.js?v=1.1.0"
         defer
     ></script>
 </body>
