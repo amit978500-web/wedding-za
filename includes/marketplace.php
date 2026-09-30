@@ -93,6 +93,16 @@ function wz_marketplace_create_review(array $input): array
     $rating = (int)($input['rating'] ?? 0);
     $title = trim((string)($input['title'] ?? ''));
     $body = trim((string)($input['body'] ?? ''));
+    $photos = is_array($input['photos'] ?? null)
+        ? array_values(
+            array_filter(
+                array_map(
+                    'strval',
+                    $input['photos']
+                )
+            )
+        )
+        : [];
 
     if (
         $reviewerUserId <= 0
@@ -136,6 +146,7 @@ function wz_marketplace_create_review(array $input): array
             rating,
             title,
             body,
+            photos_json,
             is_verified_booking,
             status
         ) VALUES (
@@ -146,6 +157,7 @@ function wz_marketplace_create_review(array $input): array
             :rating,
             :title,
             :body,
+            :photos_json,
             :is_verified_booking,
             "pending"
         )'
@@ -159,6 +171,9 @@ function wz_marketplace_create_review(array $input): array
         'rating' => $rating,
         'title' => $title !== '' ? $title : null,
         'body' => $body,
+        'photos_json' => $photos
+            ? json_encode($photos)
+            : null,
         'is_verified_booking' => $bookingId ? 1 : 0,
     ]);
 
