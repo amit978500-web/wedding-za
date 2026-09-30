@@ -211,37 +211,39 @@
       );
     }
     );
-    // Horizontal category chapter.
+    // WZ / 02 uses a stable responsive grid.
+    // Keep card entrance animation, but do not pin or translate the section.
     const exp=$('#visionExperience'), track=$('#visionCategoryTrack');
-    if(exp&&track&&innerWidth>900) {
-      const distance=()=>Math.max(0,track.scrollWidth-innerWidth+innerWidth*.12);
-      gsap.to(track, {
-        x:()=>-distance(),ease:'none',scrollTrigger: {
-          trigger:exp,start:'top top',end:()=>'+='+(distance()+innerHeight*.35),scrub:.65,pin:$('.vision-experience-sticky'),invalidateOnRefresh:true,anticipatePin:1
+    if(exp&&track) {
+      gsap.from('.vision-category-panel', {
+        y:34,
+        opacity:0,
+        duration:.72,
+        stagger:.07,
+        ease:'power3.out',
+        scrollTrigger: {
+          trigger:track,
+          start:'top 84%',
+          once:true
         }
-      }
-      );
+      });
     }
-    // Destination rail: horizontal motion WITHOUT pinning the whole section.
-    // It follows normal vertical scrolling, so the page never feels trapped.
+    // WZ / 03 uses a fixed equal-height city grid.
+    // No horizontal translation means every city title keeps the same baseline.
     const cities=$('.vision-cities'), rail=$('#visionCityRail');
-    if(cities&&rail&&innerWidth>720) {
-      const distance=()=>Math.max(0,rail.scrollWidth-innerWidth+innerWidth*.08);
-      gsap.set(rail, {
-        force3D:true
-      }
-      );
-      gsap.to(rail, {
-        x:()=>-distance(),ease:'none',scrollTrigger: {
-          trigger:cities,
-          start:'top 76%',
-          end:'bottom 18%',
-          scrub:.45,
-          invalidateOnRefresh:true,
-          fastScrollEnd:true
+    if(cities&&rail) {
+      gsap.from('.vision-city-card', {
+        y:34,
+        opacity:0,
+        duration:.72,
+        stagger:.08,
+        ease:'power3.out',
+        scrollTrigger: {
+          trigger:rail,
+          start:'top 84%',
+          once:true
         }
-      }
-      );
+      });
     }
     // Stacked real-wedding scenes receive depth as the next story arrives.
     $$('.vision-real-panel').forEach((panel,i,arr)=> {
