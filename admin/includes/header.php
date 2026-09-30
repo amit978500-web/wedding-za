@@ -222,7 +222,7 @@ $adminNavigation = [
 
     <link
         rel="stylesheet"
-        href="../assets/css/member-card.css?v=1.0.0"
+        href="../assets/css/member-card.css?v=1.0.1"
     >
 </head>
 
