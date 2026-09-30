@@ -21,6 +21,7 @@ function wz_xml(string $value): string
 
 $urls = [
     wz_app_url(''),
+    wz_app_url('venues.php'),
     wz_app_url('vendors.php'),
     wz_app_url('inspiration.php'),
     wz_app_url('real-weddings.php'),
@@ -37,6 +38,31 @@ foreach (wz_data('cities') as $city) {
         'city.php?city=' .
         urlencode($city)
     );
+
+    $urls[] = wz_app_url(
+        'wedding-venues/' .
+        wz_slug((string)$city) .
+        '/'
+    );
+
+    foreach (wz_data('categories') as $category) {
+        $categoryName = (string)($category['name'] ?? '');
+
+        if (
+            $categoryName === ''
+            || $categoryName === 'Venues'
+        ) {
+            continue;
+        }
+
+        $urls[] = wz_app_url(
+            'wedding-vendors/' .
+            wz_slug((string)$city) .
+            '/' .
+            wz_slug($categoryName) .
+            '/'
+        );
+    }
 }
 
 foreach (wz_data('event_types') as $event) {
@@ -64,6 +90,23 @@ foreach (wz_public_vendors() as $vendor) {
             (string)$vendor['id']
         )
     );
+}
+
+$pdo = wz_db();
+
+if ($pdo) {
+    $submissionIds = $pdo->query(
+        'SELECT id
+         FROM wedding_submissions
+         WHERE status = "published"'
+    )->fetchAll();
+
+    foreach ($submissionIds as $submission) {
+        $urls[] = wz_app_url(
+            'submitted-wedding.php?id=' .
+            urlencode((string)$submission['id'])
+        );
+    }
 }
 
 echo '<?xml version="1.0" encoding="UTF-8"?>';
