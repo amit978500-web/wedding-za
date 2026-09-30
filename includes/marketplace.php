@@ -472,6 +472,7 @@ function wz_marketplace_recommendations(
     $guestCount = (int)($profile['guest_count'] ?? 0);
 
     $sql = 'SELECT
+                vp.id AS profile_id,
                 vp.user_id,
                 vp.venue_name AS name,
                 vp.city,
