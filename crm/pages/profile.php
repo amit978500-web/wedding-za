@@ -1016,6 +1016,45 @@ require dirname(__DIR__) . '/includes/header.php';
     </form>
 </section>
 
+<section class="crm-panel wz-member-profile-section">
+    <div class="crm-panel-head">
+        <div>
+            <h2>
+                My Wedding Za card
+            </h2>
+
+            <p>
+                Your digital CRM identity updates automatically from this profile.
+            </p>
+        </div>
+
+        <button
+            class="crm-button secondary small"
+            type="button"
+            data-wz-card-open
+        >
+            Open full card ↗
+        </button>
+    </div>
+
+    <div class="crm-form">
+        <?= wz_crm_member_card_html(
+            $wzMemberCard,
+            'profile'
+        ) ?>
+    </div>
+
+    <div class="wz-member-inline-actions">
+        <button
+            class="wz-member-inline-action"
+            type="button"
+            data-wz-card-open
+        >
+            View premium card
+        </button>
+    </div>
+</section>
+
 <?php if (in_array($crmRole, ['vendor', 'venue'], true) && !empty($profile)): ?>
     <?php
     $gallery = json_decode(
