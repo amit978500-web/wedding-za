@@ -656,6 +656,36 @@ function wz_marketplace_customer_invoices(
     return $statement->fetchAll();
 }
 
+function wz_marketplace_customer_payments(
+    int $customerUserId
+): array {
+    $pdo = wz_db();
+
+    if (!$pdo || $customerUserId <= 0) {
+        return [];
+    }
+
+    $statement = $pdo->prepare(
+        'SELECT
+            p.*,
+            b.title AS booking_title,
+            u.name AS business_contact
+         FROM crm_payments p
+         INNER JOIN crm_bookings b
+            ON b.id = p.booking_id
+         LEFT JOIN users u
+            ON u.id = p.business_user_id
+         WHERE p.customer_user_id = :customer_user_id
+         ORDER BY COALESCE(p.paid_at, p.created_at) DESC'
+    );
+
+    $statement->execute([
+        'customer_user_id' => $customerUserId,
+    ]);
+
+    return $statement->fetchAll();
+}
+
 function wz_marketplace_create_venue_plan_purchase(
     int $customerUserId
 ): ?int {
