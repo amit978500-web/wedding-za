@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/database.php';
+require_once __DIR__ . '/marketplace.php';
 
 function wz_vendor_fallback_image(string $category): string
 {
@@ -62,14 +63,19 @@ function wz_database_vendor_to_card(array $profile): array
         );
     }
 
+    $reviewSummary = wz_marketplace_review_summary(
+        (int)$profile['user_id'],
+        'vendor'
+    );
+
     return [
         'id' => 'db-vendor-' . (string)$profile['id'],
         'name' => (string)$profile['business_name'],
         'category' => (string)($profile['category'] ?? 'Event Business'),
         'city' => (string)($profile['city'] ?? ''),
         'locality' => (string)($profile['city'] ?? ''),
-        'rating' => 0,
-        'reviews' => 0,
+        'rating' => $reviewSummary['rating'],
+        'reviews' => $reviewSummary['count'],
         'price' => (string)(
             $profile['starting_price']
             ?: 'Ask for pricing'
@@ -170,14 +176,37 @@ function wz_database_venue_to_card(array $profile): array
         $services[] = (string)$profile['rooms'] . ' rooms';
     }
 
+    $reviewSummary = wz_marketplace_review_summary(
+        (int)$profile['user_id'],
+        'venue'
+    );
+
+    $amenities = json_decode(
+        (string)($profile['amenities_json'] ?? '[]'),
+        true
+    );
+
+    if (!is_array($amenities)) {
+        $amenities = [];
+    }
+
+    $policies = json_decode(
+        (string)($profile['policies_json'] ?? '{}'),
+        true
+    );
+
+    if (!is_array($policies)) {
+        $policies = [];
+    }
+
     return [
         'id' => 'db-venue-' . (string)$profile['id'],
         'name' => (string)$profile['venue_name'],
         'category' => 'Venues',
         'city' => (string)($profile['city'] ?? ''),
         'locality' => (string)($profile['locality'] ?? ''),
-        'rating' => 0,
-        'reviews' => 0,
+        'rating' => $reviewSummary['rating'],
+        'reviews' => $reviewSummary['count'],
         'price' => (string)(
             $profile['starting_price']
             ?: 'Ask for pricing'
@@ -208,6 +237,17 @@ function wz_database_venue_to_card(array $profile): array
         'database_profile_id' => (int)$profile['id'],
         'database_user_id' => (int)$profile['user_id'],
         'business_type' => 'venue',
+        'rooms' => (int)($profile['rooms'] ?? 0),
+        'capacity_min' => (int)($profile['capacity_min'] ?? 0),
+        'capacity_max' => (int)($profile['capacity_max'] ?? 0),
+        'venue_type' => (string)($profile['venue_type'] ?? ''),
+        'price_per_plate_veg' => (float)($profile['price_per_plate_veg'] ?? 0),
+        'price_per_plate_nonveg' => (float)($profile['price_per_plate_nonveg'] ?? 0),
+        'rental_price' => (float)($profile['rental_price'] ?? 0),
+        'parking_capacity' => (int)($profile['parking_capacity'] ?? 0),
+        'video_url' => (string)($profile['video_url'] ?? ''),
+        'amenities' => array_values($amenities),
+        'policies' => $policies,
     ];
 }
 
