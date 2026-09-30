@@ -156,7 +156,7 @@ $crmNavigation = match ($crmRole) {
 
     <link
         rel="stylesheet"
-        href="<?= h(wz_app_url('assets/css/crm.css?v=1.0.0')) ?>"
+        href="<?= h(wz_app_url('assets/css/crm.css?v=1.1.0')) ?>"
     >
 </head>
 
