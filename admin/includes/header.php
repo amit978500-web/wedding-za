@@ -180,10 +180,29 @@ $adminNavigation = [
         rel="stylesheet"
         href="../assets/css/admin.css?v=1.2.0"
     >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/admin-premium.css?v=1.0.0"
+    >
 </head>
 
 <body>
     <div class="admin-shell">
+        <button
+            class="admin-mobile-toggle"
+            type="button"
+            aria-label="Open admin navigation"
+            aria-expanded="false"
+        >
+            ☰
+        </button>
+
+        <div
+            class="admin-sidebar-backdrop"
+            aria-hidden="true"
+        ></div>
+
         <aside class="admin-sidebar">
             <a
                 class="admin-brand"
