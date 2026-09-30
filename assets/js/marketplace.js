@@ -178,5 +178,68 @@
     }
   );
 
+  document.addEventListener(
+    'click',
+    (event) => {
+      const shortlist = event.target.closest(
+        '[data-shortlist][data-business-user-id]'
+      );
+
+      if (!shortlist) {
+        return;
+      }
+
+      const boot = window.WZ_BOOT || {};
+      const businessUserId = Number(
+        shortlist.dataset.businessUserId || 0
+      );
+      const businessType =
+        shortlist.dataset.businessType || '';
+
+      if (
+        !boot.loggedIn ||
+        boot.role !== 'host' ||
+        !boot.databaseReady ||
+        !businessUserId ||
+        !['vendor', 'venue'].includes(businessType)
+      ) {
+        return;
+      }
+
+      const form = new FormData();
+
+      form.append(
+        'csrf',
+        boot.csrf || ''
+      );
+
+      form.append(
+        'business_user_id',
+        String(businessUserId)
+      );
+
+      form.append(
+        'business_type',
+        businessType
+      );
+
+      form.append(
+        'event_type',
+        'shortlist'
+      );
+
+      fetch(
+        'api/analytics-event.php',
+        {
+          method: 'POST',
+          body: form,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        }
+      ).catch(() => {});
+    }
+  );
+
   renderCompare();
 })();
