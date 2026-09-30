@@ -1,0 +1,32 @@
+name: Package Wedding ZA Source
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/package-source.yml"
+  workflow_dispatch:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build source ZIP
+        run: |
+          cd ..
+          zip -r wedding-za.zip wedding-za \
+            -x "wedding-za/.git/*" \
+            -x "wedding-za/.github/workflows/package-source.yml"
+
+      - name: Upload source ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: wedding-za-full-source
+          path: ../wedding-za.zip
+          if-no-files-found: error
+          retention-days: 1
