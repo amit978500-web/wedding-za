@@ -131,6 +131,28 @@ $adminNavigation = [
         'label' => 'Reports',
         'path' => 'reports.php',
     ],
+    'marketplace' => [
+        'label' => 'Marketplace',
+        'path' => 'reviews.php',
+        'children' => [
+            'marketplace-reviews' => [
+                'label' => 'Review Moderation',
+                'path' => 'reviews.php',
+            ],
+            'marketplace-venue-plans' => [
+                'label' => 'Venue Assistance',
+                'path' => 'venue-plans.php',
+            ],
+            'marketplace-subscriptions' => [
+                'label' => 'Business Plans',
+                'path' => 'subscriptions.php',
+            ],
+            'marketplace-submissions' => [
+                'label' => 'Wedding Submissions',
+                'path' => 'wedding-submissions.php',
+            ],
+        ],
+    ],
     'website' => [
         'label' => 'Website',
         'path' => 'website-cities.php',
