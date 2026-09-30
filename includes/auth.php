@@ -120,6 +120,8 @@ function wz_login_demo(
             ? $role
             : 'host',
     ]);
+
+    $_SESSION['wz_show_member_card'] = true;
 }
 
 function wz_password_is_strong(string $password): bool
@@ -507,6 +509,8 @@ function wz_login_account(
     }
 
     wz_set_user_session($user);
+
+    $_SESSION['wz_show_member_card'] = true;
 
     wz_record_login_attempt(
         $email,
