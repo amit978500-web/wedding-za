@@ -1,6 +1,8 @@
 <?php
     require __DIR__.'/includes/bootstrap.php';
     require __DIR__.'/includes/components.php';
+    require __DIR__.'/includes/auth.php';
+    require __DIR__.'/includes/marketplace.php';
     $id=(string)($_GET['id']??'aanya-veer');
     $w=wz_wedding($id)??(wz_data('weddings')[0]??null);
     if(!$w) {
@@ -11,6 +13,18 @@
     $pageTitle=$w['couple'].' · '.$eventType;
     $pageDescription=$w['summary'];
     $pageKey='wedding-story';
+
+    if (
+        wz_is_logged_in()
+        && !empty(wz_user()['id'])
+    ) {
+        wz_marketplace_record_view(
+            (int)wz_user()['id'],
+            'wedding',
+            (string)$w['id']
+        );
+    }
+
     require __DIR__.'/includes/header.php';
 ?>
 <main>
