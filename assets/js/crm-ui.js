@@ -658,6 +658,193 @@
 
   /*
   |--------------------------------------------------------------------------
+  | Wedding Za member card
+  |--------------------------------------------------------------------------
+  */
+
+  const memberModal =
+    document.querySelector(
+      '[data-wz-member-modal]'
+    );
+
+  let memberLastFocus = null;
+
+  const openMemberCard = () => {
+    if (!memberModal) {
+      return;
+    }
+
+    memberLastFocus =
+      document.activeElement;
+
+    memberModal.classList.add(
+      'open'
+    );
+
+    memberModal.setAttribute(
+      'aria-hidden',
+      'false'
+    );
+
+    body.classList.add(
+      'wz-member-modal-open'
+    );
+
+    const closeButton =
+      memberModal.querySelector(
+        '[data-wz-card-close]'
+      );
+
+    window.setTimeout(
+      () => {
+        closeButton?.focus({
+          preventScroll: true,
+        });
+      },
+      70
+    );
+  };
+
+  const closeMemberCard = () => {
+    if (!memberModal) {
+      return;
+    }
+
+    memberModal.classList.remove(
+      'open'
+    );
+
+    memberModal.setAttribute(
+      'aria-hidden',
+      'true'
+    );
+
+    body.classList.remove(
+      'wz-member-modal-open'
+    );
+
+    if (
+      memberLastFocus
+      && typeof memberLastFocus.focus
+        === 'function'
+    ) {
+      memberLastFocus.focus({
+        preventScroll: true,
+      });
+    }
+  };
+
+  document
+    .querySelectorAll(
+      '[data-wz-card-open]'
+    )
+    .forEach((button) => {
+      button.addEventListener(
+        'click',
+        openMemberCard
+      );
+    });
+
+  memberModal
+    ?.querySelectorAll(
+      '[data-wz-card-close]'
+    )
+    .forEach((button) => {
+      button.addEventListener(
+        'click',
+        closeMemberCard
+      );
+    });
+
+  memberModal?.addEventListener(
+    'click',
+    (event) => {
+      if (event.target === memberModal) {
+        closeMemberCard();
+      }
+    }
+  );
+
+  document
+    .querySelectorAll(
+      '[data-wz-member-card]'
+    )
+    .forEach((card) => {
+      card.addEventListener(
+        'pointermove',
+        (event) => {
+          const rect =
+            card.getBoundingClientRect();
+
+          const x = Math.max(
+            0,
+            Math.min(
+              100,
+              (
+                (
+                  event.clientX
+                  - rect.left
+                )
+                / rect.width
+              ) * 100
+            )
+          );
+
+          const y = Math.max(
+            0,
+            Math.min(
+              100,
+              (
+                (
+                  event.clientY
+                  - rect.top
+                )
+                / rect.height
+              ) * 100
+            )
+          );
+
+          card.style.setProperty(
+            '--wz-mx',
+            x + '%'
+          );
+
+          card.style.setProperty(
+            '--wz-my',
+            y + '%'
+          );
+        }
+      );
+
+      card.addEventListener(
+        'pointerleave',
+        () => {
+          card.style.removeProperty(
+            '--wz-mx'
+          );
+
+          card.style.removeProperty(
+            '--wz-my'
+          );
+        }
+      );
+    });
+
+  if (
+    memberModal
+    && memberModal.dataset.autoOpen
+      === '1'
+  ) {
+    window.setTimeout(
+      openMemberCard,
+      prefersReducedMotion
+        ? 60
+        : 420
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
   | Page progress
   |--------------------------------------------------------------------------
   */
@@ -735,6 +922,12 @@
 
       if (event.key === 'Escape') {
         if (
+          memberModal?.classList.contains(
+            'open'
+          )
+        ) {
+          closeMemberCard();
+        } else if (
           palette.classList.contains(
             'open'
           )
