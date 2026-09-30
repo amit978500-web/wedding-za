@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/helpers.php';
+require_once dirname(__DIR__, 2) . '/includes/marketplace.php';
 
 $crmRole = 'host';
 $crmPage = 'find-venues';
@@ -11,6 +12,15 @@ $crmUser = wz_crm_require_role($crmRole);
 $userId = (int)$crmUser['id'];
 $message = '';
 $isSuccess = false;
+
+$venuePlan = wz_marketplace_venue_plan_purchase(
+    $userId
+);
+
+$venuePlanStatus = (string)(
+    $venuePlan['status']
+    ?? 'not_started'
+);
 
 $workspace = wz_customer_workspace($userId);
 $shortlist = is_array($workspace['shortlist'] ?? null)
@@ -31,6 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             wz_customer_save_workspace(
                 $userId,
                 $workspace
+            );
+
+            wz_marketplace_record_business_event(
+                $venueUserId,
+                'venue',
+                'shortlist',
+                $userId
             );
 
             $message = 'Venue saved to your shortlist.';
@@ -127,21 +144,46 @@ require dirname(__DIR__) . '/includes/header.php';
             <li>Dedicated Weddingza support</li>
         </ul>
 
-        <a
-            class="crm-plan-cta"
-            href="<?= h(
-                wz_app_url(
-                    'crm/customer/venue-plan-payment.php'
-                )
-            ) ?>"
-        >
-            Continue to Payment
-            <span aria-hidden="true">→</span>
-        </a>
+        <?php if(in_array($venuePlanStatus,['paid','active','completed'],true)): ?>
+            <a
+                class="crm-plan-cta"
+                href="<?= h(
+                    wz_app_url(
+                        'crm/customer/venue-plan-payment.php'
+                    )
+                ) ?>"
+            >
+                <?= $venuePlanStatus==='active'
+                    ?'Plan Active'
+                    :(
+                        $venuePlanStatus==='completed'
+                            ?'View Completed Plan'
+                            :'Payment Received'
+                    ) ?>
+                <span aria-hidden="true">→</span>
+            </a>
 
-        <small class="crm-plan-note">
-            One-time service fee for one wedding.
-        </small>
+            <small class="crm-plan-note">
+                Current status:
+                <?= h(ucfirst($venuePlanStatus)) ?>
+            </small>
+        <?php else: ?>
+            <a
+                class="crm-plan-cta"
+                href="<?= h(
+                    wz_app_url(
+                        'crm/customer/venue-plan-payment.php'
+                    )
+                ) ?>"
+            >
+                Continue to Payment
+                <span aria-hidden="true">→</span>
+            </a>
+
+            <small class="crm-plan-note">
+                One-time service fee for one wedding.
+            </small>
+        <?php endif; ?>
     </article>
 </section>
 
