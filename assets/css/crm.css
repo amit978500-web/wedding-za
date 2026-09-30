@@ -632,3 +632,92 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+
+
+.crm-nav-item {
+  display: grid;
+}
+
+.crm-nav-item > a {
+  display: flex;
+}
+
+.crm-subnav {
+  display: none;
+  padding: 6px 0 10px 14px;
+  border-left: 1px solid rgba(255,255,255,.12);
+}
+
+.crm-nav-item.has-children:hover .crm-subnav,
+.crm-nav-item.has-children:has(> a.active) .crm-subnav {
+  display: grid;
+}
+
+.crm-subnav a {
+  padding: 9px 10px;
+  border-bottom: 0;
+  color: rgba(255,255,255,.48);
+  font-size: 9px;
+}
+
+.crm-subnav a:hover,
+.crm-subnav a.active {
+  color: #fff;
+  background: rgba(255,255,255,.06);
+  border-radius: 8px;
+}
+
+.crm-money-positive {
+  color: var(--crm-green);
+}
+
+.crm-money-due {
+  color: var(--crm-red);
+}
+
+.crm-kpi-note {
+  margin-top: 7px;
+  color: var(--crm-muted);
+  font-size: 9px;
+}
+
+.crm-calendar-month {
+  padding: 20px;
+}
+
+.crm-calendar-month h3 {
+  margin: 0 0 14px;
+  font-family: Georgia, serif;
+  font-size: 26px;
+  font-weight: 400;
+}
+
+.crm-calendar-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+}
+
+.crm-calendar-table th,
+.crm-calendar-table td {
+  padding: 12px;
+  border: 1px solid var(--crm-line);
+  vertical-align: top;
+  text-align: left;
+}
+
+.crm-calendar-table th {
+  background: #f7f3ed;
+  color: var(--crm-muted);
+  font-size: 8px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.crm-function-card {
+  min-height: 120px;
+}
+
+.crm-function-card strong {
+  font-size: 16px;
+}

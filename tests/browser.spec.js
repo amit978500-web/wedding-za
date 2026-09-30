@@ -177,6 +177,50 @@ test('private CRM routes redirect to matching login role', async ({ page }) => {
       path: '/crm/venue/index.php',
       role: 'venue',
     },
+    {
+      path: '/crm/venue/leads.php',
+      role: 'venue',
+    },
+    {
+      path: '/crm/venue/leads-new.php',
+      role: 'venue',
+    },
+    {
+      path: '/crm/venue/leads-followups.php',
+      role: 'venue',
+    },
+    {
+      path: '/crm/venue/leads-site-visits.php',
+      role: 'venue',
+    },
+    {
+      path: '/crm/venue/leads-lost.php',
+      role: 'venue',
+    },
+    {
+      path: '/crm/venue/functions.php',
+      role: 'venue',
+    },
+    {
+      path: '/crm/venue/functions-upcoming.php',
+      role: 'venue',
+    },
+    {
+      path: '/crm/venue/functions-calendar.php',
+      role: 'venue',
+    },
+    {
+      path: '/crm/venue/bookings.php',
+      role: 'venue',
+    },
+    {
+      path: '/crm/venue/payments.php',
+      role: 'venue',
+    },
+    {
+      path: '/crm/venue/reports.php',
+      role: 'venue',
+    },
   ];
 
   for (const item of routes) {

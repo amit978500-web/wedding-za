@@ -49,32 +49,64 @@ $crmNavigation = match ($crmRole) {
     ],
     'venue' => [
         'dashboard' => [
-            'label' => 'Overview',
+            'label' => 'Dashboard',
             'path' => 'crm/venue/index.php',
         ],
-        'enquiries' => [
-            'label' => 'Sales pipeline',
-            'path' => 'crm/venue/enquiries.php',
+        'leads' => [
+            'label' => 'Leads',
+            'path' => 'crm/venue/leads.php',
+            'children' => [
+                'leads-all' => [
+                    'label' => 'All Leads',
+                    'path' => 'crm/venue/leads.php',
+                ],
+                'leads-new' => [
+                    'label' => 'New Leads',
+                    'path' => 'crm/venue/leads-new.php',
+                ],
+                'leads-followups' => [
+                    'label' => 'Follow-ups',
+                    'path' => 'crm/venue/leads-followups.php',
+                ],
+                'leads-site-visits' => [
+                    'label' => 'Site Visits',
+                    'path' => 'crm/venue/leads-site-visits.php',
+                ],
+                'leads-lost' => [
+                    'label' => 'Lost Leads',
+                    'path' => 'crm/venue/leads-lost.php',
+                ],
+            ],
+        ],
+        'functions' => [
+            'label' => 'Functions',
+            'path' => 'crm/venue/functions.php',
+            'children' => [
+                'functions-all' => [
+                    'label' => 'All Functions',
+                    'path' => 'crm/venue/functions.php',
+                ],
+                'functions-upcoming' => [
+                    'label' => 'Upcoming',
+                    'path' => 'crm/venue/functions-upcoming.php',
+                ],
+                'functions-calendar' => [
+                    'label' => 'Calendar',
+                    'path' => 'crm/venue/functions-calendar.php',
+                ],
+            ],
         ],
         'bookings' => [
             'label' => 'Bookings',
             'path' => 'crm/venue/bookings.php',
         ],
-        'availability' => [
-            'label' => 'Availability',
-            'path' => 'crm/venue/availability.php',
+        'payments' => [
+            'label' => 'Payments',
+            'path' => 'crm/venue/payments.php',
         ],
-        'tasks' => [
-            'label' => 'Tasks',
-            'path' => 'crm/venue/tasks.php',
-        ],
-        'messages' => [
-            'label' => 'Messages',
-            'path' => 'crm/venue/messages.php',
-        ],
-        'profile' => [
-            'label' => 'Venue profile',
-            'path' => 'crm/venue/profile.php',
+        'reports' => [
+            'label' => 'Reports',
+            'path' => 'crm/venue/reports.php',
         ],
     ],
     default => [
@@ -124,7 +156,7 @@ $crmNavigation = match ($crmRole) {
 
     <link
         rel="stylesheet"
-        href="<?= h(wz_app_url('assets/css/crm.css?v=1.0.0')) ?>"
+        href="<?= h(wz_app_url('assets/css/crm.css?v=1.1.0')) ?>"
     >
 </head>
 
@@ -148,21 +180,48 @@ $crmNavigation = match ($crmRole) {
                 ?>
 
                 <?php foreach ($crmNavigation as $key => $item): ?>
-                    <a
-                        class="<?= $crmPage === $key ? 'active' : '' ?>"
-                        href="<?= h(wz_app_url($item['path'])) ?>"
-                    >
-                        <?= h($item['label']) ?>
+                    <?php
+                    $hasChildren = !empty($item['children']);
 
-                        <span>
-                            <?= str_pad(
-                                (string)$navNumber,
-                                2,
-                                '0',
-                                STR_PAD_LEFT
-                            ) ?>
-                        </span>
-                    </a>
+                    $isParentActive = $crmPage === $key
+                        || str_starts_with(
+                            $crmPage,
+                            $key . '-'
+                        );
+                    ?>
+
+                    <div
+                        class="crm-nav-item <?= $hasChildren ? 'has-children' : '' ?>"
+                    >
+                        <a
+                            class="<?= $isParentActive ? 'active' : '' ?>"
+                            href="<?= h(wz_app_url($item['path'])) ?>"
+                        >
+                            <?= h($item['label']) ?>
+
+                            <span>
+                                <?= str_pad(
+                                    (string)$navNumber,
+                                    2,
+                                    '0',
+                                    STR_PAD_LEFT
+                                ) ?>
+                            </span>
+                        </a>
+
+                        <?php if ($hasChildren): ?>
+                            <div class="crm-subnav">
+                                <?php foreach ($item['children'] as $childKey => $child): ?>
+                                    <a
+                                        class="<?= $crmPage === $childKey ? 'active' : '' ?>"
+                                        href="<?= h(wz_app_url($child['path'])) ?>"
+                                    >
+                                        <?= h($child['label']) ?>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
 
                     <?php
                     $navNumber++;
@@ -178,6 +237,20 @@ $crmNavigation = match ($crmRole) {
                 <small>
                     <?= h((string)$crmUser['email']) ?>
                 </small>
+
+                <?php if ($crmRole === 'venue'): ?>
+                    <a href="<?= h(wz_app_url('crm/venue/profile.php')) ?>">
+                        Venue profile ↗
+                    </a>
+
+                    <br>
+
+                    <a href="<?= h(wz_app_url('crm/venue/messages.php')) ?>">
+                        Messages ↗
+                    </a>
+
+                    <br>
+                <?php endif; ?>
 
                 <a href="<?= h(wz_app_url('index.php')) ?>">
                     Public site ↗
