@@ -40,7 +40,31 @@ if (
     )
 ) {
     http_response_code(404);
-    require __DIR__ . '/404.php';
+
+    $pageTitle = 'Marketplace Page Not Found';
+    $pageDescription = 'This Wedding Za marketplace landing page is not available.';
+    $pageKey = '404';
+    $useBaseHref = true;
+
+    require __DIR__ . '/includes/header.php';
+    ?>
+    <main>
+        <section class="section">
+            <div class="container empty-state">
+                <span class="eyebrow">404</span>
+                <h1>Marketplace page not found.</h1>
+                <p class="muted">
+                    Try Wedding Za venue discovery or the full vendor marketplace.
+                </p>
+                <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                    <a class="pill-btn wine" href="venues.php">Find venues ↗</a>
+                    <a class="pill-btn outline" href="vendors.php">Browse vendors ↗</a>
+                </div>
+            </div>
+        </section>
+    </main>
+    <?php
+    require __DIR__ . '/includes/footer.php';
     exit;
 }
 
