@@ -151,6 +151,10 @@ $adminNavigation = [
                 'label' => 'Wedding Submissions',
                 'path' => 'wedding-submissions.php',
             ],
+            'marketplace-notifications' => [
+                'label' => 'Notifications',
+                'path' => 'notifications.php',
+            ],
         ],
     ],
     'website' => [
