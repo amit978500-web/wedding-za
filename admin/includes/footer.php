@@ -55,7 +55,7 @@
     <?php endif; ?>
 
     <script
-        src="../assets/js/crm-ui.js?v=1.1.0"
+        src="../assets/js/crm-ui.js?v=1.2.0"
         defer
     ></script>
 </body>
