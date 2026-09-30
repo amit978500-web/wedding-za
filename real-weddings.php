@@ -1,6 +1,7 @@
 <?php
     require __DIR__.'/includes/bootstrap.php';
     require __DIR__.'/includes/components.php';
+    require __DIR__.'/includes/database.php';
     $pageTitle='Real Celebrations';
     $pageDescription='Explore real celebrations, locations, themes and the vendors behind them.';
     $pageKey='real-weddings';
