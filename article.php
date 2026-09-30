@@ -3,6 +3,8 @@
 require __DIR__ . '/includes/bootstrap.php';
 require __DIR__ . '/includes/components.php';
 require __DIR__ . '/includes/content.php';
+require __DIR__ . '/includes/auth.php';
+require __DIR__ . '/includes/marketplace.php';
 
 $id = (string)($_GET['id'] ?? 'jaipur-venues');
 $article = wz_published_article($id);
@@ -16,6 +18,17 @@ $pageTitle = (string)$article['title'];
 $pageDescription = (string)$article['excerpt'];
 $pageKey = 'article';
 $pageImage = (string)($article['image'] ?? '');
+
+if (
+    wz_is_logged_in()
+    && !empty(wz_user()['id'])
+) {
+    wz_marketplace_record_view(
+        (int)wz_user()['id'],
+        'article',
+        (string)$article['id']
+    );
+}
 
 $structuredData = [
     [
