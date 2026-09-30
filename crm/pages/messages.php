@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once dirname(__DIR__, 2) . '/includes/crm.php';
+require_once dirname(__DIR__, 2) . '/includes/marketplace.php';
 
 $crmRole = $crmRole ?? 'host';
 $crmPage = 'messages';
@@ -25,6 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             (string)($_POST['message'] ?? '')
         );
 
+        $attachmentUrl = trim(
+            (string)($_POST['attachment_url'] ?? '')
+        );
+
         if (
             $recipientId > 0
             && $body !== ''
@@ -40,11 +45,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'INSERT INTO crm_messages (
                     sender_user_id,
                     recipient_user_id,
-                    body
+                    body,
+                    attachment_url
                 ) VALUES (
                     :sender_user_id,
                     :recipient_user_id,
-                    :body
+                    :body,
+                    :attachment_url
                 )'
             );
 
@@ -52,7 +59,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'sender_user_id' => $userId,
                 'recipient_user_id' => $recipientId,
                 'body' => $body,
+                'attachment_url' => $attachmentUrl !== ''
+                    ? $attachmentUrl
+                    : null,
             ]);
+
+            wz_marketplace_notify(
+                $recipientId,
+                'message',
+                'New CRM message',
+                mb_substr($body, 0, 180),
+                $crmRole === 'host'
+                    ? 'crm/customer/messages.php'
+                    : (
+                        $crmRole === 'venue'
+                            ? 'crm/venue/messages.php'
+                            : 'crm/vendor/messages.php'
+                    )
+            );
+
+            if ($crmRole !== 'host') {
+                wz_marketplace_record_business_event(
+                    $userId,
+                    $crmRole,
+                    'message',
+                    $recipientId
+                );
+            } else {
+                $recipient = null;
+
+                foreach ($contacts as $contact) {
+                    if ((int)$contact['id'] === $recipientId) {
+                        $recipient = $contact;
+                        break;
+                    }
+                }
+
+                if (
+                    $recipient
+                    && in_array(
+                        (string)$recipient['role'],
+                        ['vendor', 'venue'],
+                        true
+                    )
+                ) {
+                    wz_marketplace_record_business_event(
+                        $recipientId,
+                        (string)$recipient['role'],
+                        'message',
+                        $userId
+                    );
+                }
+            }
 
             $message = 'Message sent.';
             $isSuccess = true;
@@ -137,6 +195,18 @@ require dirname(__DIR__) . '/includes/header.php';
                         <?= nl2br(h((string)$item['body'])) ?>
                     </p>
 
+                    <?php if (!empty($item['attachment_url'])): ?>
+                        <p>
+                            <a
+                                href="<?= h((string)$item['attachment_url']) ?>"
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                Open attachment ↗
+                            </a>
+                        </p>
+                    <?php endif; ?>
+
                     <small>
                         <?= h((string)$item['created_at']) ?>
                     </small>
@@ -206,6 +276,19 @@ require dirname(__DIR__) . '/includes/header.php';
                             name="message"
                             required
                         ></textarea>
+                    </div>
+
+                    <div class="crm-field">
+                        <label for="messageAttachment">
+                            Attachment URL (optional)
+                        </label>
+
+                        <input
+                            id="messageAttachment"
+                            type="url"
+                            name="attachment_url"
+                            placeholder="Drive, Dropbox or file link"
+                        >
                     </div>
 
                     <button
