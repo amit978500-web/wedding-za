@@ -2,6 +2,7 @@
 
 require __DIR__ . '/includes/bootstrap.php';
 require __DIR__ . '/includes/components.php';
+require __DIR__ . '/includes/auth.php';
 
 $pageTitle = 'Submit Your Celebration';
 $pageDescription = 'Submit your celebration story to Wedding Za for editorial review and publication.';
