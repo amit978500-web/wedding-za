@@ -14,37 +14,83 @@ $crmUser = wz_crm_require_role(
 
 $crmNavigation = match ($crmRole) {
     'host' => [
-        'dashboard' => [
-            'label' => 'Overview',
-            'path' => 'crm/customer/index.php',
+        'requirements' => [
+            'label' => 'My Requirements',
+            'path' => 'crm/customer/requirements-wedding.php',
+            'children' => [
+                'requirements-wedding' => [
+                    'label' => 'Wedding Details',
+                    'path' => 'crm/customer/requirements-wedding.php',
+                ],
+                'requirements-functions' => [
+                    'label' => 'Functions',
+                    'path' => 'crm/customer/requirements-functions.php',
+                ],
+                'requirements-budget' => [
+                    'label' => 'Budget',
+                    'path' => 'crm/customer/requirements-budget.php',
+                ],
+            ],
+        ],
+        'find-venues' => [
+            'label' => 'Find Venues',
+            'path' => 'crm/customer/find-venues.php',
+        ],
+        'shortlist' => [
+            'label' => 'My Shortlist',
+            'path' => 'crm/customer/shortlist.php',
+            'children' => [
+                'shortlist-saved' => [
+                    'label' => 'Saved Venues',
+                    'path' => 'crm/customer/shortlist.php',
+                ],
+            ],
         ],
         'enquiries' => [
-            'label' => 'My enquiries',
+            'label' => 'My Enquiries',
             'path' => 'crm/customer/enquiries.php',
+            'children' => [
+                'enquiries-all' => [
+                    'label' => 'All Enquiries',
+                    'path' => 'crm/customer/enquiries.php',
+                ],
+            ],
+        ],
+        'site-visits' => [
+            'label' => 'Site Visits',
+            'path' => 'crm/customer/site-visits-upcoming.php',
+            'children' => [
+                'site-visits-upcoming' => [
+                    'label' => 'Upcoming',
+                    'path' => 'crm/customer/site-visits-upcoming.php',
+                ],
+                'site-visits-completed' => [
+                    'label' => 'Completed',
+                    'path' => 'crm/customer/site-visits-completed.php',
+                ],
+            ],
         ],
         'bookings' => [
             'label' => 'Bookings',
-            'path' => 'crm/customer/bookings.php',
-        ],
-        'tasks' => [
-            'label' => 'Tasks',
-            'path' => 'crm/customer/tasks.php',
-        ],
-        'messages' => [
-            'label' => 'Messages',
-            'path' => 'crm/customer/messages.php',
-        ],
-        'planning' => [
-            'label' => 'Planning Studio',
-            'path' => 'planner.php',
-        ],
-        'shortlist' => [
-            'label' => 'Shortlist',
-            'path' => 'shortlist.php',
+            'path' => 'crm/customer/bookings-upcoming.php',
+            'children' => [
+                'bookings-upcoming' => [
+                    'label' => 'Upcoming',
+                    'path' => 'crm/customer/bookings-upcoming.php',
+                ],
+                'bookings-completed' => [
+                    'label' => 'Completed',
+                    'path' => 'crm/customer/bookings-completed.php',
+                ],
+            ],
         ],
         'profile' => [
             'label' => 'Profile',
             'path' => 'crm/customer/profile.php',
+        ],
+        'budget-planner' => [
+            'label' => 'Budget Planner',
+            'path' => 'crm/customer/budget-planner.php',
         ],
     ],
     'venue' => [
