@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once dirname(__DIR__, 2) . '/includes/auth.php';
+require_once dirname(__DIR__, 2) . '/includes/crm.php';
 
 if (!wz_is_admin()) {
     header(
@@ -15,6 +15,14 @@ if (!wz_is_admin()) {
 $adminPage = $adminPage ?? 'dashboard';
 $adminTitle = $adminTitle ?? 'Wedding Za Admin';
 $adminUser = wz_user();
+
+$wzMemberCard = wz_crm_member_card_data(
+    $adminUser ?? [],
+    'admin'
+);
+
+$wzMemberCardAutoOpen =
+    wz_crm_member_card_popup_pending();
 
 $adminNavigation = [
     'dashboard' => [
@@ -211,6 +219,11 @@ $adminNavigation = [
         rel="stylesheet"
         href="../assets/css/admin-premium.css?v=1.1.0"
     >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/member-card.css?v=1.0.0"
+    >
 </head>
 
 <body>
@@ -288,6 +301,16 @@ $adminNavigation = [
                 <small>
                     <?= h((string)$adminUser['email']) ?>
                 </small>
+
+                <button
+                    class="admin-user-card-link"
+                    type="button"
+                    data-wz-card-open
+                >
+                    My WZ Card ↗
+                </button>
+
+                <br>
 
                 <a href="media.php">
                     Media ↗
