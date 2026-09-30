@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once dirname(__DIR__, 2) . '/includes/crm.php';
 
 $crmRole = $crmRole ?? 'host';
-$crmPage = 'enquiries';
+$crmPage = $crmPage ?? 'enquiries';
 $crmUser = wz_crm_require_role($crmRole);
 $userId = (int)($crmUser['id'] ?? 0);
 $message = '';
