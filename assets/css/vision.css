@@ -6765,3 +6765,109 @@ body.menu-open .vision-header {
     margin: 0 0 8px;
   }
 }
+
+
+/* FINAL SAFE MOTION POLISH — WZ / 02 + WZ / 03 -------------------------- */
+.vision-category-panel,
+.vision-city-card {
+  isolation: isolate;
+}
+
+.vision-category-panel::after,
+.vision-city-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      115deg,
+      transparent 0%,
+      rgba(255,255,255,.11) 42%,
+      transparent 58%
+    );
+  transform: translateX(-120%);
+  transition: transform .9s var(--v-ease);
+}
+
+.vision-category-panel:hover::after,
+.vision-city-card:hover::after {
+  transform: translateX(120%);
+}
+
+.vision-category-panel .vision-category-image img,
+.vision-city-card figure img {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.vision-category-panel:hover .vision-category-image img,
+.vision-city-card:hover figure img {
+  filter: saturate(1.04) contrast(1.025);
+}
+
+.vision-category-copy h3,
+.vision-city-card h3 {
+  position: relative;
+}
+
+.vision-category-copy h3::after,
+.vision-city-card h3::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -7px;
+  width: 42px;
+  height: 1px;
+  background: currentColor;
+  opacity: .38;
+  transform: scaleX(.55);
+  transform-origin: left;
+  transition:
+    transform .45s var(--v-ease),
+    opacity .45s ease;
+}
+
+.vision-category-panel:hover .vision-category-copy h3::after,
+.vision-city-card:hover h3::after {
+  transform: scaleX(1.65);
+  opacity: .68;
+}
+
+.vision-category-number {
+  transition:
+    transform .35s var(--v-ease),
+    background .35s ease,
+    border-color .35s ease;
+}
+
+.vision-category-panel:hover .vision-category-number {
+  transform: rotate(8deg) scale(1.06);
+  background: rgba(127,36,61,.82);
+  border-color: rgba(255,255,255,.60);
+}
+
+.vision-category-copy b,
+.vision-city-card b {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: max-content;
+  transition:
+    transform .3s var(--v-ease),
+    letter-spacing .3s ease;
+}
+
+.vision-category-panel:hover .vision-category-copy b,
+.vision-city-card:hover b {
+  transform: translateX(5px);
+  letter-spacing: .13em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vision-category-panel::after,
+  .vision-city-card::after {
+    display: none;
+  }
+}
