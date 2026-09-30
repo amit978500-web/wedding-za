@@ -350,3 +350,148 @@
     grid-column: 1/-1;
   }
 }
+
+
+.marketplace-availability-grid {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 10px;
+}
+
+.marketplace-availability-card {
+  display: grid;
+  gap: 9px;
+  min-height: 112px;
+  padding: 15px;
+  border: 1px solid rgba(25,20,17,.09);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.marketplace-availability-card strong {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: 22px;
+  font-weight: 400;
+}
+
+.marketplace-availability-card small {
+  color: #7b716a;
+  line-height: 1.5;
+}
+
+.marketplace-home-personal {
+  position: relative;
+  z-index: 6;
+  margin-top: -42px;
+}
+
+.marketplace-home-personal-card {
+  display: grid;
+  grid-template-columns: minmax(0,1.3fr) repeat(3,minmax(130px,.55fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid rgba(25,20,17,.10);
+  border-radius: 22px;
+  background: #ddd5cc;
+  box-shadow: 0 24px 75px rgba(25,20,17,.14);
+}
+
+.marketplace-home-personal-card > * {
+  min-height: 145px;
+  padding: 22px;
+  background: rgba(255,253,249,.97);
+}
+
+.marketplace-home-personal-main span,
+.marketplace-home-personal-stat span {
+  display: block;
+  color: #7b2942;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+}
+
+.marketplace-home-personal-main h2 {
+  margin: 9px 0;
+  font-family: "Instrument Serif",Georgia,serif;
+  font-size: clamp(30px,3vw,44px);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.marketplace-home-personal-main p {
+  max-width: 600px;
+  color: #716861;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.marketplace-home-personal-actions {
+  display: flex;
+  gap: 9px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.marketplace-home-personal-stat {
+  display: grid;
+  align-content: space-between;
+}
+
+.marketplace-home-personal-stat strong {
+  font-family: "Instrument Serif",Georgia,serif;
+  font-size: 40px;
+  font-weight: 400;
+}
+
+.vendor-compare-btn {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 4;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  background: rgba(25,20,17,.62);
+  color: #fff;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.vendor-compare-btn.active {
+  background: #7b2942;
+}
+
+@media (max-width: 1000px) {
+  .marketplace-home-personal-card {
+    grid-template-columns: repeat(3,1fr);
+  }
+
+  .marketplace-home-personal-main {
+    grid-column: 1/-1;
+  }
+}
+
+@media (max-width: 700px) {
+  .marketplace-availability-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .marketplace-home-personal {
+    margin-top: -18px;
+  }
+
+  .marketplace-home-personal-card {
+    grid-template-columns: 1fr;
+  }
+
+  .marketplace-home-personal-main {
+    grid-column: auto;
+  }
+}
