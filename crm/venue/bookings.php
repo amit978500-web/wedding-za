@@ -78,6 +78,42 @@ if (
                 'business_user_id' => $userId,
             ]);
 
+            $oldEventDate = (string)(
+                $booking['event_date']
+                ?? ''
+            );
+
+            $availabilityNote =
+                'CRM booking #' . $bookingId;
+
+            if (
+                $oldEventDate !== ''
+                && (
+                    $oldEventDate !== $eventDate
+                    || !in_array(
+                        $status,
+                        [
+                            'confirmed',
+                            'completed',
+                        ],
+                        true
+                    )
+                )
+            ) {
+                $releaseAvailability = $pdo->prepare(
+                    'DELETE FROM venue_availability
+                     WHERE venue_user_id = :venue_user_id
+                     AND availability_date = :availability_date
+                     AND note = :note'
+                );
+
+                $releaseAvailability->execute([
+                    'venue_user_id' => $userId,
+                    'availability_date' => $oldEventDate,
+                    'note' => $availabilityNote,
+                ]);
+            }
+
             if (
                 $eventDate !== ''
                 && in_array(
@@ -110,7 +146,7 @@ if (
                     'venue_user_id' => $userId,
                     'availability_date' => $eventDate,
                     'status' => 'booked',
-                    'note' => 'CRM booking #' . $bookingId,
+                    'note' => $availabilityNote,
                 ]);
             }
 
