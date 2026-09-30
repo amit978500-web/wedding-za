@@ -19,14 +19,14 @@ foreach (wz_data('cities') as $candidate) {
     }
 }
 
-$category = null;
+$selectedCategoryName = null;
 
 if ($type === 'vendors') {
     foreach (wz_data('categories') as $candidate) {
         $name = (string)($candidate['name'] ?? '');
 
         if (wz_slug($name) === $categorySlug) {
-            $category = $name;
+            $selectedCategoryName = $name;
             break;
         }
     }
@@ -36,7 +36,7 @@ if (
     $city === null
     || (
         $type === 'vendors'
-        && $category === null
+        && $selectedCategoryName === null
     )
 ) {
     http_response_code(404);
@@ -72,14 +72,14 @@ $isVenueLanding = $type === 'venues';
 
 $pageTitle = $isVenueLanding
     ? 'Wedding Venues in ' . $city
-    : $category . ' in ' . $city;
+    : $selectedCategoryName . ' in ' . $city;
 
 $pageDescription = $isVenueLanding
     ? 'Compare wedding venues in '
         . $city
         . ' by rating, starting price, guest capacity, rooms and venue type on Wedding Za.'
     : 'Discover '
-        . strtolower((string)$category)
+        . strtolower((string)$selectedCategoryName)
         . ' in '
         . $city
         . ' with portfolio, pricing context, reviews and enquiry tools on Wedding Za.';
@@ -95,7 +95,7 @@ $businesses = array_values(
         wz_public_vendors(),
         function (array $business) use (
             $city,
-            $category,
+            $selectedCategoryName,
             $isVenueLanding
         ): bool {
             if (
@@ -117,7 +117,7 @@ $businesses = array_values(
 
             return strcasecmp(
                 (string)($business['category'] ?? ''),
-                (string)$category
+                (string)$selectedCategoryName
             ) === 0;
         }
     )
@@ -159,7 +159,7 @@ $faq = $isVenueLanding
     ]
     : [
         [
-            'question' => 'How do I choose ' . strtolower((string)$category) . ' in ' . $city . '?',
+            'question' => 'How do I choose ' . strtolower((string)$selectedCategoryName) . ' in ' . $city . '?',
             'answer' => 'Compare event fit, portfolio consistency, starting price, reviews, packages, availability and communication before requesting a final quote.',
         ],
         [
@@ -224,10 +224,10 @@ require __DIR__ . '/includes/header.php';
     wz_page_intro(
         $isVenueLanding
             ? strtoupper($city) . ' VENUES'
-            : strtoupper((string)$category) . ' · ' . strtoupper($city),
+            : strtoupper((string)$selectedCategoryName) . ' · ' . strtoupper($city),
         $isVenueLanding
             ? 'Wedding venues in<br><em>' . h($city) . '.</em>'
-            : h((string)$category) . ' in<br><em>' . h($city) . '.</em>',
+            : h((string)$selectedCategoryName) . ' in<br><em>' . h($city) . '.</em>',
         $pageDescription
     );
     ?>
@@ -241,7 +241,7 @@ require __DIR__ . '/includes/header.php';
                         <?= h((string)count($businesses)) ?>
                         <?= $isVenueLanding
                             ? 'venue'
-                            : strtolower((string)$category) ?>
+                            : strtolower((string)$selectedCategoryName) ?>
                         <?= count($businesses) === 1 ? '' : ' options' ?>
                     </h2>
                 </div>
@@ -255,7 +255,7 @@ require __DIR__ . '/includes/header.php';
                                 : 'vendors.php?city='
                                     . urlencode($city)
                                     . '&category='
-                                    . urlencode((string)$category)
+                                    . urlencode((string)$selectedCategoryName)
                         )
                     ) ?>"
                 >
