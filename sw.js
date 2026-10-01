@@ -1,14 +1,16 @@
-const WZ_CACHE = 'wedding-za-shell-v5';
+const WZ_CACHE = 'wedding-za-shell-v6';
 
 const SHELL = [
   './offline.html',
   './assets/css/app.css?v=4.0.0',
   './assets/css/vision.css?v=4.0.4',
   './assets/css/marketplace.css?v=1.0.0',
-  './assets/js/app.js?v=4.0.0',
+  './assets/css/final-polish.css?v=1.0.0',
+  './assets/js/app.js?v=4.1.0',
   './assets/js/vision.js?v=4.0.4',
   './assets/js/marketplace.js?v=1.0.0',
   './assets/images/favicon.svg',
+  './assets/images/image-fallback.svg',
 ];
 
 self.addEventListener('install', (event) => {
