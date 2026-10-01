@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/notifications.php';
 
 function wz_marketplace_review_summary(
     int $businessUserId,
@@ -198,35 +199,13 @@ function wz_marketplace_notify(
     ?string $body = null,
     ?string $actionUrl = null
 ): void {
-    $pdo = wz_db();
-
-    if (!$pdo || $userId <= 0) {
-        return;
-    }
-
-    $statement = $pdo->prepare(
-        'INSERT INTO user_notifications (
-            user_id,
-            type,
-            title,
-            body,
-            action_url
-        ) VALUES (
-            :user_id,
-            :type,
-            :title,
-            :body,
-            :action_url
-        )'
+    wz_notification_send(
+        $userId,
+        $type,
+        $title,
+        $body,
+        $actionUrl
     );
-
-    $statement->execute([
-        'user_id' => $userId,
-        'type' => $type,
-        'title' => $title,
-        'body' => $body,
-        'action_url' => $actionUrl,
-    ]);
 }
 
 function wz_marketplace_notifications(
