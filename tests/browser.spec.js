@@ -294,3 +294,46 @@ test('Admin CRM operation routes require Admin login', async ({ page }) => {
     );
   }
 });
+
+
+test('key public pages stay inside common mobile widths', async ({ page }) => {
+  const widths = [
+    320,
+    375,
+    390,
+    768,
+  ];
+
+  const routes = [
+    '/',
+    '/vendors.php',
+    '/planner.php',
+    '/login.php?role=host',
+  ];
+
+  for (const width of widths) {
+    await page.setViewportSize({
+      width,
+      height: 900,
+    });
+
+    for (const route of routes) {
+      await page.goto(route, {
+        waitUntil: 'domcontentloaded',
+      });
+
+      const overflow = await page.evaluate(() => {
+        return Math.max(
+          0,
+          document.documentElement.scrollWidth
+          - document.documentElement.clientWidth
+        );
+      });
+
+      expect(
+        overflow,
+        route + ' overflowed at ' + width + 'px'
+      ).toBeLessThanOrEqual(1);
+    }
+  }
+});
