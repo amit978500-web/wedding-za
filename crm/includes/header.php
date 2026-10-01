@@ -328,6 +328,11 @@ $crmNavigation = match ($crmRole) {
         rel="stylesheet"
         href="<?= h(wz_app_url('assets/css/member-card.css?v=1.0.1')) ?>"
     >
+
+    <link
+        rel="stylesheet"
+        href="<?= h(wz_app_url('assets/css/final-polish.css?v=1.0.0')) ?>"
+    >
 </head>
 
 <body class="crm-role-<?= h($crmRole) ?>">
