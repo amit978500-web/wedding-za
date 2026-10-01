@@ -80,6 +80,7 @@
     initInviteBuilder();
     initShare();
     initWorkspaceSync();
+    initMediaCleanup();
   });
 
   function initHeader() {
@@ -1406,6 +1407,46 @@
             toast(
               'Copy the page URL to share'
             );
+          }
+        }
+      );
+    });
+  }
+
+  function initMediaCleanup() {
+    const fallbackUrl = new URL(
+      'assets/images/image-fallback.svg',
+      document.baseURI
+    ).href;
+
+    qsa('img').forEach((image) => {
+      if (
+        !image.hasAttribute('loading')
+        && !image.closest(
+          '.vision-hero, .city-hero, .story-hero, .auth-v2-media, .vision-preloader'
+        )
+      ) {
+        image.loading = 'lazy';
+      }
+
+      image.decoding = 'async';
+
+      image.addEventListener(
+        'error',
+        () => {
+          if (
+            image.dataset.wzFallback
+              === '1'
+          ) {
+            return;
+          }
+
+          image.dataset.wzFallback = '1';
+          image.src = fallbackUrl;
+
+          if (!image.alt.trim()) {
+            image.alt =
+              'Wedding Za image unavailable';
           }
         }
       );
