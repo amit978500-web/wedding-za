@@ -224,6 +224,11 @@ $adminNavigation = [
         rel="stylesheet"
         href="../assets/css/member-card.css?v=1.0.1"
     >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/final-polish.css?v=1.0.0"
+    >
 </head>
 
 <body>
