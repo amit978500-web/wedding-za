@@ -161,6 +161,29 @@ wz_live_add(
         : '.htaccess is missing.'
 );
 
+$protectedFiles = [
+    $root . '/storage/.htaccess' => 'Storage protection',
+    $root . '/storage/backups/.htaccess' => 'Backup protection',
+    $root . '/uploads/media/.htaccess' => 'Upload execution protection',
+    $root . '/database/.htaccess' => 'Database-file protection',
+];
+
+foreach ($protectedFiles as $path => $label) {
+    wz_live_add(
+        $results,
+        is_file($path)
+            ? WZ_LIVE_PASS
+            : WZ_LIVE_BLOCKER,
+        $label,
+        is_file($path)
+            ? basename(dirname($path))
+                . '/.htaccess is present.'
+            : 'Missing protection file: '
+                . str_replace($root . '/', '', $path)
+                . '.'
+    );
+}
+
 $displayErrors = strtolower(
     trim((string)ini_get('display_errors'))
 );
