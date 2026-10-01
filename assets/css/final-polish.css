@@ -1,0 +1,561 @@
+/* Wedding Za final production polish
+   Shared public-site, CRM and Admin consistency + mobile pass. */
+
+:root {
+  --wz-touch: 44px;
+  --wz-focus: rgba(123, 41, 66, .18);
+  --wz-soft-line: rgba(29, 23, 20, .10);
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+[role="button"],
+.crm-button,
+.admin-button,
+.pill-btn {
+  touch-action: manipulation;
+}
+
+input,
+select,
+textarea {
+  max-width: 100%;
+}
+
+:where(
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  summary
+):focus-visible {
+  outline: 2px solid rgba(123,41,66,.48);
+  outline-offset: 3px;
+}
+
+/* Public site consistency ------------------------------------------------ */
+.vision-site :where(
+  input,
+  select,
+  textarea,
+  button
+) {
+  min-height: var(--wz-touch);
+}
+
+.vision-site :where(
+  .vendor-card,
+  .vision-vendor-card,
+  .marketplace-review-card,
+  .invite-card,
+  .story-card,
+  .journal-card
+) {
+  min-width: 0;
+}
+
+.vision-site :where(
+  .vendor-card,
+  .vision-vendor-card,
+  .marketplace-review-card,
+  .invite-card
+) :where(h2,h3,h4,p,strong,span) {
+  overflow-wrap: anywhere;
+}
+
+.vision-footer-links a,
+.vision-menu a {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.discovery-dialog {
+  max-height: calc(100dvh - 28px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.marketplace-filter-card,
+.marketplace-compare-table,
+.marketplace-search-result {
+  min-width: 0;
+}
+
+/* CRM + Admin consistency ----------------------------------------------- */
+.crm-main,
+.admin-main,
+.crm-panel,
+.admin-panel,
+.crm-head,
+.admin-head {
+  min-width: 0;
+}
+
+.crm-panel,
+.admin-panel {
+  overflow: hidden;
+}
+
+.crm-table-wrap,
+.admin-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.crm-table,
+.admin-table {
+  white-space: normal;
+}
+
+.crm-table th,
+.crm-table td,
+.admin-table th,
+.admin-table td {
+  vertical-align: middle;
+}
+
+.crm-table td,
+.admin-table td {
+  overflow-wrap: anywhere;
+}
+
+.crm-button,
+.admin-button {
+  min-height: var(--wz-touch);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  text-align: center;
+}
+
+.crm-button.small,
+.admin-button.small {
+  min-height: 38px;
+}
+
+.crm-field input,
+.crm-field select,
+.crm-field textarea,
+.admin-field input,
+.admin-field select,
+.admin-field textarea,
+.admin-inline-form input,
+.admin-inline-form select {
+  min-height: var(--wz-touch);
+}
+
+.crm-field textarea,
+.admin-field textarea {
+  min-height: 116px;
+  resize: vertical;
+}
+
+.crm-actions,
+.admin-actions,
+.crm-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+}
+
+.crm-empty,
+.admin-empty {
+  padding: 28px 22px;
+  color: var(--crm-muted, var(--admin-muted, #746a63));
+  line-height: 1.65;
+}
+
+.crm-list-item,
+.admin-list-item {
+  min-width: 0;
+}
+
+.crm-list-item :where(strong,p,small),
+.admin-list-item :where(strong,p,small) {
+  overflow-wrap: anywhere;
+}
+
+.crm-badge,
+.admin-badge {
+  max-width: 100%;
+  white-space: normal;
+  line-height: 1.25;
+}
+
+/* Notification preferences ---------------------------------------------- */
+.crm-notification-preferences,
+.admin-notification-preferences {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.crm-notification-preferences label,
+.admin-notification-preferences label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 68px;
+  padding: 15px 16px;
+  border: 1px solid var(--wz-soft-line);
+  border-radius: 14px;
+  background: rgba(255,255,255,.58);
+  cursor: pointer;
+}
+
+.crm-notification-preferences label>span,
+.admin-notification-preferences label>span {
+  min-width: 0;
+}
+
+.crm-notification-preferences strong,
+.crm-notification-preferences small,
+.admin-notification-preferences strong,
+.admin-notification-preferences small {
+  display: block;
+}
+
+.crm-notification-preferences strong,
+.admin-notification-preferences strong {
+  margin-bottom: 4px;
+  font-size: 11px;
+}
+
+.crm-notification-preferences small,
+.admin-notification-preferences small {
+  color: var(--crm-muted, var(--admin-muted, #746a63));
+  line-height: 1.5;
+}
+
+.crm-notification-preferences input,
+.admin-notification-preferences input {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
+  accent-color: var(--crm-accent, var(--admin-accent, #7b2942));
+}
+
+/* Member card mobile refinements ---------------------------------------- */
+.wz-member-dialog {
+  scrollbar-width: thin;
+}
+
+.wz-member-card-copy,
+.wz-member-details>div {
+  min-width: 0;
+}
+
+.wz-member-details strong {
+  word-break: break-word;
+}
+
+/* Tablet ---------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .crm-layout,
+  .admin-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .crm-grid,
+  .admin-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .crm-form-grid,
+  .admin-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .crm-pipeline {
+    overflow-x: auto;
+    grid-template-columns: repeat(6, minmax(230px, 1fr));
+    scroll-snap-type: x proximity;
+    padding-bottom: 8px;
+  }
+
+  .crm-pipeline-column {
+    scroll-snap-align: start;
+  }
+
+  .marketplace-filter-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .marketplace-search-result {
+    grid-template-columns: 96px minmax(0, 1fr);
+  }
+
+  .marketplace-search-result > :last-child {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
+/* Mobile ---------------------------------------------------------------- */
+@media (max-width: 720px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .vision-site :where(
+    input,
+    select,
+    textarea
+  ),
+  .crm-field :where(
+    input,
+    select,
+    textarea
+  ),
+  .admin-field :where(
+    input,
+    select,
+    textarea
+  ) {
+    font-size: 16px;
+  }
+
+  .vision-footer-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 28px 18px !important;
+  }
+
+  .vision-footer-top,
+  .vision-footer-bottom {
+    gap: 18px;
+  }
+
+  .discovery-dialog {
+    width: calc(100% - 18px);
+    max-height: calc(100dvh - 18px);
+    margin: 9px;
+    border-radius: 22px;
+  }
+
+  .marketplace-filter-card {
+    padding: 16px;
+  }
+
+  .marketplace-filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .marketplace-search-result {
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .marketplace-search-result img {
+    width: 76px;
+    height: 68px;
+  }
+
+  .marketplace-compare-dock {
+    right: 10px;
+    bottom: 10px;
+    width: calc(100vw - 20px);
+    border-radius: 16px;
+  }
+
+  .crm-main,
+  .admin-main {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .crm-head,
+  .admin-head {
+    display: flex !important;
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 18px;
+  }
+
+  .crm-head h1,
+  .admin-head h1 {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .crm-actions,
+  .admin-actions {
+    width: 100%;
+  }
+
+  .crm-actions .crm-button,
+  .admin-actions .admin-button {
+    flex: 1 1 150px;
+  }
+
+  .crm-grid,
+  .admin-grid,
+  .crm-form-grid,
+  .admin-form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .crm-field.full,
+  .admin-field.full {
+    grid-column: auto !important;
+  }
+
+  .crm-panel-head,
+  .admin-panel-head {
+    align-items: flex-start !important;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .crm-table {
+    min-width: 720px;
+  }
+
+  .admin-table {
+    min-width: 760px;
+  }
+
+  .crm-table th,
+  .crm-table td,
+  .admin-table th,
+  .admin-table td {
+    padding-inline: 12px;
+  }
+
+  .crm-pipeline {
+    margin-inline: -2px;
+    grid-template-columns: repeat(6, minmax(220px, 76vw));
+  }
+
+  .crm-notification-preferences label,
+  .admin-notification-preferences label {
+    min-height: 74px;
+    padding: 14px;
+  }
+
+  .wz-member-dialog-actions a,
+  .wz-member-dialog-actions button {
+    flex: 1 1 160px;
+  }
+}
+
+/* Small phones ----------------------------------------------------------- */
+@media (max-width: 480px) {
+  .vision-footer-links {
+    grid-template-columns: 1fr !important;
+  }
+
+  .vision-footer-brand {
+    overflow-wrap: anywhere;
+  }
+
+  .crm-main,
+  .admin-main {
+    padding-inline: 12px !important;
+  }
+
+  .crm-head,
+  .admin-head {
+    padding-inline: 18px !important;
+  }
+
+  .crm-panel,
+  .admin-panel {
+    border-radius: 16px !important;
+  }
+
+  .crm-stat,
+  .admin-stat {
+    min-height: 0;
+  }
+
+  .crm-actions .crm-button,
+  .admin-actions .admin-button,
+  .crm-form > .crm-button,
+  .admin-form > .admin-button {
+    width: 100%;
+  }
+
+  .wz-member-card {
+    padding: 18px;
+  }
+
+  .wz-member-card-top {
+    gap: 10px;
+  }
+
+  .wz-member-brand small {
+    display: none;
+  }
+
+  .wz-member-card-person {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr);
+  }
+
+  .wz-member-avatar {
+    width: 52px;
+    height: 52px;
+    flex-basis: 52px;
+    border-radius: 16px;
+  }
+
+  .wz-member-card-copy h2 {
+    font-size: clamp(30px, 10vw, 40px);
+  }
+
+  .wz-member-details {
+    grid-template-columns: 1fr;
+  }
+
+  .wz-member-card-foot {
+    flex-wrap: wrap;
+  }
+
+  .wz-member-completion {
+    order: 3;
+    flex-basis: 100%;
+    max-width: none;
+  }
+}
+
+@media (hover: none) {
+  .vision-category-panel:hover,
+  .vision-city-card:hover,
+  .crm-stat:hover,
+  .admin-stat:hover {
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+}
