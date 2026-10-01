@@ -87,6 +87,32 @@ if (
                 ]
             );
 
+            if (!empty($enquiry['customer_user_id'])) {
+                $visitTitle = match ($siteVisitStatus) {
+                    'completed' => 'Site visit completed',
+                    'cancelled' => 'Site visit cancelled',
+                    default => $siteVisitAt !== ''
+                        ? 'Site visit scheduled'
+                        : 'Site visit updated',
+                };
+
+                $visitBody = $siteVisitAt !== ''
+                    ? 'Venue visit · '
+                        . date(
+                            'd M Y, h:i A',
+                            strtotime($siteVisitAt)
+                        )
+                    : 'Your venue visit details were updated.';
+
+                wz_notification_send(
+                    (int)$enquiry['customer_user_id'],
+                    'site_visit',
+                    $visitTitle,
+                    $visitBody,
+                    'crm/customer/site-visits-upcoming.php'
+                );
+            }
+
             $message = 'Site visit updated.';
             $isSuccess = true;
         } elseif ($action === 'lead-stage') {
