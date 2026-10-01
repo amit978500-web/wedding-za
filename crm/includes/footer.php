@@ -55,7 +55,7 @@
     <?php endif; ?>
 
     <script
-        src="<?= h(wz_app_url('assets/js/crm-ui.js?v=1.2.0')) ?>"
+        src="<?= h(wz_app_url('assets/js/crm-ui.js?v=1.3.0')) ?>"
         defer
     ></script>
 </body>
