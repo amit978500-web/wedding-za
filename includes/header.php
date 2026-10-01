@@ -203,6 +203,11 @@ if (wz_is_logged_in()) {
         rel="stylesheet"
         href="assets/css/marketplace.css?v=1.0.0"
     >
+
+    <link
+        rel="stylesheet"
+        href="assets/css/final-polish.css?v=1.0.0"
+    >
 </head>
 
 <body
