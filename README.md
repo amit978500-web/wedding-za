@@ -226,10 +226,10 @@ For a normal PHP shared host:
 The design still uses remote:
 
 - Google Fonts
-- Unsplash demo imagery
+- Unsplash-hosted editorial imagery
 - GSAP / ScrollTrigger / Lenis CDNs
 
-For a completely self-hosted production package, replace remote demo imagery with licensed local media and choose a compliant font delivery strategy.
+For a completely self-hosted production package, replace remote editorial imagery with the client's licensed media library and choose a compliant font delivery strategy.
 
 ## Git workflow
 
@@ -420,3 +420,22 @@ https://YOUR-DOMAIN/api/razorpay-webhook.php
 The browser only receives the public Razorpay key ID. Order creation, payment signature verification and webhook verification remain server-side.
 
 Use Razorpay Test Mode credentials before enabling live payments.
+
+
+## Email and push notifications
+
+In-app CRM notifications remain enabled by default. The project now includes provider-ready email and push delivery with per-user preferences and delivery logging.
+
+For an existing database, run:
+
+```bash
+php scripts/upgrade-existing-database.php
+```
+
+Then configure the optional production delivery webhook in `config.local.php`.
+
+Full setup:
+
+```text
+docs/NOTIFICATIONS.md
+```
