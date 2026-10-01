@@ -439,3 +439,22 @@ Full setup:
 ```text
 docs/NOTIFICATIONS.md
 ```
+
+
+## Final go-live gate
+
+Before switching the production domain live, run:
+
+```bash
+php scripts/upgrade-existing-database.php
+php scripts/backup-database.php
+php scripts/go-live-check.php
+```
+
+Do not launch while the checker reports any `BLOCKER`.
+
+The complete cutover runbook is:
+
+```text
+docs/GO-LIVE.md
+```
