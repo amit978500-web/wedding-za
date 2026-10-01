@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/notifications.php';
 
 function wz_crm_role_label(string $role): string
 {
@@ -929,6 +930,19 @@ function wz_crm_create_booking_from_enquiry(
         ]
     );
 
+    if (!empty($enquiry['customer_user_id'])) {
+        wz_notification_send(
+            (int)$enquiry['customer_user_id'],
+            'booking',
+            'Booking created',
+            (string)(
+                $enquiry['subject']
+                ?: 'Your event booking has been created.'
+            ),
+            'crm/customer/bookings-upcoming.php'
+        );
+    }
+
     return $bookingId;
 }
 
@@ -1842,6 +1856,26 @@ function wz_venue_add_payment(
             'status' => $status,
         ]
     );
+
+    if (!empty($booking['customer_user_id'])) {
+        $paymentLabel = match ($status) {
+            'received' => 'Payment received',
+            'refunded' => 'Payment refunded',
+            'failed' => 'Payment update',
+            default => 'Payment pending',
+        };
+
+        wz_notification_send(
+            (int)$booking['customer_user_id'],
+            'payment',
+            $paymentLabel,
+            '₹'
+            . number_format($amount, 2)
+            . ' · '
+            . (string)($booking['title'] ?? 'Booking'),
+            'crm/customer/finances.php'
+        );
+    }
 
     return [
         'ok' => true,
