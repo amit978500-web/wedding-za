@@ -29,6 +29,18 @@ return [
         'contact_phone' => '',
     ],
 
+    'notifications' => [
+        // Optional external delivery webhook. It receives a JSON payload
+        // and can route email through Resend/SendGrid and push through
+        // OneSignal/FCM or another provider.
+        'delivery_webhook_url' => '',
+        'delivery_webhook_token' => '',
+        'email_enabled' => false,
+        'push_enabled' => false,
+        'from_email' => '',
+        'from_name' => 'Wedding Za',
+    ],
+
     'operations' => [
         'health_token' => '',
     ],
