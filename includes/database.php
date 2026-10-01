@@ -36,6 +36,20 @@ function wz_config(): array
             'contact_email' => getenv('WZ_CONTACT_EMAIL') ?: '',
             'contact_phone' => getenv('WZ_CONTACT_PHONE') ?: '',
         ],
+        'notifications' => [
+            'delivery_webhook_url' => getenv('WZ_NOTIFICATION_WEBHOOK_URL') ?: '',
+            'delivery_webhook_token' => getenv('WZ_NOTIFICATION_WEBHOOK_TOKEN') ?: '',
+            'email_enabled' => filter_var(
+                getenv('WZ_NOTIFICATION_EMAIL_ENABLED') ?: '0',
+                FILTER_VALIDATE_BOOLEAN
+            ),
+            'push_enabled' => filter_var(
+                getenv('WZ_NOTIFICATION_PUSH_ENABLED') ?: '0',
+                FILTER_VALIDATE_BOOLEAN
+            ),
+            'from_email' => getenv('WZ_NOTIFICATION_FROM_EMAIL') ?: '',
+            'from_name' => getenv('WZ_NOTIFICATION_FROM_NAME') ?: 'Wedding Za',
+        ],
         'operations' => [
             'health_token' => getenv('WZ_HEALTH_TOKEN') ?: '',
         ],
