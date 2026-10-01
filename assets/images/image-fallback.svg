@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Wedding Za image placeholder</title>
+  <desc id="desc">A warm editorial Wedding Za placeholder used only when an image is unavailable.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2a1e1b"/>
+      <stop offset=".55" stop-color="#7b2942"/>
+      <stop offset="1" stop-color="#c89a72"/>
+    </linearGradient>
+    <radialGradient id="glow">
+      <stop offset="0" stop-color="#fff" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <circle cx="995" cy="128" r="300" fill="url(#glow)"/>
+  <circle cx="150" cy="720" r="230" fill="none" stroke="#fff" stroke-opacity=".12" stroke-width="2"/>
+  <circle cx="150" cy="720" r="170" fill="none" stroke="#fff" stroke-opacity=".10" stroke-width="2"/>
+  <g fill="#fff">
+    <text x="80" y="650" font-family="Georgia, serif" font-size="96">Wedding Za</text>
+    <text x="84" y="704" font-family="Arial, sans-serif" font-size="22" letter-spacing="8" opacity=".72">EVERY CELEBRATION, BEAUTIFULLY PLANNED</text>
+  </g>
+</svg>
