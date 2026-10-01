@@ -376,6 +376,94 @@ if (!wz_upgrade_table_exists(
     );
 }
 
+/*
+|--------------------------------------------------------------------------
+| Migration 008 notification delivery
+|--------------------------------------------------------------------------
+*/
+
+if (
+    !wz_upgrade_table_exists(
+        $pdo,
+        'notification_preferences'
+    )
+    || !wz_upgrade_table_exists(
+        $pdo,
+        'notification_delivery_log'
+    )
+) {
+    $notificationFile =
+        dirname(__DIR__)
+        . '/database/migrations/008-notification-delivery.sql';
+
+    $notificationSql = file_get_contents(
+        $notificationFile
+    );
+
+    if ($notificationSql === false) {
+        fwrite(
+            STDERR,
+            "Could not read migration 008.\n"
+        );
+
+        exit(1);
+    }
+
+    $notificationStatements = preg_split(
+        '/;\s*(?:\r?\n|$)/',
+        $notificationSql
+    ) ?: [];
+
+    foreach (
+        $notificationStatements
+        as $statement
+    ) {
+        $statement = trim($statement);
+
+        if ($statement === '') {
+            continue;
+        }
+
+        if (
+            str_contains(
+                $statement,
+                'CREATE TABLE notification_preferences'
+            )
+            && wz_upgrade_table_exists(
+                $pdo,
+                'notification_preferences'
+            )
+        ) {
+            continue;
+        }
+
+        if (
+            str_contains(
+                $statement,
+                'CREATE TABLE notification_delivery_log'
+            )
+            && wz_upgrade_table_exists(
+                $pdo,
+                'notification_delivery_log'
+            )
+        ) {
+            continue;
+        }
+
+        $pdo->exec($statement);
+    }
+
+    fwrite(
+        STDOUT,
+        "Migration 008 notification delivery installed.\n"
+    );
+} else {
+    fwrite(
+        STDOUT,
+        "Migration 008 already appears installed.\n"
+    );
+}
+
 fwrite(
     STDOUT,
     "\nWedding Za database upgrade completed successfully.\n"
