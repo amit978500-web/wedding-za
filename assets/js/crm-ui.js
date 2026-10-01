@@ -20,6 +20,55 @@
     '(prefers-reduced-motion: reduce)'
   ).matches;
 
+  const uiScript = Array.from(
+    document.scripts
+  ).find((script) =>
+    script.src.includes(
+      '/assets/js/crm-ui.js'
+    )
+  );
+
+  const assetRoot = uiScript
+    ? uiScript.src.split(
+        '/assets/js/crm-ui.js'
+      )[0]
+    : '';
+
+  const fallbackImageUrl =
+    assetRoot
+      + '/assets/images/image-fallback.svg';
+
+  document
+    .querySelectorAll('img')
+    .forEach((image) => {
+      if (!image.hasAttribute('loading')) {
+        image.loading = 'lazy';
+      }
+
+      image.decoding = 'async';
+
+      image.addEventListener(
+        'error',
+        () => {
+          if (
+            image.dataset.wzFallback
+              === '1'
+            || !assetRoot
+          ) {
+            return;
+          }
+
+          image.dataset.wzFallback = '1';
+          image.src = fallbackImageUrl;
+
+          if (!image.alt.trim()) {
+            image.alt =
+              'Wedding Za image unavailable';
+          }
+        }
+      );
+    });
+
   root.classList.add('motion-ready');
 
   const revealSelector = isAdmin
